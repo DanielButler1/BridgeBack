@@ -1,0 +1,232 @@
+"use client";
+
+import {
+  ArrowUpRight,
+  BookOpenCheck,
+  Check,
+  ChevronRight,
+  FileStack,
+  FileText,
+  MoreHorizontal,
+  Plus,
+  Sparkles,
+  UploadCloud,
+} from "lucide-react";
+
+import { ConceptMap } from "@/components/concept-map";
+import { Avatar, AvatarBadge, AvatarFallback } from "@/components/ui/avatar";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardAction,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { demoPupil, recentResources } from "@/lib/demo-data";
+
+export function TeacherDashboard() {
+  return (
+    <div className="space-y-6 pb-10">
+      <section className="grid gap-4 lg:grid-cols-[1.4fr_0.6fr]">
+        <Card className="relative min-h-64 overflow-hidden border-0 bg-foreground text-background ring-0">
+          <div className="absolute -right-14 -top-24 size-64 rounded-full border border-background/10" />
+          <div className="absolute -right-2 -top-8 size-40 rounded-full border border-background/10" />
+          <CardHeader className="relative max-w-2xl p-6 sm:p-8">
+            <Badge className="mb-6 bg-background/10 text-background hover:bg-background/10">
+              <Sparkles data-icon="inline-start" />
+              Upcoming lesson analysed
+            </Badge>
+            <p className="text-xs font-medium uppercase tracking-[0.18em] text-background/55">
+              Year 10 · GCSE Computer Science
+            </p>
+            <h1 className="mt-2 max-w-xl font-heading text-3xl font-semibold leading-[1.05] tracking-tight sm:text-5xl">
+              Make tomorrow&apos;s lesson feel possible.
+            </h1>
+            <p className="mt-4 max-w-xl text-sm leading-6 text-background/65 sm:text-base">
+              BridgeBack found the smallest set of ideas pupils need before your
+              class begins binary search.
+            </p>
+          </CardHeader>
+          <CardFooter className="relative mt-auto border-background/10 bg-background/5 px-6 py-4 sm:px-8">
+            <div className="flex w-full flex-wrap items-center justify-between gap-4">
+              <div className="flex items-center gap-3 text-xs text-background/60">
+                <FileStack className="size-4" />
+                12 missed resources · 1 upcoming lesson
+              </div>
+              <Button className="bg-background text-foreground hover:bg-background/90">
+                Review pathway
+                <ChevronRight data-icon="inline-end" />
+              </Button>
+            </div>
+          </CardFooter>
+        </Card>
+
+        <Card className="justify-between bg-primary/[0.065]">
+          <CardHeader>
+            <CardDescription>Class readiness</CardDescription>
+            <CardTitle className="font-heading text-3xl">7 of 8 pupils</CardTitle>
+            <CardAction>
+              <div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary">
+                <BookOpenCheck className="size-4" />
+              </div>
+            </CardAction>
+          </CardHeader>
+          <CardContent>
+            <Progress value={87.5} className="[&_[data-slot=progress-track]]:h-2" />
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
+              Mia is the only pupil with a pathway still to complete before
+              Thursday.
+            </p>
+          </CardContent>
+          <CardFooter className="justify-between">
+            <span className="text-xs text-muted-foreground">Last updated 4 min ago</span>
+            <Button variant="ghost" size="sm">
+              View class <ArrowUpRight data-icon="inline-end" />
+            </Button>
+          </CardFooter>
+        </Card>
+      </section>
+
+      <section className="grid gap-4 md:grid-cols-3">
+        {[
+          ["6", "prerequisites identified", "From 13 lesson objectives"],
+          ["2", "concept gaps found", "Iteration and trace tables"],
+          ["17 min", "recommended pathway", "Across three small steps"],
+        ].map(([value, label, detail]) => (
+          <Card key={label} size="sm">
+            <CardHeader>
+              <CardTitle className="font-mono text-2xl font-semibold">{value}</CardTitle>
+              <CardDescription>{label}</CardDescription>
+            </CardHeader>
+            <CardFooter className="border-0 bg-transparent pt-0 text-xs text-muted-foreground">
+              {detail}
+            </CardFooter>
+          </Card>
+        ))}
+      </section>
+
+      <Card>
+        <CardHeader className="border-b">
+          <div>
+            <div className="mb-2 flex items-center gap-2">
+              <Badge variant="secondary">Teacher review</Badge>
+              <span className="text-xs text-muted-foreground">AI-generated · editable</span>
+            </div>
+            <CardTitle className="font-heading text-xl">Concept dependency map</CardTitle>
+            <CardDescription className="mt-1 max-w-2xl">
+              Each prerequisite is grounded in the uploaded lesson materials. Drag
+              nodes to organise the map before approving it for pupils.
+            </CardDescription>
+          </div>
+          <CardAction className="flex gap-2">
+            <Button variant="outline">
+              <Plus data-icon="inline-start" /> Add concept
+            </Button>
+            <Button>
+              <Check data-icon="inline-start" /> Approve map
+            </Button>
+          </CardAction>
+        </CardHeader>
+        <CardContent>
+          <ConceptMap />
+          <div className="mt-4 flex flex-wrap gap-x-5 gap-y-2 text-xs text-muted-foreground">
+            {[
+              ["bg-emerald-500", "Secure"],
+              ["bg-amber-500", "Needs checking"],
+              ["bg-rose-500", "Needs support"],
+              ["bg-primary", "Upcoming lesson"],
+            ].map(([colour, label]) => (
+              <span key={label} className="flex items-center gap-2">
+                <span className={`size-2 rounded-full ${colour}`} /> {label}
+              </span>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      <section className="grid gap-4 lg:grid-cols-[0.92fr_1.08fr]">
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-heading text-xl">Lesson materials</CardTitle>
+            <CardDescription>Sources used to build this pathway.</CardDescription>
+            <CardAction>
+              <Button variant="outline" size="sm">
+                <UploadCloud data-icon="inline-start" /> Upload
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent className="space-y-2">
+            {recentResources.map((resource) => (
+              <div
+                key={resource.name}
+                className="flex items-center gap-3 rounded-xl border bg-background p-3 transition-colors hover:bg-muted/35"
+              >
+                <div className="flex size-9 items-center justify-center rounded-lg bg-muted text-muted-foreground">
+                  <FileText className="size-4" />
+                </div>
+                <div className="min-w-0 flex-1">
+                  <p className="truncate text-sm font-medium">{resource.name}</p>
+                  <p className="text-xs text-muted-foreground">
+                    {resource.type} · {resource.pages} pages
+                  </p>
+                </div>
+                <Badge variant={resource.status === "Current" ? "default" : "outline"}>
+                  {resource.status}
+                </Badge>
+              </div>
+            ))}
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="font-heading text-xl">Pupils returning</CardTitle>
+            <CardDescription>Readiness for the next lesson—not work completed.</CardDescription>
+            <CardAction>
+              <Button variant="ghost" size="icon" aria-label="More pupil options">
+                <MoreHorizontal />
+              </Button>
+            </CardAction>
+          </CardHeader>
+          <CardContent>
+            <div className="rounded-xl border">
+              <div className="flex flex-col gap-4 p-4 sm:flex-row sm:items-center">
+                <Avatar className="size-11">
+                  <AvatarFallback className="bg-primary/10 font-medium text-primary">
+                    {demoPupil.initials}
+                  </AvatarFallback>
+                  <AvatarBadge className="bg-amber-500" />
+                </Avatar>
+                <div className="min-w-0 flex-1">
+                  <div className="flex flex-wrap items-center gap-2">
+                    <p className="font-medium">{demoPupil.name}</p>
+                    <Badge variant="secondary">Diagnostic ready</Badge>
+                  </div>
+                  <p className="mt-1 text-xs text-muted-foreground">
+                    {demoPupil.year} · {demoPupil.daysMissed} school days missed · Last active today
+                  </p>
+                </div>
+                <div className="w-full sm:w-36">
+                  <div className="mb-2 flex justify-between text-xs">
+                    <span className="text-muted-foreground">Readiness</span>
+                    <span className="font-mono font-medium">42%</span>
+                  </div>
+                  <Progress value={42} />
+                </div>
+                <Button variant="outline" size="sm">
+                  Open <ChevronRight data-icon="inline-end" />
+                </Button>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+      </section>
+    </div>
+  );
+}
+

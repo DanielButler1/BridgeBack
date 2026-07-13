@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# BridgeBack
 
-## Getting Started
+**The shortest path back into the next lesson.**
 
-First, run the development server:
+BridgeBack is an OpenAI Build Week Education-track project for pupils returning to school after absence. Instead of assigning every missed resource, it identifies the minimum prerequisite concepts a pupil needs to participate in the upcoming lesson.
+
+The current proof of concept follows Mia, a fictional Year 10 pupil returning after four weeks away, as her class begins GCSE Computer Science binary search.
+
+## What works today
+
+- Connected teacher and pupil views
+- Editable, source-labelled prerequisite graph rendered with React Flow
+- Four-question interactive readiness diagnostic
+- A three-step catch-up pathway limited to 17 minutes
+- A complete first micro-lesson on iteration
+- Seeded data throughout, so the judging experience is reliable without credentials
+- Build-safe OpenAI client and model-routing boundaries for the live generation phase
+
+## Run locally
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+BridgeBack defaults to seeded demo mode. When live lesson analysis is implemented, copy `.env.example` to `.env.local` and add `OPENAI_API_KEY`.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Stack
 
-## Learn More
+- Next.js 16 App Router and React 19
+- TypeScript and Tailwind CSS 4
+- shadcn/ui using preset `b1s9c8K70` (`base-nova`)
+- React Flow for concept dependencies
+- Zod for educational domain schemas
+- OpenAI JavaScript SDK with lazy, build-safe initialization
 
-To learn more about Next.js, take a look at the following resources:
+## Planned GPT-5.6 routing
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Job | Model | Reason |
+| --- | --- | --- |
+| Lesson dependency graph | `gpt-5.6-sol` | Quality-first curriculum reasoning |
+| Catch-up pathway | `gpt-5.6-terra` | Balanced instructional generation |
+| Pupil feedback | `gpt-5.6-luna` | Efficient, responsive interaction |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Teacher review remains mandatory before any generated dependency map is assigned to pupils.
 
-## Deploy on Vercel
+## Product principles
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+1. Prepare for what comes next; do not recreate every missed lesson.
+2. Never show a pupil more than three next steps.
+3. Treat diagnostic results as readiness signals, not grades or definitive mastery claims.
+4. Keep teachers in control of prerequisite relationships and source material.
+5. Use synthetic pupil data in the proof of concept.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Codex collaboration
+
+The repository was created during OpenAI Build Week with Codex. Codex helped translate the research-backed product hypothesis into a deliberately scoped vertical slice, applied the supplied shadcn preset, created the domain schemas, implemented the two-sided experience, and established build-safe model boundaries. Product decisions—including the next-lesson framing, teacher approval step, three-item limit, synthetic pupil scenario and job-specific model routing—were made explicitly during the Codex task.
