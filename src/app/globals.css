@@ -155,3 +155,49 @@ a {
 .react-flow__controls-button svg {
   fill: currentColor !important;
 }
+
+.landing-page {
+  --landing-bg: #f4f6f2;
+  --landing-surface: #fbfcfa;
+  --landing-ink: #142019;
+  --landing-muted: #536158;
+  --landing-line: #ccd5ce;
+  --landing-soft: #e2eae4;
+  --landing-accent: #247552;
+  --landing-accent-strong: #1c6344;
+  --landing-accent-ink: #f5faf6;
+  --landing-accent-muted: #d7eadf;
+  --landing-accent-light: #78c99c;
+  --landing-deep: #173b2b;
+  --landing-dark-ink: #f2f7f3;
+  --landing-dark-muted: #c0d4c7;
+  --landing-cta: #f4f8f5;
+  --landing-cta-hover: #e6efe9;
+  --landing-cta-ink: #163d2b;
+  --landing-shadow: #244c38;
+  background-image: radial-gradient(circle at 18% 3%, rgb(36 117 82 / 8%), transparent 28rem);
+}
+
+@media (prefers-color-scheme: dark) {
+  .landing-page {
+    --landing-bg: #101713;
+    --landing-surface: #17211b;
+    --landing-ink: #edf4ef;
+    --landing-muted: #a8b9ae;
+    --landing-line: #33443a;
+    --landing-soft: #1c2d23;
+    --landing-accent: #5aad80;
+    --landing-accent-strong: #70bf94;
+    --landing-accent-ink: #0d1b13;
+    --landing-accent-muted: #193c2b;
+    --landing-accent-light: #79c99d;
+    --landing-deep: #152b20;
+    --landing-dark-ink: #edf5ef;
+    --landing-dark-muted: #b5cabc;
+    --landing-cta: #edf5ef;
+    --landing-cta-hover: #dcebe1;
+    --landing-cta-ink: #123723;
+    --landing-shadow: #07100b;
+    background-image: radial-gradient(circle at 18% 3%, rgb(90 173 128 / 9%), transparent 28rem);
+  }
+}

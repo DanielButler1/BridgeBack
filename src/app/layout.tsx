@@ -19,9 +19,9 @@ const newsreader = Newsreader({
 });
 
 export const metadata: Metadata = {
-  title: "BridgeBack · The shortest path back into learning",
+  title: "BridgeBack | The shortest path back into learning",
   description:
-    "A calm, teacher-guided learning pathway for pupils returning after absence.",
+    "BridgeBack finds the few concepts a returning pupil needs to understand the next lesson, with a teacher-guided learning pathway.",
 };
 
 export default function RootLayout({
