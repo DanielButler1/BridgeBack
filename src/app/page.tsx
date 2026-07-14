@@ -101,7 +101,7 @@ export default function Home() {
               Returning to school should not mean facing every missed lesson at once.
             </p>
             <p className="mt-6 max-w-2xl text-base leading-7 text-[var(--landing-muted)]">
-              Persistent absence means missing at least 10% of possible sessions. The latest full-year data shows the scale across state-funded schools in England.
+              Persistent absence means missing at least 10% of possible sessions. These figures cover state-funded schools in England, one of the UK&apos;s four nations; they are not UK-wide.
             </p>
             <a
               href={attendanceSource}
@@ -114,17 +114,17 @@ export default function Home() {
           </div>
           <div className="grid border-t border-[var(--landing-line)] sm:grid-cols-2 lg:border-l lg:border-t-0">
             <div className="flex min-h-64 flex-col justify-between bg-[var(--landing-accent)] p-7 text-[var(--landing-accent-ink)] sm:col-span-2 sm:p-9">
-              <span className="text-sm font-medium">All schools, 2024/25</span>
+              <span className="text-sm font-medium">State-funded schools in England, UK, 2024/25</span>
               <div>
                 <strong className="text-7xl font-semibold tracking-[-0.07em] sm:text-8xl">18.7%</strong>
                 <p className="mt-3 max-w-md text-sm leading-6 text-[var(--landing-accent-muted)]">of pupils were persistently absent, almost one pupil in five.</p>
               </div>
             </div>
-            <div className="flex min-h-52 flex-col justify-between border-r border-t border-[var(--landing-line)] p-7 sm:p-8">
+            <div className="flex min-h-44 flex-col gap-8 border-r border-t border-[var(--landing-line)] p-7 sm:p-8">
               <span className="text-sm text-[var(--landing-muted)]">Secondary schools</span>
               <strong className="text-5xl font-semibold tracking-[-0.055em]">24.3%</strong>
             </div>
-            <div className="flex min-h-52 flex-col justify-between border-t border-[var(--landing-line)] p-7 sm:p-8">
+            <div className="flex min-h-44 flex-col gap-8 border-t border-[var(--landing-line)] p-7 sm:p-8">
               <span className="text-sm text-[var(--landing-muted)]">Special schools</span>
               <strong className="text-5xl font-semibold tracking-[-0.055em]">35.8%</strong>
             </div>
@@ -230,10 +230,9 @@ export default function Home() {
       </section>
 
       <footer className="border-t border-[var(--landing-line)]">
-        <div className="mx-auto flex max-w-[1400px] flex-col gap-4 px-4 py-8 text-sm text-[var(--landing-muted)] sm:flex-row sm:items-center sm:justify-between sm:px-6 lg:px-10">
-          <div className="flex items-center gap-3"><BridgeBackMark className="size-8 rounded-[0.75rem] shadow-none" /><span className="font-semibold text-[var(--landing-ink)]">BridgeBack</span></div>
-          <p>Built with synthetic data for OpenAI Build Week.</p>
-        </div>
+        <p className="mx-auto max-w-[1400px] px-4 py-5 text-center text-xs text-[var(--landing-muted)]">
+          Built with <span role="img" aria-label="love">❤️</span> for OpenAI Build Week
+        </p>
       </footer>
     </main>
   );
