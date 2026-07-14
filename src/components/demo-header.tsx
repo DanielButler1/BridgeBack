@@ -10,6 +10,9 @@ import { Button } from "@/components/ui/button";
 import { hasClerk } from "@/lib/config";
 
 export function DemoHeader({ role }: { role?: "teacher" | "pupil" }) {
+  const teacherHref = hasClerk ? "/api/demo/sign-in/teacher" : "/teacher";
+  const pupilHref = hasClerk ? "/api/demo/sign-in/pupil" : "/pupil";
+
   return (
     <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex h-16 max-w-[1480px] items-center gap-4 px-4 sm:px-6 lg:px-8">
@@ -21,10 +24,10 @@ export function DemoHeader({ role }: { role?: "teacher" | "pupil" }) {
           </div>
         </Link>
         <nav className="mx-auto flex items-center rounded-lg bg-muted/65 p-1" aria-label="Demo views">
-          <Button nativeButton={false} render={<Link href="/teacher" />} variant={role === "teacher" ? "secondary" : "ghost"} size="sm">
+          <Button nativeButton={false} render={<a href={teacherHref} />} variant={role === "teacher" ? "secondary" : "ghost"} size="sm">
             <School /> <span className="hidden sm:inline">Teacher</span>
           </Button>
-          <Button nativeButton={false} render={<Link href="/pupil" />} variant={role === "pupil" ? "secondary" : "ghost"} size="sm">
+          <Button nativeButton={false} render={<a href={pupilHref} />} variant={role === "pupil" ? "secondary" : "ghost"} size="sm">
             <GraduationCap /> <span className="hidden sm:inline">Mia</span>
           </Button>
         </nav>

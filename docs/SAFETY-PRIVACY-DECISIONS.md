@@ -109,7 +109,15 @@ The prototype does not collect free-form pupil chat, precise location, contacts,
 
 **Why:** A visible teacher route is not proof that a caller may access a class. Authorization belongs beside the data operation so that direct calls cannot bypass it.
 
-**Demo exception:** The judge sign-in endpoint mints a short-lived, one-use token for one of two fixed synthetic identities. It is enabled only when `DEMO_AUTH_ENABLED=true` and must be disabled outside judging.
+**Demo exception:** The judge sign-in endpoint may create a Clerk backend session for one of two fixed synthetic identities. The browser receives only a signed, HTTP-only, same-site demo cookie containing the opaque Clerk session ID. The signature is derived server-side, the cookie lasts four hours, and every page and token request revalidates the Clerk session and expected role. Convex receives a short-lived Clerk JWT from a same-origin, no-store endpoint; the Clerk secret and session token are never exposed to browser storage. This path is enabled only when `DEMO_AUTH_ENABLED=true` and must be disabled outside judging.
+
+### SEC-002: Keep judge authentication server-mediated
+
+**Decision:** Quick role switching is implemented as a server-mediated Clerk session rather than relying on Clerk's development-domain browser cookie.
+
+**Why:** Build Week judges need one-click access to the two synthetic roles, including in browsers that restrict cross-site development cookies. The application still delegates identity issuance to Clerk and authorization to Convex, while avoiding passwords, shared real accounts, tokens in URLs, and persistent browser storage. This is a narrowly scoped demonstration mechanism, not the authentication design for a real-school deployment.
+
+**Controls:** Only the two configured synthetic Clerk subjects can be selected; the cookie is signed, HTTP-only, same-site, time-limited, and revalidated against Clerk; role checks run again on protected pages and inside Convex functions; responses containing Clerk JWTs use `Cache-Control: no-store`.
 
 ### AI-001: Generated educational structures begin as drafts
 
@@ -237,6 +245,7 @@ The ICO recommends beginning the DPIA early enough to influence the design. Its 
 | 13 July 2026 | Limit the displayed pathway to three concepts including the upcoming target | Adopted |
 | 13 July 2026 | Use `store: false`, hashed safety identifiers, and no persistent OpenAI file objects | Adopted for prototype |
 | 14 July 2026 | Treat a child-specific DPIA and production safeguarding review as release blockers | Adopted |
+| 14 July 2026 | Use a signed, HTTP-only, Clerk-backed demo session for the two fixed synthetic judge roles | Adopted for prototype only |
 
 Update this log whenever a change affects data collection, model inputs, storage, retention, authorization, pupil-facing generation, teacher oversight, or the intended educational use.
 

@@ -3,6 +3,8 @@ import "server-only";
 import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse, type NextRequest } from "next/server";
 
+import { demoSessionCookie, encodeDemoSession } from "@/lib/auth/demo-session";
+
 const allowedRoles = new Set(["teacher", "pupil"]);
 
 export async function GET(
@@ -20,8 +22,15 @@ export async function GET(
     return NextResponse.json({ error: "Demo identity is not configured" }, { status: 503 });
   }
   const client = await clerkClient();
-  const token = await client.signInTokens.createSignInToken({ userId, expiresInSeconds: 60 });
-  const response = NextResponse.redirect(new URL(token.url, request.url));
+  const session = await client.sessions.createSession({ userId });
+  const response = NextResponse.redirect(new URL(`/${role}`, request.nextUrl.origin));
+  response.cookies.set(demoSessionCookie, encodeDemoSession(session.id), {
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 4,
+  });
   response.headers.set("Cache-Control", "no-store");
   return response;
 }

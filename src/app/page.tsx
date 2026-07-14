@@ -1,5 +1,4 @@
 import { ArrowRight, BookOpenCheck, GraduationCap, Route, School, ShieldCheck, Sparkles } from "lucide-react";
-import Link from "next/link";
 
 import { BridgeBackMark } from "@/components/bridgeback-mark";
 import { Badge } from "@/components/ui/badge";
@@ -28,8 +27,8 @@ export default function Home() {
             <h1 className="max-w-4xl font-heading text-5xl font-semibold leading-[0.98] tracking-[-0.035em] sm:text-7xl lg:text-[5.5rem]">Don&apos;t catch up on everything. Catch up on what unlocks next.</h1>
             <p className="mt-7 max-w-2xl text-lg leading-8 text-background/65">BridgeBack turns the next lesson into a precise, teacher-approved route back into class—without overwhelming a returning pupil with every missed worksheet.</p>
             <div className="mt-10 flex flex-wrap gap-3">
-              <Button nativeButton={false} render={<Link href={teacherHref} />} size="lg" className="h-12 bg-background px-6 text-foreground hover:bg-background/90"><School /> Enter as Ms Morgan <ArrowRight /></Button>
-              <Button nativeButton={false} render={<Link href={pupilHref} />} size="lg" variant="outline" className="h-12 border-background/25 bg-transparent px-6 text-background hover:bg-background/10 hover:text-background"><GraduationCap /> Enter as Mia</Button>
+              <Button nativeButton={false} render={<a href={teacherHref} />} size="lg" className="h-12 bg-background px-6 text-foreground hover:bg-background/90"><School /> Enter as Ms Morgan <ArrowRight /></Button>
+              <Button nativeButton={false} render={<a href={pupilHref} />} size="lg" variant="outline" className="h-12 border-background/25 bg-transparent px-6 text-background hover:bg-background/10 hover:text-background"><GraduationCap /> Enter as Mia</Button>
             </div>
             <p className="mt-4 flex items-center gap-2 text-xs text-background/45"><ShieldCheck className="size-3.5" /> Every identity, lesson and response in this experience is synthetic.</p>
           </div>

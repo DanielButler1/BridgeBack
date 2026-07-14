@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { Authenticated, AuthLoading, Unauthenticated, useMutation, useQuery } from "convex/react";
 import { makeFunctionReference } from "convex/server";
 import {
   ArrowUpRight,
@@ -34,7 +34,21 @@ import { demoPupil, recentResources } from "@/lib/demo-data";
 import { hasClerk, hasConvex } from "@/lib/config";
 
 export function TeacherDashboard() {
-  if (hasClerk && hasConvex) return <ConnectedTeacherDashboard />;
+  if (hasClerk && hasConvex) {
+    return (
+      <>
+        <AuthLoading>
+          <Card className="p-10 text-center text-sm text-muted-foreground">Connecting the class workspace…</Card>
+        </AuthLoading>
+        <Authenticated>
+          <ConnectedTeacherDashboard />
+        </Authenticated>
+        <Unauthenticated>
+          <Card className="p-10 text-center"><CardTitle>Session unavailable</CardTitle><CardDescription className="mt-2">Return to the start page and choose the teacher demo again.</CardDescription></Card>
+        </Unauthenticated>
+      </>
+    );
+  }
   return <TeacherExperience />;
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import { useMutation, useQuery } from "convex/react";
+import { Authenticated, AuthLoading, Unauthenticated, useMutation, useQuery } from "convex/react";
 import { makeFunctionReference } from "convex/server";
 import {
   ArrowLeft,
@@ -42,7 +42,21 @@ import { hasClerk, hasConvex } from "@/lib/config";
 type JourneyState = "welcome" | "diagnostic" | "results" | "lesson" | "complete";
 
 export function PupilJourney() {
-  if (hasClerk && hasConvex) return <ConnectedPupilJourney />;
+  if (hasClerk && hasConvex) {
+    return (
+      <>
+        <AuthLoading>
+          <Card className="mx-auto max-w-3xl p-10 text-center text-sm text-muted-foreground">Connecting Mia&apos;s pathway…</Card>
+        </AuthLoading>
+        <Authenticated>
+          <ConnectedPupilJourney />
+        </Authenticated>
+        <Unauthenticated>
+          <Card className="mx-auto max-w-3xl p-10 text-center"><CardTitle>Session unavailable</CardTitle><CardDescription className="mt-2">Return to the start page and choose Mia&apos;s demo again.</CardDescription></Card>
+        </Unauthenticated>
+      </>
+    );
+  }
   return <JourneyExperience />;
 }
 
