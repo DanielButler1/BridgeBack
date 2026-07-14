@@ -83,6 +83,10 @@ Teacher review remains mandatory before any generated dependency map is assigned
 6. Never infer emotion, disability, absence reasons, behaviour or risk.
 7. Never use BridgeBack for grades, placement, discipline or attendance consequences.
 
+## Safety and privacy decisions
+
+The rationale for BridgeBack's synthetic-data boundary, child-protection principles, data flow, OpenAI retention choices, teacher oversight, prohibited uses, and real-school release blockers is documented in [Safety, privacy, and product decisions](docs/SAFETY-PRIVACY-DECISIONS.md).
+
 ## Codex collaboration
 
 The repository was created during OpenAI Build Week with Codex. Codex helped translate the research-backed product hypothesis into a deliberately scoped vertical slice, applied the supplied shadcn preset, created the domain schemas, implemented the two-sided experience, and established build-safe model boundaries. Product decisions—including the next-lesson framing, teacher approval step, three-item limit, synthetic pupil scenario and job-specific model routing—were made explicitly during the Codex task.
