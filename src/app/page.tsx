@@ -14,10 +14,9 @@ import Link from "next/link";
 
 import { BridgeBackMark } from "@/components/bridgeback-mark";
 import { Button } from "@/components/ui/button";
-import { hasClerk } from "@/lib/config";
 
-const teacherHref = hasClerk ? "/api/demo/sign-in/teacher" : "/teacher";
-const pupilHref = hasClerk ? "/api/demo/sign-in/pupil" : "/pupil";
+const demoHref = "/demo";
+const productHref = "/app";
 
 const attendanceSource =
   "https://explore-education-statistics.service.gov.uk/find-statistics/pupil-attendance-in-schools/2025-week-29";
@@ -36,14 +35,21 @@ export default function Home() {
           <nav className="ml-auto hidden items-center gap-7 text-sm text-[var(--landing-muted)] md:flex" aria-label="Landing page">
             <a className="transition-colors hover:text-[var(--landing-ink)]" href="#evidence">Evidence</a>
             <a className="transition-colors hover:text-[var(--landing-ink)]" href="#how-it-works">How it works</a>
+            <a className="transition-colors hover:text-[var(--landing-ink)]" href="#product">For schools</a>
             <a className="transition-colors hover:text-[var(--landing-ink)]" href="#safeguards">Safeguards</a>
           </nav>
+          <Link
+            href={productHref}
+            className="ml-auto hidden text-sm font-semibold text-[var(--landing-muted)] transition-colors hover:text-[var(--landing-ink)] lg:block"
+          >
+            School sign in
+          </Link>
           <Button
             nativeButton={false}
-            render={<a href={teacherHref} />}
+            render={<Link href={demoHref} />}
             className="ml-auto h-10 rounded-[0.875rem] bg-[var(--landing-accent)] px-4 text-[var(--landing-accent-ink)] shadow-none hover:bg-[var(--landing-accent-strong)] md:ml-3"
           >
-            Try the teacher demo <ArrowRight />
+            Explore the demo <ArrowRight />
           </Button>
         </div>
       </header>
@@ -54,25 +60,25 @@ export default function Home() {
             Catch up on what<br className="hidden sm:block" /> unlocks next.
           </h1>
           <p className="mt-7 max-w-lg text-lg leading-8 text-[var(--landing-muted)]">
-            BridgeBack finds the few concepts a returning pupil needs to understand tomorrow&apos;s lesson.
+            Explore a synthetic walkthrough, or use BridgeBack with your school&apos;s lessons and secure workspace.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Button
               nativeButton={false}
-              render={<a href={teacherHref} />}
+              render={<Link href={demoHref} />}
               size="lg"
               className="h-12 rounded-[0.875rem] bg-[var(--landing-accent)] px-5 text-[var(--landing-accent-ink)] shadow-none hover:bg-[var(--landing-accent-strong)]"
             >
-              <School /> Try the teacher demo <ArrowRight />
+              <Sparkles /> Explore the demo <ArrowRight />
             </Button>
             <Button
               nativeButton={false}
-              render={<a href={pupilHref} />}
+              render={<Link href={productHref} />}
               size="lg"
               variant="outline"
               className="h-12 rounded-[0.875rem] border-[var(--landing-line)] bg-transparent px-5 text-[var(--landing-ink)] shadow-none hover:bg-[var(--landing-soft)] hover:text-[var(--landing-ink)]"
             >
-              <GraduationCap /> Try Mia&apos;s journey
+              <School /> Open school workspace
             </Button>
           </div>
         </div>
@@ -196,6 +202,70 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="product" className="border-y border-[var(--landing-line)] bg-[var(--landing-surface)]">
+        <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
+          <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
+            <div className="lg:py-3">
+              <h2 className="max-w-xl text-4xl font-semibold leading-tight tracking-[-0.04em] sm:text-5xl">
+                One product.<br />Two ways in.
+              </h2>
+              <p className="mt-6 max-w-md text-base leading-7 text-[var(--landing-muted)]">
+                A prepared demo makes the full journey easy to show. The school workspace applies the same engine to a school&apos;s own teaching materials.
+              </p>
+              <p className="mt-8 border-l-2 border-[var(--landing-accent)] pl-5 text-sm leading-6 text-[var(--landing-muted)]">
+                The demo is dependable for a live presentation, but its AI actions are genuine. Synthetic data protects pupils without disguising how the product works.
+              </p>
+            </div>
+
+            <div className="grid overflow-hidden rounded-[1rem] border border-[var(--landing-line)] bg-[var(--landing-bg)] md:grid-cols-[0.86fr_1.14fr]">
+              <div className="flex flex-col p-7 sm:p-9">
+                <div className="flex size-11 items-center justify-center rounded-[0.875rem] bg-[var(--landing-soft)] text-[var(--landing-accent)]">
+                  <Sparkles className="size-5" />
+                </div>
+                <h3 className="mt-7 text-2xl font-semibold tracking-[-0.03em]">Guided demo</h3>
+                <p className="mt-4 text-sm leading-6 text-[var(--landing-muted)]">
+                  Meet fictional pupil Mia through a prepared binary search lesson, diagnostic, and catch-up route. Enter as teacher or pupil in one click.
+                </p>
+                <ul className="mt-7 space-y-3 text-sm">
+                  <CheckItem>Entirely synthetic school and pupil data</CheckItem>
+                  <CheckItem>Prepared state for a reliable walkthrough</CheckItem>
+                  <CheckItem>Live AI actions use the product engine</CheckItem>
+                </ul>
+                <Button
+                  nativeButton={false}
+                  render={<Link href={demoHref} />}
+                  className="mt-9 h-11 w-full rounded-[0.875rem] bg-[var(--landing-accent)] text-[var(--landing-accent-ink)] shadow-none hover:bg-[var(--landing-accent-strong)]"
+                >
+                  Explore the demo <ArrowRight />
+                </Button>
+              </div>
+
+              <div className="border-t border-[var(--landing-line)] bg-[var(--landing-deep)] p-7 text-[var(--landing-dark-ink)] sm:p-9 md:border-l md:border-t-0">
+                <School className="size-7 text-[var(--landing-accent-light)]" strokeWidth={1.7} />
+                <h3 className="mt-7 text-2xl font-semibold tracking-[-0.03em]">School workspace</h3>
+                <p className="mt-4 max-w-lg text-sm leading-6 text-[var(--landing-dark-muted)]">
+                  A private organisation workspace for teachers to upload their own lessons, approve AI proposals, and support pupils through a source-grounded route.
+                </p>
+
+                <div className="mt-8 border-y border-[color-mix(in_oklch,var(--landing-dark-muted)_28%,transparent)]">
+                  <ModelRoute model="Sol" task="Maps complex prerequisite relationships" />
+                  <ModelRoute model="Terra" task="Builds balanced diagnostics and plans" />
+                  <ModelRoute model="Luna" task="Creates fast, pupil-sized learning support" />
+                </div>
+
+                <Button
+                  nativeButton={false}
+                  render={<Link href={productHref} />}
+                  className="mt-9 h-11 w-full rounded-[0.875rem] bg-[var(--landing-cta)] text-[var(--landing-cta-ink)] shadow-none hover:bg-[var(--landing-cta-hover)]"
+                >
+                  Open school workspace <ArrowRight />
+                </Button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
       <section id="safeguards" className="border-y border-[var(--landing-line)]">
         <div className="mx-auto grid max-w-[1400px] lg:grid-cols-[0.8fr_1.2fr]">
           <div className="bg-[var(--landing-deep)] px-4 py-20 text-[var(--landing-dark-ink)] sm:px-8 lg:px-10 lg:py-24">
@@ -219,11 +289,11 @@ export default function Home() {
             <h2 className="mt-8 max-w-4xl text-4xl font-semibold leading-tight tracking-[-0.045em] sm:text-6xl">See the shortest path back into learning.</h2>
           </div>
           <div className="mt-10 flex flex-wrap gap-3 lg:mt-0 lg:justify-end">
-            <Button nativeButton={false} render={<a href={teacherHref} />} size="lg" className="h-12 rounded-[0.875rem] bg-[var(--landing-cta)] px-5 text-[var(--landing-cta-ink)] shadow-none hover:bg-[var(--landing-cta-hover)]">
-              <School /> Try the teacher demo <ArrowRight />
+            <Button nativeButton={false} render={<Link href={demoHref} />} size="lg" className="h-12 rounded-[0.875rem] bg-[var(--landing-cta)] px-5 text-[var(--landing-cta-ink)] shadow-none hover:bg-[var(--landing-cta-hover)]">
+              <Sparkles /> Explore the demo <ArrowRight />
             </Button>
-            <Button nativeButton={false} render={<a href={pupilHref} />} size="lg" variant="outline" className="h-12 rounded-[0.875rem] border-[var(--landing-accent-ink)]/35 bg-transparent px-5 text-[var(--landing-accent-ink)] shadow-none hover:bg-[var(--landing-accent-ink)]/10 hover:text-[var(--landing-accent-ink)]">
-              <GraduationCap /> Try Mia&apos;s journey
+            <Button nativeButton={false} render={<Link href={productHref} />} size="lg" variant="outline" className="h-12 rounded-[0.875rem] border-[var(--landing-accent-ink)]/35 bg-transparent px-5 text-[var(--landing-accent-ink)] shadow-none hover:bg-[var(--landing-accent-ink)]/10 hover:text-[var(--landing-accent-ink)]">
+              <School /> Open school workspace
             </Button>
           </div>
         </div>
@@ -278,6 +348,15 @@ function Safeguard({ title, children }: { title: string; children: React.ReactNo
     <div className="min-h-52 border-b border-[var(--landing-line)] p-7 sm:border-l sm:p-8">
       <h3 className="text-lg font-semibold tracking-[-0.02em]">{title}</h3>
       <p className="mt-4 max-w-sm text-sm leading-6 text-[var(--landing-muted)]">{children}</p>
+    </div>
+  );
+}
+
+function ModelRoute({ model, task }: { model: string; task: string }) {
+  return (
+    <div className="grid grid-cols-[3.5rem_1fr] gap-4 border-b border-[color-mix(in_oklch,var(--landing-dark-muted)_28%,transparent)] py-4 last:border-b-0">
+      <strong className="text-sm text-[var(--landing-accent-light)]">{model}</strong>
+      <span className="text-sm leading-5 text-[var(--landing-dark-muted)]">{task}</span>
     </div>
   );
 }
