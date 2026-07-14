@@ -1,3 +1,5 @@
+import "server-only";
+
 import OpenAI from "openai";
 
 let openAIClient: OpenAI | null = null;
@@ -19,4 +21,3 @@ export function getOpenAIClient() {
 
   return openAIClient;
 }
-

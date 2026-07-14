@@ -1,5 +1,8 @@
 "use client";
 
+import { useRef, useState } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { makeFunctionReference } from "convex/server";
 import {
   ArrowUpRight,
   BookOpenCheck,
@@ -28,8 +31,77 @@ import {
 } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { demoPupil, recentResources } from "@/lib/demo-data";
+import { hasClerk, hasConvex } from "@/lib/config";
 
 export function TeacherDashboard() {
+  if (hasClerk && hasConvex) return <ConnectedTeacherDashboard />;
+  return <TeacherExperience />;
+}
+
+type TeacherOverview = {
+  classRecord: { _id: string };
+  lesson: { _id: string } | null;
+  graph: { _id: string; status: string } | null;
+  resources: Array<{ name: string; mediaType: string; pageCount?: number; status: string }>;
+} | null;
+
+const overviewRef = makeFunctionReference<"query", Record<string, never>, TeacherOverview>("teacher:overview");
+const uploadUrlRef = makeFunctionReference<"mutation", Record<string, never>, string>("teacher:generateUploadUrl");
+const addResourceRef = makeFunctionReference<"mutation", { classId: string; lessonId: string; storageId: string; name: string; mediaType: string }, string>("teacher:addResource");
+const approveGraphRef = makeFunctionReference<"mutation", { graphId: string }, null>("teacher:approveGraph");
+
+function ConnectedTeacherDashboard() {
+  const overview = useQuery(overviewRef, {});
+  const generateUploadUrl = useMutation(uploadUrlRef);
+  const addResource = useMutation(addResourceRef);
+  const approveGraph = useMutation(approveGraphRef);
+  const [uploading, setUploading] = useState(false);
+  if (overview === undefined) return <Card className="p-10 text-center text-sm text-muted-foreground">Loading the class workspace…</Card>;
+  if (!overview || !overview.lesson) return <Card className="p-10 text-center"><CardTitle>No upcoming lesson</CardTitle><CardDescription className="mt-2">Seed the synthetic class to begin the judge flow.</CardDescription></Card>;
+
+  async function upload(file: File) {
+    setUploading(true);
+    try {
+      const url = await generateUploadUrl({});
+      const response = await fetch(url, { method: "POST", headers: { "Content-Type": file.type || "application/octet-stream" }, body: file });
+      if (!response.ok) throw new Error("Upload failed");
+      const { storageId } = await response.json() as { storageId: string };
+      await addResource({ classId: overview!.classRecord._id, lessonId: overview!.lesson!._id, storageId, name: file.name, mediaType: file.type || "application/octet-stream" });
+    } finally {
+      setUploading(false);
+    }
+  }
+
+  return (
+    <TeacherExperience
+      resources={overview.resources.map((resource) => ({
+        name: resource.name,
+        type: resource.mediaType.includes("presentation") ? "PPTX" : resource.mediaType.includes("pdf") ? "PDF" : "FILE",
+        pages: resource.pageCount ?? 0,
+        status: resource.status === "current" ? "Current" : resource.status === "analysed" ? "Analysed" : "Uploaded",
+      }))}
+      uploading={uploading}
+      onUpload={upload}
+      graphApproved={overview.graph?.status === "approved"}
+      onApprove={overview.graph ? () => approveGraph({ graphId: overview.graph!._id }) : undefined}
+    />
+  );
+}
+
+function TeacherExperience({
+  resources = recentResources,
+  uploading = false,
+  onUpload,
+  graphApproved = false,
+  onApprove,
+}: {
+  resources?: Array<{ name: string; type: string; pages: number; status: string }>;
+  uploading?: boolean;
+  onUpload?: (file: File) => Promise<void>;
+  graphApproved?: boolean;
+  onApprove?: () => Promise<unknown>;
+}) {
+  const uploadInput = useRef<HTMLInputElement>(null);
   return (
     <div className="space-y-6 pb-10">
       <section className="grid gap-4 lg:grid-cols-[1.4fr_0.6fr]">
@@ -127,8 +199,8 @@ export function TeacherDashboard() {
             <Button variant="outline">
               <Plus data-icon="inline-start" /> Add concept
             </Button>
-            <Button>
-              <Check data-icon="inline-start" /> Approve map
+            <Button onClick={() => void onApprove?.()} disabled={!onApprove || graphApproved}>
+              <Check data-icon="inline-start" /> {graphApproved ? "Map approved" : "Approve map"}
             </Button>
           </CardAction>
         </CardHeader>
@@ -155,13 +227,24 @@ export function TeacherDashboard() {
             <CardTitle className="font-heading text-xl">Lesson materials</CardTitle>
             <CardDescription>Sources used to build this pathway.</CardDescription>
             <CardAction>
-              <Button variant="outline" size="sm">
-                <UploadCloud data-icon="inline-start" /> Upload
+              <input
+                ref={uploadInput}
+                type="file"
+                accept=".pdf,.ppt,.pptx,.doc,.docx"
+                className="sr-only"
+                onChange={(event) => {
+                  const file = event.target.files?.[0];
+                  if (file) void onUpload?.(file);
+                  event.currentTarget.value = "";
+                }}
+              />
+              <Button variant="outline" size="sm" onClick={() => uploadInput.current?.click()} disabled={!onUpload || uploading}>
+                <UploadCloud data-icon="inline-start" /> {uploading ? "Uploading…" : "Upload"}
               </Button>
             </CardAction>
           </CardHeader>
           <CardContent className="space-y-2">
-            {recentResources.map((resource) => (
+            {resources.map((resource) => (
               <div
                 key={resource.name}
                 className="flex items-center gap-3 rounded-xl border bg-background p-3 transition-colors hover:bg-muted/35"
@@ -229,4 +312,3 @@ export function TeacherDashboard() {
     </div>
   );
 }
-

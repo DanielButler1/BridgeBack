@@ -8,13 +8,18 @@ The current proof of concept follows Mia, a fictional Year 10 pupil returning af
 
 ## What works today
 
-- Connected teacher and pupil views
+- Separate teacher and pupil routes with role checks at the server and data layers
+- Build-safe Clerk sessions with one-click, short-lived synthetic judge sign-in tokens
+- A full Convex schema for users, classes, lessons, resources, concept graphs, diagnostics, responses, pathways and AI runs
+- Authorized Convex file uploads, graph approval and persisted diagnostic answers
+- Deterministic scoring and prerequisite traversal capped at three concepts
 - Editable, source-labelled prerequisite graph rendered with React Flow
 - Four-question interactive readiness diagnostic
 - A three-step catch-up pathway limited to 17 minutes
 - A complete first micro-lesson on iteration
-- Seeded data throughout, so the judging experience is reliable without credentials
-- Build-safe OpenAI client and model-routing boundaries for the live generation phase
+- Credential-free local demo mode using the same product screens
+- GPT-5.6 Sol lesson analysis with Zod Structured Outputs, draft graph persistence and teacher approval
+- Safety identifiers, `store: false`, prompt-injection boundaries and AI run telemetry
 
 ## Run locally
 
@@ -25,7 +30,28 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-BridgeBack defaults to seeded demo mode. When live lesson analysis is implemented, copy `.env.example` to `.env.local` and add `OPENAI_API_KEY`.
+BridgeBack defaults to a credential-free local demo. Copy `.env.example` to `.env.local` to connect the services.
+
+## Connect Clerk and Convex
+
+1. Create two synthetic Clerk users: **Ms Morgan** and **Mia**. Do not use real pupil details.
+2. Create a Clerk JWT template named `convex`, then copy its issuer domain into `CLERK_JWT_ISSUER_DOMAIN`.
+3. Run `npx convex dev` and keep it running. This provisions `CONVEX_DEPLOYMENT` and `NEXT_PUBLIC_CONVEX_URL`.
+4. Add the Clerk publishable/secret keys and both synthetic Clerk user IDs to `.env.local`.
+5. Set `DEMO_AUTH_ENABLED=true` only for the judging deployment.
+6. Seed the database once:
+
+```bash
+npx convex run seed:seedDemo '{"teacherSubject":"user_teacher_id","pupilSubject":"user_pupil_id"}'
+```
+
+The public judge buttons map only to those two fixed IDs and mint a one-use Clerk sign-in token that expires after 60 seconds. Disable `DEMO_AUTH_ENABLED` outside the demo.
+
+Add `OPENAI_API_KEY` to the Convex deployment environment before running live lesson analysis:
+
+```bash
+npx convex env set OPENAI_API_KEY
+```
 
 ## Stack
 
@@ -34,13 +60,14 @@ BridgeBack defaults to seeded demo mode. When live lesson analysis is implemente
 - shadcn/ui using preset `b1s9c8K70` (`base-nova`)
 - React Flow for concept dependencies
 - Zod for educational domain schemas
-- OpenAI JavaScript SDK with lazy, build-safe initialization
+- Clerk for authentication and Convex for database, storage and server actions
+- OpenAI JavaScript SDK and the Responses API
 
-## Planned GPT-5.6 routing
+## GPT-5.6 routing
 
 | Job | Model | Reason |
 | --- | --- | --- |
-| Lesson dependency graph | `gpt-5.6-sol` | Quality-first curriculum reasoning |
+| Lesson dependency graph | `gpt-5.6-sol` | Implemented with Structured Outputs |
 | Catch-up pathway | `gpt-5.6-terra` | Balanced instructional generation |
 | Pupil feedback | `gpt-5.6-luna` | Efficient, responsive interaction |
 
@@ -53,6 +80,8 @@ Teacher review remains mandatory before any generated dependency map is assigned
 3. Treat diagnostic results as readiness signals, not grades or definitive mastery claims.
 4. Keep teachers in control of prerequisite relationships and source material.
 5. Use synthetic pupil data in the proof of concept.
+6. Never infer emotion, disability, absence reasons, behaviour or risk.
+7. Never use BridgeBack for grades, placement, discipline or attendance consequences.
 
 ## Codex collaboration
 

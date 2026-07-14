@@ -1,6 +1,8 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { useMutation, useQuery } from "convex/react";
+import { makeFunctionReference } from "convex/server";
 import {
   ArrowLeft,
   ArrowRight,
@@ -35,14 +37,70 @@ import {
   learningSteps,
 } from "@/lib/demo-data";
 import { cn } from "@/lib/utils";
+import { hasClerk, hasConvex } from "@/lib/config";
 
 type JourneyState = "welcome" | "diagnostic" | "results" | "lesson" | "complete";
 
 export function PupilJourney() {
-  const [journeyState, setJourneyState] = useState<JourneyState>("welcome");
-  const [questionIndex, setQuestionIndex] = useState(0);
+  if (hasClerk && hasConvex) return <ConnectedPupilJourney />;
+  return <JourneyExperience />;
+}
+
+type AssignmentData = {
+  assignment: { _id: string; currentQuestion: number; status: string };
+  responses: Array<{ questionKey: string; selectedIndex: number }>;
+} | null;
+
+const currentAssignmentRef = makeFunctionReference<
+  "query",
+  Record<string, never>,
+  AssignmentData
+>("pupil:currentAssignment");
+const submitAnswerRef = makeFunctionReference<
+  "mutation",
+  { assignmentId: string; questionKey: string; selectedIndex: number },
+  { isCorrect: boolean; complete: boolean }
+>("pupil:submitAnswer");
+
+function ConnectedPupilJourney() {
+  const data = useQuery(currentAssignmentRef, {});
+  const submitAnswer = useMutation(submitAnswerRef);
+  if (data === undefined) {
+    return <Card className="mx-auto max-w-3xl p-10 text-center text-sm text-muted-foreground">Loading Mia&apos;s saved pathway…</Card>;
+  }
+  if (!data) {
+    return <Card className="mx-auto max-w-3xl p-10 text-center"><CardTitle>No pathway assigned yet</CardTitle><CardDescription className="mt-2">Ms Morgan can assign a diagnostic from the teacher view.</CardDescription></Card>;
+  }
+  const initialAnswers = Object.fromEntries(
+    data.responses.map((response) => [response.questionKey, response.selectedIndex]),
+  );
+  return (
+    <JourneyExperience
+      key={data.assignment._id}
+      initialAnswers={initialAnswers}
+      initialQuestionIndex={data.assignment.currentQuestion}
+      onAnswer={(questionKey, selectedIndex) =>
+        submitAnswer({ assignmentId: data.assignment._id, questionKey, selectedIndex })
+      }
+    />
+  );
+}
+
+function JourneyExperience({
+  initialAnswers = {},
+  initialQuestionIndex = 0,
+  onAnswer,
+}: {
+  initialAnswers?: Record<string, number>;
+  initialQuestionIndex?: number;
+  onAnswer?: (questionKey: string, selectedIndex: number) => Promise<unknown>;
+}) {
+  const [journeyState, setJourneyState] = useState<JourneyState>(
+    Object.keys(initialAnswers).length === diagnosticQuestions.length ? "results" : "welcome",
+  );
+  const [questionIndex, setQuestionIndex] = useState(initialQuestionIndex);
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [answers, setAnswers] = useState<Record<string, number>>({});
+  const [answers, setAnswers] = useState<Record<string, number>>(initialAnswers);
 
   const question = diagnosticQuestions[questionIndex];
   const score = useMemo(
@@ -64,6 +122,7 @@ export function PupilJourney() {
     if (selectedIndex === null) return;
 
     setAnswers((current) => ({ ...current, [question.id]: selectedIndex }));
+    void onAnswer?.(question.id, selectedIndex);
 
     if (questionIndex === diagnosticQuestions.length - 1) {
       setJourneyState("results");
