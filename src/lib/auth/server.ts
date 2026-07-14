@@ -19,3 +19,10 @@ export async function requireDemoRole(role: "teacher" | "pupil") {
   if (!expected || userId !== expected) redirect("/");
   return { mode: "clerk" as const, userId };
 }
+
+export async function requireProductSession() {
+  if (!hasClerk) return { userId: null, mode: "local" as const };
+  const clerkAuth = await auth();
+  if (!clerkAuth.userId) redirect("/sign-in?redirect_url=/app");
+  return { userId: clerkAuth.userId, mode: "clerk" as const };
+}

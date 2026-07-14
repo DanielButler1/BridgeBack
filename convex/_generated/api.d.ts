@@ -13,6 +13,7 @@ import type * as analyseLesson from "../analyseLesson.js";
 import type * as generateLearning from "../generateLearning.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as lib_pathway from "../lib/pathway.js";
+import type * as product from "../product.js";
 import type * as pupil from "../pupil.js";
 import type * as seed from "../seed.js";
 import type * as teacher from "../teacher.js";
@@ -30,6 +31,7 @@ declare const fullApi: ApiFromModules<{
   generateLearning: typeof generateLearning;
   "lib/auth": typeof lib_auth;
   "lib/pathway": typeof lib_pathway;
+  product: typeof product;
   pupil: typeof pupil;
   seed: typeof seed;
   teacher: typeof teacher;

@@ -14,13 +14,43 @@ export default defineSchema({
     .index("by_clerk_subject", ["clerkSubject"])
     .index("by_role", ["role"]),
 
+  organisations: defineTable({
+    name: v.string(),
+    createdBy: v.id("users"),
+    createdAt: v.number(),
+    retentionDays: v.number(),
+  }).index("by_created_by", ["createdBy"]),
+
+  memberships: defineTable({
+    organisationId: v.id("organisations"),
+    userId: v.id("users"),
+    role: v.union(v.literal("owner"), v.literal("admin"), v.literal("teacher"), v.literal("safeguarding")),
+    status: v.union(v.literal("active"), v.literal("revoked")),
+    createdAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_organisation", ["organisationId"])
+    .index("by_organisation_and_user", ["organisationId", "userId"]),
+
   classes: defineTable({
+    organisationId: v.optional(v.id("organisations")),
     teacherId: v.id("users"),
     name: v.string(),
     subject: v.string(),
     yearGroup: v.string(),
     synthetic: v.boolean(),
   }).index("by_teacher", ["teacherId"]),
+
+  auditEvents: defineTable({
+    organisationId: v.id("organisations"),
+    actorId: v.id("users"),
+    action: v.string(),
+    targetType: v.string(),
+    targetId: v.string(),
+    occurredAt: v.number(),
+  })
+    .index("by_organisation", ["organisationId"])
+    .index("by_actor", ["actorId"]),
 
   enrollments: defineTable({
     classId: v.id("classes"),

@@ -23,7 +23,7 @@ export async function GET(
   }
   const client = await clerkClient();
   const session = await client.sessions.createSession({ userId });
-  const response = NextResponse.redirect(new URL(`/${role}`, request.nextUrl.origin));
+  const response = NextResponse.redirect(new URL(`/demo/${role}`, request.nextUrl.origin));
   response.cookies.set(demoSessionCookie, encodeDemoSession(session.id), {
     httpOnly: true,
     sameSite: "lax",

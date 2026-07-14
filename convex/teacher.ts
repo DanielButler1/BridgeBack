@@ -136,10 +136,19 @@ export const addResource = mutationGeneric({
     const teacher = await requireRole(ctx, "teacher");
     const classRecord = await ctx.db.get(args.classId);
     if (!classRecord || classRecord.teacherId !== teacher._id) throw new Error("Forbidden");
+    const allowedTypes = new Set([
+      "application/pdf",
+      "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+    ]);
+    if (!allowedTypes.has(args.mediaType)) throw new Error("Only PDF and PPTX lesson files are supported");
+    if (args.name.trim().length < 1 || args.name.length > 160 || /[\\/\0]/.test(args.name)) throw new Error("Invalid filename");
+    const storedFile = await ctx.db.system.get(args.storageId);
+    if (!storedFile || storedFile.size > 20 * 1024 * 1024) throw new Error("Files must be no larger than 20 MB");
+    if (storedFile.contentType && storedFile.contentType !== args.mediaType) throw new Error("File type does not match its content metadata");
     return await ctx.db.insert("resources", {
       ...args,
       status: "uploaded",
-      synthetic: true,
+      synthetic: classRecord.synthetic,
     });
   },
 });
