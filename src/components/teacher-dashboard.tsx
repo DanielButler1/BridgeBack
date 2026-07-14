@@ -209,7 +209,10 @@ function TeacherExperience({
   } : null);
   const readiness = useMemo(() => {
     const states: Record<string, ConceptReadiness> = {};
-    for (const response of overview.responses) states[response.conceptKey] = response.isCorrect ? "secure" : "support";
+    for (const response of overview.responses) {
+      if (!response.isCorrect) states[response.conceptKey] = "support";
+      else if (!states[response.conceptKey]) states[response.conceptKey] = "secure";
+    }
     return states;
   }, [overview.responses]);
   const incorrectConcepts = new Set(overview.responses.filter((response) => !response.isCorrect).map((response) => response.conceptKey));
@@ -220,6 +223,8 @@ function TeacherExperience({
   const selected = graph?.nodes.find((node) => node.key === selectedKey) ?? null;
   const canEdit = overview.graph?.status === "draft" && Boolean(onDraftChange && graph);
   const assigned = Boolean(overview.assignment);
+  const pathwayComplete = overview.assignment?.status === "complete";
+  const displayedReadiness = pathwayComplete ? 100 : readinessPercent;
   const analysisLabel = overview.lesson?.analysisStatus === "processing" || busy === "analyse"
     ? "GPT‑5.6 is analysing"
     : overview.graph
@@ -269,8 +274,8 @@ function TeacherExperience({
         </Card>
 
         <Card className="justify-between bg-primary/[0.065]">
-          <CardHeader><CardDescription>Mia&apos;s readiness</CardDescription><CardTitle className="font-heading text-3xl">{answered ? `${readinessPercent}%` : "Not checked yet"}</CardTitle><CardAction><div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary"><BookOpenCheck className="size-4" /></div></CardAction></CardHeader>
-          <CardContent><Progress value={readinessPercent} className="[&_[data-slot=progress-track]]:h-2" /><p className="mt-3 text-sm leading-6 text-muted-foreground">{overview.assignment?.status === "complete" ? "Mia completed her pathway and is ready to rejoin the lesson." : assigned ? `${answered} of ${questionCount} diagnostic questions answered.` : "Approve the map to create and assign Mia’s diagnostic."}</p></CardContent>
+          <CardHeader><CardDescription>Re-entry status</CardDescription><CardTitle className="font-heading text-3xl">{pathwayComplete ? "Ready for class" : answered ? `${readinessPercent}% diagnostic` : "Not checked yet"}</CardTitle><CardAction><div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary"><BookOpenCheck className="size-4" /></div></CardAction></CardHeader>
+          <CardContent><Progress value={displayedReadiness} className="[&_[data-slot=progress-track]]:h-2" /><p className="mt-3 text-sm leading-6 text-muted-foreground">{pathwayComplete ? `Mia completed her ${totalMinutes}-minute pathway and is ready to rejoin the lesson.` : assigned ? `${answered} of ${questionCount} diagnostic questions answered.` : "Approve the map to create and assign Mia’s diagnostic."}</p></CardContent>
           <CardFooter><Badge variant="outline">{overview.assignment?.status?.replace("_", " ") ?? "Awaiting assignment"}</Badge></CardFooter>
         </Card>
       </section>

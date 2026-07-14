@@ -138,8 +138,13 @@ function JourneyExperience({ data, onAnswer, onGenerate, onCompleteModule }: {
       setSelectedIndex(null);
       if (result.complete) {
         setState("generating");
-        if (onGenerate) await onGenerate();
-        else setState("results");
+        if (onGenerate) {
+          try {
+            await onGenerate();
+          } catch (cause) {
+            setError(cause instanceof Error ? cause.message : "Your pathway is still being prepared");
+          }
+        } else setState("results");
       } else {
         setQuestionIndex((current) => current + 1);
       }
@@ -151,8 +156,21 @@ function JourneyExperience({ data, onAnswer, onGenerate, onCompleteModule }: {
     }
   }
 
+  async function retryGeneration() {
+    if (!onGenerate) return;
+    setBusy(true);
+    setError(null);
+    try {
+      await onGenerate();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Your pathway is still being prepared");
+    } finally {
+      setBusy(false);
+    }
+  }
+
   if (renderedState === "diagnostic") return <DiagnosticView question={questions[questionIndex]} questionIndex={questionIndex} questionCount={questions.length} selectedIndex={selectedIndex} busy={busy} error={error} onSelect={setSelectedIndex} onSubmit={() => void submitDiagnosticAnswer()} onBack={() => questionIndex === 0 ? setState("welcome") : setQuestionIndex((current) => current - 1)} />;
-  if (renderedState === "generating") return <GeneratingView error={error} />;
+  if (renderedState === "generating") return <GeneratingView error={error} busy={busy} onRetry={() => void retryGeneration()} />;
   if (renderedState === "results") return <ResultsView score={score} questionCount={questions.length} modules={data.modules} totalMinutes={totalMinutes} onContinue={() => setState("lesson")} />;
   if (renderedState === "lesson" && activeModule) return <LessonView key={activeModule._id} module={activeModule} moduleCount={data.modules.length} onComplete={async (selected) => {
     setBusy(true); setError(null);
@@ -179,8 +197,8 @@ function DiagnosticView({ question, questionIndex, questionCount, selectedIndex,
   return <div className="mx-auto max-w-3xl pb-10"><div className="mb-6 flex items-center justify-between gap-4"><Button variant="ghost" onClick={onBack}><ArrowLeft /> Back</Button><div className="flex items-center gap-3 text-xs text-muted-foreground"><span className="font-mono">{questionIndex + 1} / {questionCount}</span><div className="w-28 sm:w-44"><Progress value={((questionIndex + 1) / questionCount) * 100} className="[&_[data-slot=progress-track]]:h-1.5" /></div></div></div><Card className="min-h-[520px] justify-between"><CardHeader className="p-6 sm:p-9"><Badge variant="secondary" className="mb-5">{question.eyebrow}</Badge><CardTitle className="max-w-2xl font-heading text-2xl leading-tight sm:text-4xl">{question.prompt}</CardTitle><CardDescription className="mt-2">Choose the answer that feels right. It&apos;s okay not to know yet.</CardDescription></CardHeader><CardContent className="space-y-3 px-6 sm:px-9">{question.code ? <pre className="mb-5 overflow-x-auto rounded-xl border bg-foreground p-4 font-mono text-sm leading-6 text-background"><code>{question.code}</code></pre> : null}{question.options.map((option, index) => <button type="button" key={option} onClick={() => onSelect(index)} className={cn("flex w-full items-center gap-4 rounded-xl border p-4 text-left text-sm transition-all focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50 sm:text-base", selectedIndex === index ? "border-primary bg-primary/[0.065] shadow-[0_0_0_1px_var(--primary)]" : "bg-background hover:border-primary/35 hover:bg-muted/35")}><span className={cn("flex size-7 shrink-0 items-center justify-center rounded-full border font-mono text-xs", selectedIndex === index ? "border-primary bg-primary text-primary-foreground" : "text-muted-foreground")}>{String.fromCharCode(65 + index)}</span>{option}</button>)}{error ? <p role="alert" className="text-sm text-destructive">{error}</p> : null}</CardContent><CardFooter className="justify-between px-6 py-4 sm:px-9"><span className="hidden text-xs text-muted-foreground sm:block">Your answer helps shape your pathway.</span><Button disabled={selectedIndex === null || busy} onClick={onSubmit} className="ml-auto">{busy ? <LoaderCircle className="animate-spin" /> : null}{questionIndex === questionCount - 1 ? "Build my pathway" : "Next question"}<ArrowRight /></Button></CardFooter></Card></div>;
 }
 
-function GeneratingView({ error }: { error: string | null }) {
-  return <div className="mx-auto max-w-3xl pb-10"><Card className="overflow-hidden text-center"><div className="bg-primary/[0.06] px-6 py-20"><div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground"><Sparkles className="size-7 animate-pulse" /></div><h1 className="mt-7 font-heading text-4xl font-semibold">Finding your shortest path…</h1><p className="mx-auto mt-4 max-w-lg leading-7 text-muted-foreground">GPT‑5.6 is using your teacher&apos;s approved map and your answers to prepare no more than three focused steps.</p>{error ? <p role="alert" className="mt-5 text-sm text-destructive">{error}</p> : <LoaderCircle className="mx-auto mt-8 size-5 animate-spin text-primary" />}</div></Card></div>;
+function GeneratingView({ error, busy, onRetry }: { error: string | null; busy: boolean; onRetry: () => void }) {
+  return <div className="mx-auto max-w-3xl pb-10"><Card className="overflow-hidden text-center"><div className="bg-primary/[0.06] px-6 py-20"><div className="mx-auto flex size-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground"><Sparkles className="size-7 animate-pulse" /></div><h1 className="mt-7 font-heading text-4xl font-semibold">Finding your shortest path…</h1><p className="mx-auto mt-4 max-w-lg leading-7 text-muted-foreground">GPT‑5.6 is using your teacher&apos;s approved map and your answers to prepare no more than three focused steps.</p>{error ? <div className="mt-5"><p role="alert" className="text-sm text-destructive">The connection was interrupted while your pathway was being prepared.</p><Button className="mt-4" variant="outline" onClick={onRetry} disabled={busy}>{busy ? <LoaderCircle className="animate-spin" /> : <RotateCcw />} Check again</Button></div> : <LoaderCircle className="mx-auto mt-8 size-5 animate-spin text-primary" />}</div></Card></div>;
 }
 
 function ResultsView({ score, questionCount, modules, totalMinutes, onContinue }: { score: number; questionCount: number; modules: LearningModule[]; totalMinutes: number; onContinue: () => void }) {

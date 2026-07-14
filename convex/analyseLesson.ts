@@ -29,7 +29,7 @@ const diagnosticSchema = z.object({
     conceptKey: z.string().regex(/^[a-z0-9-]+$/),
     eyebrow: z.string().min(1).max(60),
     prompt: z.string().min(1).max(280),
-    code: z.string().max(600).optional(),
+    code: z.string().max(600),
     options: z.array(z.string().min(1).max(180)).min(3).max(4),
     correctIndex: z.number().int().min(0).max(3),
     feedback: z.string().min(1).max(280),
@@ -234,7 +234,7 @@ export const diagnostic = actionGeneric({
         input: [
           {
             role: "developer",
-            content: "Create a short, calm readiness diagnostic for a returning UK secondary pupil. Test only prerequisites in the teacher-approved concept graph, never the upcoming target directly. Use accessible language, one unambiguous correct answer, plausible distractors, and constructive feedback that explains the concept without grading or labelling the pupil. Do not ask about absence, emotion, disability, behaviour, or risk. Generate between four and eight questions, with coverage proportional to the graph. Return schema-valid content only.",
+            content: "Create a short, calm readiness diagnostic for a returning UK secondary pupil. Test only prerequisites in the teacher-approved concept graph, never the upcoming target directly. Use accessible language, one unambiguous correct answer, plausible distractors, and constructive feedback that explains the concept without grading or labelling the pupil. Use an empty string for code when a question does not need a code sample. Do not ask about absence, emotion, disability, behaviour, or risk. Generate between four and eight questions, with coverage proportional to the graph. Return schema-valid content only.",
           },
           {
             role: "user",
