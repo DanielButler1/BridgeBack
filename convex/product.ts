@@ -1,6 +1,6 @@
-import { mutationGeneric, queryGeneric } from "convex/server";
 import { v } from "convex/values";
 
+import { mutation, query } from "./_generated/server";
 import { requireViewer } from "./lib/auth";
 
 function clean(value: string, label: string, max = 80) {
@@ -15,7 +15,7 @@ async function requireProductionViewer(ctx: Parameters<typeof requireViewer>[0])
   return viewer;
 }
 
-export const provisionTeacher = mutationGeneric({
+export const provisionTeacher = mutation({
   args: { displayName: v.string() },
   handler: async (ctx, args) => {
     const identity = await ctx.auth.getUserIdentity();
@@ -28,7 +28,7 @@ export const provisionTeacher = mutationGeneric({
   },
 });
 
-export const workspace = queryGeneric({
+export const workspace = query({
   args: {},
   handler: async (ctx) => {
     const viewer = await requireProductionViewer(ctx);
@@ -40,7 +40,7 @@ export const workspace = queryGeneric({
   },
 });
 
-export const createOrganisation = mutationGeneric({
+export const createOrganisation = mutation({
   args: { name: v.string() },
   handler: async (ctx, args) => {
     const viewer = await requireProductionViewer(ctx);
@@ -51,7 +51,7 @@ export const createOrganisation = mutationGeneric({
   },
 });
 
-export const createClass = mutationGeneric({
+export const createClass = mutation({
   args: { organisationId: v.id("organisations"), name: v.string(), subject: v.string(), yearGroup: v.string() },
   handler: async (ctx, args) => {
     const viewer = await requireProductionViewer(ctx);

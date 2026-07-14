@@ -1,20 +1,10 @@
-import type {
-  GenericDataModel,
-  GenericDocument,
-  GenericQueryCtx,
-} from "convex/server";
+import type { Doc } from "../_generated/dataModel";
+import type { MutationCtx, QueryCtx } from "../_generated/server";
 
-type QueryContext = GenericQueryCtx<GenericDataModel>;
+type ViewerContext = QueryCtx | MutationCtx;
+type Viewer = Doc<"users">;
 
-type Viewer = GenericDocument & {
-  clerkSubject: string;
-  role: "teacher" | "pupil";
-  displayName: string;
-  initials: string;
-  synthetic: boolean;
-};
-
-export async function requireViewer(ctx: QueryContext) {
+export async function requireViewer(ctx: ViewerContext) {
   const identity = await ctx.auth.getUserIdentity();
   if (!identity) throw new Error("Unauthenticated");
 
@@ -30,7 +20,7 @@ export async function requireViewer(ctx: QueryContext) {
 }
 
 export async function requireRole(
-  ctx: QueryContext,
+  ctx: ViewerContext,
   role: "teacher" | "pupil",
 ) {
   const viewer = await requireViewer(ctx);
