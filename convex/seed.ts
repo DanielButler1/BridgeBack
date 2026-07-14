@@ -73,6 +73,12 @@ const edges = [
   ["sorted-data", "binary-search"],
 ] as const;
 
+const sourceTextByName: Record<string, string> = {
+  "09 · Trace tables": "Lesson 09 teaches pupils to trace algorithms by recording each change to variables in a table. Worked examples track low, high, middle and the current item. Pupils practise updating the row after every iteration.",
+  "08 · Iteration": "Lesson 08 introduces condition-controlled iteration using while loops. Pupils read and write loops that continue while a Boolean condition is true, update variables inside the loop, and identify infinite-loop mistakes.",
+  "Binary search · upcoming": "Upcoming lesson objective: explain and trace binary search. Binary search requires a sorted array. Each iteration compares the target with the middle item, then updates low or high to discard half of the remaining search interval. Pupils will complete a trace table using low, high and middle indexes.",
+};
+
 export const seedDemo = internalMutationGeneric({
   args: {
     teacherSubject: v.string(),
@@ -120,9 +126,27 @@ export const seedDemo = internalMutationGeneric({
       synthetic: true,
     });
     for (const resource of [
-      { name: "09 · Trace tables", mediaType: "application/pdf", pageCount: 4, status: "analysed" as const },
-      { name: "08 · Iteration", mediaType: "application/vnd.openxmlformats-officedocument.presentationml.presentation", pageCount: 18, status: "analysed" as const },
-      { name: "Binary search · upcoming", mediaType: "application/pdf", pageCount: 12, status: "current" as const },
+      {
+        name: "09 · Trace tables",
+        mediaType: "application/pdf",
+        pageCount: 4,
+        status: "analysed" as const,
+        sourceText: "Lesson 09 teaches pupils to trace algorithms by recording each change to variables in a table. Worked examples track low, high, middle and the current item. Pupils practise updating the row after every iteration.",
+      },
+      {
+        name: "08 · Iteration",
+        mediaType: "application/vnd.openxmlformats-officedocument.presentationml.presentation",
+        pageCount: 18,
+        status: "analysed" as const,
+        sourceText: "Lesson 08 introduces condition-controlled iteration using while loops. Pupils read and write loops that continue while a Boolean condition is true, update variables inside the loop, and identify infinite-loop mistakes.",
+      },
+      {
+        name: "Binary search · upcoming",
+        mediaType: "application/pdf",
+        pageCount: 12,
+        status: "current" as const,
+        sourceText: "Upcoming lesson objective: explain and trace binary search. Binary search requires a sorted array. Each iteration compares the target with the middle item, then updates low or high to discard half of the remaining search interval. Pupils will complete a trace table using low, high and middle indexes.",
+      },
     ]) {
       await ctx.db.insert("resources", { classId, lessonId, ...resource, synthetic: true });
     }
@@ -131,6 +155,7 @@ export const seedDemo = internalMutationGeneric({
       lessonId,
       version: 1,
       status: "approved",
+      targetConceptKey: "binary-search",
       nodes: nodes.map(([key, title, description, sourceRef, x, y]) => ({ key, title, description, sourceRef, x, y })),
       edges: edges.map(([source, target]) => ({ source, target })),
       approvedBy: teacherId,
@@ -141,6 +166,7 @@ export const seedDemo = internalMutationGeneric({
       lessonId,
       conceptGraphId: graphId,
       status: "approved",
+      targetConceptKey: "binary-search",
       questions,
     });
     const assignmentId = await ctx.db.insert("assignments", {
@@ -152,5 +178,28 @@ export const seedDemo = internalMutationGeneric({
       assignedAt: Date.now(),
     });
     return { seeded: true, teacherId, pupilId, classId, lessonId, assignmentId };
+  },
+});
+
+export const refreshDemoSources = internalMutationGeneric({
+  args: {},
+  handler: async (ctx) => {
+    const resources = await ctx.db.query("resources").collect();
+    let updated = 0;
+    for (const resource of resources) {
+      const sourceText = sourceTextByName[resource.name];
+      if (!resource.synthetic || !sourceText) continue;
+      await ctx.db.patch(resource._id, { sourceText });
+      updated += 1;
+    }
+    const graphs = await ctx.db.query("conceptGraphs").collect();
+    for (const graph of graphs) {
+      if (!graph.targetConceptKey) await ctx.db.patch(graph._id, { targetConceptKey: "binary-search" });
+    }
+    const diagnostics = await ctx.db.query("diagnostics").collect();
+    for (const diagnostic of diagnostics) {
+      if (!diagnostic.targetConceptKey) await ctx.db.patch(diagnostic._id, { targetConceptKey: "binary-search" });
+    }
+    return { updated };
   },
 });

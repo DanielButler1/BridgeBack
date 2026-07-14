@@ -9,16 +9,16 @@ The current proof of concept follows Mia, a fictional Year 10 pupil returning af
 ## What works today
 
 - Separate teacher and pupil routes with role checks at the server and data layers
-- Build-safe Clerk sessions with one-click, short-lived synthetic judge sign-in tokens
+- Build-safe Clerk sessions with one-click, signed HTTP-only synthetic judge sessions
 - A full Convex schema for users, classes, lessons, resources, concept graphs, diagnostics, responses, pathways and AI runs
 - Authorized Convex file uploads, graph approval and persisted diagnostic answers
 - Deterministic scoring and prerequisite traversal capped at three concepts
 - Editable, source-labelled prerequisite graph rendered with React Flow
-- Four-question interactive readiness diagnostic
-- A three-step catch-up pathway limited to 17 minutes
-- A complete first micro-lesson on iteration
+- GPT-5.6 Terra diagnostics generated from the teacher-approved graph
+- A deterministic learning path capped at three concepts including the upcoming target
+- GPT-5.6 Luna micro-lessons with explanations, worked examples, closed checks and exact source references
 - Credential-free local demo mode using the same product screens
-- GPT-5.6 Sol lesson analysis with Zod Structured Outputs, draft graph persistence and teacher approval
+- GPT-5.6 Sol file-aware lesson analysis with Zod Structured Outputs, editable draft persistence and teacher approval
 - Safety identifiers, `store: false`, prompt-injection boundaries and AI run telemetry
 
 ## Run locally
@@ -45,7 +45,7 @@ BridgeBack defaults to a credential-free local demo. Copy `.env.example` to `.en
 npx convex run seed:seedDemo '{"teacherSubject":"user_teacher_id","pupilSubject":"user_pupil_id"}'
 ```
 
-The public judge buttons map only to those two fixed IDs and mint a one-use Clerk sign-in token that expires after 60 seconds. Disable `DEMO_AUTH_ENABLED` outside the demo.
+The public judge buttons map only to those two fixed IDs. The server creates a Clerk session and stores only its opaque ID inside a signed, HTTP-only, same-site cookie that expires after four hours. Disable `DEMO_AUTH_ENABLED` outside the demo.
 
 Add `OPENAI_API_KEY` to the Convex deployment environment before running live lesson analysis:
 
@@ -68,8 +68,8 @@ npx convex env set OPENAI_API_KEY
 | Job | Model | Reason |
 | --- | --- | --- |
 | Lesson dependency graph | `gpt-5.6-sol` | Implemented with Structured Outputs |
-| Catch-up pathway | `gpt-5.6-terra` | Balanced instructional generation |
-| Pupil feedback | `gpt-5.6-luna` | Efficient, responsive interaction |
+| Approved diagnostic | `gpt-5.6-terra` | Balanced structured educational generation |
+| Pupil micro-lessons | `gpt-5.6-luna` | Efficient, responsive instructional generation |
 
 Teacher review remains mandatory before any generated dependency map is assigned to pupils.
 

@@ -54,6 +54,7 @@ export default defineSchema({
     name: v.string(),
     mediaType: v.string(),
     pageCount: v.optional(v.number()),
+    sourceText: v.optional(v.string()),
     status: v.union(
       v.literal("uploaded"),
       v.literal("analysed"),
@@ -69,6 +70,7 @@ export default defineSchema({
     lessonId: v.id("lessons"),
     version: v.number(),
     status: v.union(v.literal("draft"), v.literal("approved")),
+    targetConceptKey: v.optional(v.string()),
     nodes: v.array(
       v.object({
         key: v.string(),
@@ -96,6 +98,7 @@ export default defineSchema({
     lessonId: v.id("lessons"),
     conceptGraphId: v.id("conceptGraphs"),
     status: v.union(v.literal("draft"), v.literal("approved")),
+    targetConceptKey: v.optional(v.string()),
     questions: v.array(
       v.object({
         key: v.string(),
@@ -144,13 +147,39 @@ export default defineSchema({
     pupilId: v.id("users"),
     targetConceptKey: v.string(),
     conceptKeys: v.array(v.string()),
+    currentStep: v.optional(v.number()),
+    totalMinutes: v.optional(v.number()),
     generatedAt: v.number(),
     status: v.union(v.literal("ready"), v.literal("in_progress"), v.literal("complete")),
   }).index("by_assignment", ["assignmentId"]),
 
+  learningModules: defineTable({
+    assignmentId: v.id("assignments"),
+    pupilId: v.id("users"),
+    lessonId: v.id("lessons"),
+    conceptKey: v.string(),
+    order: v.number(),
+    title: v.string(),
+    objective: v.string(),
+    explanation: v.string(),
+    exampleTitle: v.string(),
+    exampleBody: v.string(),
+    practicePrompt: v.string(),
+    practiceOptions: v.array(v.string()),
+    correctIndex: v.number(),
+    feedback: v.string(),
+    durationMinutes: v.number(),
+    sourceRefs: v.array(v.string()),
+    status: v.union(v.literal("locked"), v.literal("ready"), v.literal("complete")),
+    completedAt: v.optional(v.number()),
+  })
+    .index("by_assignment", ["assignmentId"])
+    .index("by_assignment_and_order", ["assignmentId", "order"]),
+
   aiRuns: defineTable({
     requestedBy: v.id("users"),
     lessonId: v.id("lessons"),
+    assignmentId: v.optional(v.id("assignments")),
     job: v.union(
       v.literal("concept_graph"),
       v.literal("diagnostic"),

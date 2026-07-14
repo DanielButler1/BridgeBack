@@ -10,6 +10,7 @@
 
 import type * as aiRuns from "../aiRuns.js";
 import type * as analyseLesson from "../analyseLesson.js";
+import type * as generateLearning from "../generateLearning.js";
 import type * as lib_auth from "../lib/auth.js";
 import type * as lib_pathway from "../lib/pathway.js";
 import type * as pupil from "../pupil.js";
@@ -26,6 +27,7 @@ import type {
 declare const fullApi: ApiFromModules<{
   aiRuns: typeof aiRuns;
   analyseLesson: typeof analyseLesson;
+  generateLearning: typeof generateLearning;
   "lib/auth": typeof lib_auth;
   "lib/pathway": typeof lib_pathway;
   pupil: typeof pupil;
