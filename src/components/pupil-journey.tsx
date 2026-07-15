@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import { Authenticated, AuthLoading, Unauthenticated, useAction, useMutation, useQuery } from "convex/react";
 import { makeFunctionReference } from "convex/server";
 import {
@@ -99,21 +99,69 @@ function ConnectedPupilJourney() {
 
 type JourneyState = "welcome" | "diagnostic" | "generating" | "results" | "lesson" | "complete";
 
-function JourneyExperience({ data, onAnswer, onGenerate, onCompleteModule }: {
+const journeyStates = new Set<JourneyState>(["welcome", "diagnostic", "generating", "results", "lesson", "complete"]);
+
+function defaultJourneyState(data: NonNullable<PupilAssignment>): JourneyState {
+  if (data.assignment.status === "complete") return "complete";
+  if (data.assignment.status === "path_ready" && data.modules.length === 0) return "generating";
+  if (data.modules.length > 0) {
+    return data.modules.some((module) => module.status === "complete") ? "lesson" : "results";
+  }
+  if (data.assignment.status === "in_progress" || data.responses.length > 0) return "diagnostic";
+  return "welcome";
+}
+
+function canRestoreJourneyState(state: JourneyState, data: NonNullable<PupilAssignment>) {
+  if (data.assignment.status === "complete") return state !== "generating";
+  if (data.assignment.status === "path_ready" && data.modules.length === 0) return state === "generating";
+  if (data.modules.length > 0) return state === "results" || state === "lesson";
+  return state === "welcome" || state === "diagnostic";
+}
+
+type JourneyExperienceProps = {
   data: NonNullable<PupilAssignment>;
   onAnswer?: (questionKey: string, selectedIndex: number) => Promise<{ isCorrect: boolean; complete: boolean }>;
   onGenerate?: () => Promise<unknown>;
   onCompleteModule?: (moduleId: string, selectedIndex: number) => Promise<{ isCorrect: boolean; complete: boolean }>;
-}) {
-  const initialState: JourneyState = data.assignment.status === "complete"
-    ? "complete"
-    : data.path?.status === "in_progress" && data.modules.length > 0
-      ? "results"
-      : "welcome";
-  const [state, setState] = useState<JourneyState>(initialState);
-  const [questionIndex, setQuestionIndex] = useState(Math.min(data.assignment.currentQuestion, data.diagnostic.questions.length - 1));
+};
+
+const subscribeToHydration = () => () => undefined;
+
+function JourneyExperience(props: JourneyExperienceProps) {
+  const isHydrated = useSyncExternalStore(subscribeToHydration, () => true, () => false);
+  if (!isHydrated) return <StatusCard>Restoring your saved place…</StatusCard>;
+  return <HydratedJourneyExperience {...props} />;
+}
+
+function readSavedJourneyView(storageKey: string, data: NonNullable<PupilAssignment>) {
+  try {
+    const saved = window.sessionStorage.getItem(storageKey);
+    if (!saved) return null;
+    const parsed = JSON.parse(saved) as { state?: unknown; questionIndex?: unknown; activeOrder?: unknown };
+    const state = typeof parsed.state === "string" && journeyStates.has(parsed.state as JourneyState) && canRestoreJourneyState(parsed.state as JourneyState, data)
+      ? parsed.state as JourneyState
+      : undefined;
+    const questionIndex = typeof parsed.questionIndex === "number" && Number.isInteger(parsed.questionIndex) && parsed.questionIndex >= 0 && parsed.questionIndex < data.diagnostic.questions.length
+      ? parsed.questionIndex
+      : undefined;
+    const activeOrder = typeof parsed.activeOrder === "number" && data.modules.some((module) => module.order === parsed.activeOrder)
+      ? parsed.activeOrder
+      : undefined;
+    return { state, questionIndex, activeOrder };
+  } catch {
+    try { window.sessionStorage.removeItem(storageKey); } catch { /* Storage may be unavailable. */ }
+    return null;
+  }
+}
+
+function HydratedJourneyExperience({ data, onAnswer, onGenerate, onCompleteModule }: JourneyExperienceProps) {
+  const initialState = defaultJourneyState(data);
+  const storageKey = `bridgeback:pupil-view:${data.assignment._id}`;
+  const [savedView] = useState(() => readSavedJourneyView(storageKey, data));
+  const [state, setState] = useState<JourneyState>(savedView?.state ?? initialState);
+  const [questionIndex, setQuestionIndex] = useState(savedView?.questionIndex ?? Math.min(data.assignment.currentQuestion, data.diagnostic.questions.length - 1));
   const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
-  const [activeOrder, setActiveOrder] = useState(data.modules.find((module) => module.status !== "complete")?.order ?? 1);
+  const [activeOrder, setActiveOrder] = useState(savedView?.activeOrder ?? data.modules.find((module) => module.status !== "complete")?.order ?? 1);
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -122,6 +170,12 @@ function JourneyExperience({ data, onAnswer, onGenerate, onCompleteModule }: {
   const totalMinutes = data.path?.totalMinutes ?? data.modules.reduce((total, module) => total + module.durationMinutes, 0);
   const activeModule = data.modules.find((module) => module.order === activeOrder) ?? data.modules.find((module) => module.status !== "complete") ?? data.modules[0];
   const renderedState = state === "generating" && data.modules.length > 0 ? "results" : state;
+
+  useEffect(() => {
+    try {
+      window.sessionStorage.setItem(storageKey, JSON.stringify({ state, questionIndex, activeOrder }));
+    } catch { /* Convex still holds submitted answers and completed modules. */ }
+  }, [activeOrder, questionIndex, state, storageKey]);
 
   async function submitDiagnosticAnswer() {
     if (selectedIndex === null) return;
