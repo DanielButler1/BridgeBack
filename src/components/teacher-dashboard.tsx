@@ -25,7 +25,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardAction, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Progress } from "@/components/ui/progress";
 import { Textarea } from "@/components/ui/textarea";
 import { concepts, recentResources } from "@/lib/demo-data";
 import { hasClerk, hasConvex } from "@/lib/config";
@@ -49,7 +48,7 @@ type TeacherOverview = {
   assignment: { _id: string; status: "assigned" | "in_progress" | "path_ready" | "complete" } | null;
   responses: Array<{ conceptKey: string; isCorrect: boolean }>;
   path: { conceptKeys: string[]; totalMinutes?: number; status: "ready" | "in_progress" | "complete" } | null;
-  modules: Array<{ status: "locked" | "ready" | "complete"; durationMinutes: number }>;
+  modules: Array<{ conceptKey: string; status: "locked" | "ready" | "complete"; durationMinutes: number }>;
   latestRun: { model: string; job: string; status: string; latencyMs?: number; inputTokens?: number; outputTokens?: number } | null;
 } | null;
 
@@ -213,18 +212,35 @@ function TeacherExperience({
       if (!response.isCorrect) states[response.conceptKey] = "support";
       else if (!states[response.conceptKey]) states[response.conceptKey] = "secure";
     }
+    for (const learningModule of overview.modules) {
+      if (learningModule.status === "complete") states[learningModule.conceptKey] = "secure";
+    }
     return states;
-  }, [overview.responses]);
+  }, [overview.modules, overview.responses]);
   const incorrectConcepts = new Set(overview.responses.filter((response) => !response.isCorrect).map((response) => response.conceptKey));
   const answered = overview.responses.length;
   const questionCount = overview.diagnostic?.questions.length ?? 0;
-  const readinessPercent = questionCount ? Math.round((overview.responses.filter((response) => response.isCorrect).length / questionCount) * 100) : 0;
   const totalMinutes = overview.path?.totalMinutes ?? overview.modules.reduce((total, module) => total + module.durationMinutes, 0);
+  const completedModules = overview.modules.filter((module) => module.status === "complete").length;
   const selected = graph?.nodes.find((node) => node.key === selectedKey) ?? null;
   const canEdit = overview.graph?.status === "draft" && Boolean(onDraftChange && graph);
   const assigned = Boolean(overview.assignment);
   const pathwayComplete = overview.assignment?.status === "complete";
-  const displayedReadiness = pathwayComplete ? 100 : readinessPercent;
+  const remainingModules = Math.max(overview.modules.length - completedModules, 0);
+  const reentryTitle = pathwayComplete
+    ? "Pathway complete"
+    : overview.modules.length
+      ? `${remainingModules} ${remainingModules === 1 ? "step" : "steps"} remaining`
+      : answered
+        ? "Check-in in progress"
+        : "Not started yet";
+  const reentryDetail = pathwayComplete
+    ? `Mia completed all ${overview.modules.length} focused learning ${overview.modules.length === 1 ? "activity" : "activities"} after the diagnostic identified ${incorrectConcepts.size} ${incorrectConcepts.size === 1 ? "concept" : "concepts"} for support.`
+    : overview.modules.length
+      ? `${completedModules} of ${overview.modules.length} focused learning activities complete.`
+      : assigned
+        ? `${answered} of ${questionCount} check-in questions answered.`
+        : "Approve the map to create and assign Mia’s check-in.";
   const analysisLabel = overview.lesson?.analysisStatus === "processing" || busy === "analyse"
     ? "GPT‑5.6 is analysing"
     : overview.graph
@@ -274,18 +290,10 @@ function TeacherExperience({
         </Card>
 
         <Card className="justify-between bg-primary/[0.065]">
-          <CardHeader><CardDescription>Re-entry status</CardDescription><CardTitle className="font-heading text-3xl">{pathwayComplete ? "Ready for class" : answered ? `${readinessPercent}% diagnostic` : "Not checked yet"}</CardTitle><CardAction><div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary"><BookOpenCheck className="size-4" /></div></CardAction></CardHeader>
-          <CardContent><Progress value={displayedReadiness} className="[&_[data-slot=progress-track]]:h-2" /><p className="mt-3 text-sm leading-6 text-muted-foreground">{pathwayComplete ? `Mia completed her ${totalMinutes}-minute pathway and is ready to rejoin the lesson.` : assigned ? `${answered} of ${questionCount} diagnostic questions answered.` : "Approve the map to create and assign Mia’s diagnostic."}</p></CardContent>
+          <CardHeader><CardDescription>Mia&apos;s next step</CardDescription><CardTitle className="font-heading text-3xl">{reentryTitle}</CardTitle><CardAction><div className="flex size-9 items-center justify-center rounded-full bg-primary/10 text-primary"><BookOpenCheck className="size-4" /></div></CardAction></CardHeader>
+          <CardContent><p className="text-sm leading-6 text-muted-foreground">{reentryDetail}</p>{totalMinutes ? <p className="mt-4 text-sm font-semibold text-foreground">{totalMinutes} minutes of focused learning</p> : null}</CardContent>
           <CardFooter><Badge variant="outline">{overview.assignment?.status?.replace("_", " ") ?? "Awaiting assignment"}</Badge></CardFooter>
         </Card>
-      </section>
-
-      <section className="grid gap-4 md:grid-cols-3">
-        {[
-          [String(Math.max(0, (graph?.nodes.length ?? 1) - 1)), "prerequisites identified", overview.graph ? "Grounded in lesson resources" : "Analysis has not run"],
-          [String(incorrectConcepts.size), "concept gaps found", answered ? "From Mia’s diagnostic" : "Awaiting Mia’s check-in"],
-          [totalMinutes ? `${totalMinutes} min` : "Pending", "recommended pathway", overview.path ? `Across ${overview.path.conceptKeys.length} focused steps` : "Generated after the diagnostic"],
-        ].map(([value, label, detail]) => <Card key={label} size="sm"><CardHeader><CardTitle className="font-mono text-2xl font-semibold">{value}</CardTitle><CardDescription>{label}</CardDescription></CardHeader><CardFooter className="border-0 bg-transparent pt-0 text-xs text-muted-foreground">{detail}</CardFooter></Card>)}
       </section>
 
       <Card id="concept-map">
@@ -312,7 +320,7 @@ function TeacherExperience({
       <section className="grid gap-4 lg:grid-cols-[0.92fr_1.08fr]">
         <Card><CardHeader><CardTitle className="font-heading text-xl">Lesson materials</CardTitle><CardDescription>Files and source extracts supplied to GPT‑5.6.</CardDescription><CardAction><input ref={uploadInput} type="file" accept=".pdf,.ppt,.pptx,.doc,.docx,.txt,.md" className="sr-only" onChange={(event) => { const file = event.target.files?.[0]; if (file) void onUpload?.(file); event.currentTarget.value = ""; }} /><Button variant="outline" size="sm" onClick={() => uploadInput.current?.click()} disabled={!onUpload || busy !== null}><UploadCloud /> {busy === "upload" ? "Uploading…" : "Upload"}</Button></CardAction></CardHeader><CardContent className="space-y-2">{overview.resources.map((resource) => <div key={resource.name} className="flex items-center gap-3 rounded-xl border bg-background p-3"><div className="flex size-9 items-center justify-center rounded-lg bg-muted text-muted-foreground"><FileText className="size-4" /></div><div className="min-w-0 flex-1"><p className="truncate text-sm font-medium">{resource.name}</p><p className="text-xs text-muted-foreground">{resource.mediaType.includes("presentation") ? "PPTX" : resource.mediaType.includes("pdf") ? "PDF" : "FILE"}{resource.pageCount ? ` · ${resource.pageCount} pages` : ""}</p></div><Badge variant={resource.status === "current" ? "default" : "outline"}>{resource.status}</Badge></div>)}</CardContent><CardFooter className="justify-between"><span className="text-xs text-muted-foreground">Maximum 15 MB per uploaded file</span>{overview.graph ? <Button variant="outline" size="sm" onClick={() => void onAnalyse?.()} disabled={!onAnalyse || busy !== null}><Sparkles /> Re-analyse</Button> : null}</CardFooter></Card>
 
-        <Card><CardHeader><CardTitle className="font-heading text-xl">Pupil pathway</CardTitle><CardDescription>Readiness for the next lesson, not work completed.</CardDescription></CardHeader><CardContent><div className="flex flex-col gap-5 rounded-xl border bg-muted/20 p-5 sm:flex-row sm:items-center"><Avatar className="size-12"><AvatarFallback>{overview.pupil?.initials ?? "MI"}</AvatarFallback><AvatarBadge className="bg-emerald-500" /></Avatar><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><p className="font-heading text-lg font-semibold">{overview.pupil?.displayName ?? "Mia"}</p><Badge variant="outline">{overview.assignment?.status?.replace("_", " ") ?? "Not assigned"}</Badge></div><p className="mt-1 text-sm text-muted-foreground">{answered ? `${answered} responses · ${incorrectConcepts.size} concepts need support` : "Diagnostic waiting to begin"}</p></div><div className="flex gap-2">{overview.assignment && onReset ? <Button onClick={() => void onReset()} disabled={busy !== null} variant="ghost" size="sm">{busy === "reset" ? <LoaderCircle className="animate-spin" /> : <RotateCcw />} Reset</Button> : null}<Button onClick={() => window.location.assign("/api/demo/sign-in/pupil")} variant="outline" size="sm">Open Mia&apos;s view <ArrowRight /></Button></div></div></CardContent>{overview.latestRun ? <CardFooter className="justify-between text-xs text-muted-foreground"><span>Latest AI run: {overview.latestRun.job.replace("_", " ")} · {overview.latestRun.model}</span><Badge variant="outline">{overview.latestRun.status}</Badge></CardFooter> : null}</Card>
+        <Card><CardHeader><CardTitle className="font-heading text-xl">Pupil pathway</CardTitle><CardDescription>The diagnostic record and learning progress shown together.</CardDescription></CardHeader><CardContent><div className="flex flex-col gap-5 rounded-xl border bg-muted/20 p-5 sm:flex-row sm:items-center"><Avatar className="size-12"><AvatarFallback>{overview.pupil?.initials ?? "MI"}</AvatarFallback><AvatarBadge className={pathwayComplete ? "bg-emerald-500" : "bg-amber-500"} /></Avatar><div className="min-w-0 flex-1"><div className="flex flex-wrap items-center gap-2"><p className="font-heading text-lg font-semibold">{overview.pupil?.displayName ?? "Mia"}</p><Badge variant="outline">{overview.assignment?.status?.replace("_", " ") ?? "Not assigned"}</Badge></div><p className="mt-1 text-sm leading-6 text-muted-foreground">{pathwayComplete ? `The check-in identified ${incorrectConcepts.size} support ${incorrectConcepts.size === 1 ? "concept" : "concepts"}. Mia completed the full ${overview.modules.length}-step learning pathway.` : answered ? `${answered} check-in responses · ${incorrectConcepts.size} ${incorrectConcepts.size === 1 ? "concept" : "concepts"} identified for support` : "Check-in waiting to begin"}</p></div><div className="flex gap-2">{overview.assignment && onReset ? <Button onClick={() => void onReset()} disabled={busy !== null} variant="ghost" size="sm">{busy === "reset" ? <LoaderCircle className="animate-spin" /> : <RotateCcw />} Reset</Button> : null}<Button onClick={() => window.location.assign("/api/demo/sign-in/pupil")} variant="outline" size="sm">Open Mia&apos;s view <ArrowRight /></Button></div></div></CardContent>{overview.latestRun ? <CardFooter className="justify-between text-xs text-muted-foreground"><span>Latest AI run: {overview.latestRun.job.replace("_", " ")} · {overview.latestRun.model}</span><Badge variant="outline">{overview.latestRun.status}</Badge></CardFooter> : null}</Card>
       </section>
     </div>
   );

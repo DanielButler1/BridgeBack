@@ -173,9 +173,55 @@ export const learningSteps: LearningStep[] = [
   },
 ];
 
+export const demoLearningModules = [
+  {
+    id: "step-iteration",
+    conceptId: "iteration",
+    order: 1,
+    title: "Loops that narrow a search",
+    objective: "Understand how a while loop keeps searching only while a valid range remains.",
+    explanation:
+      "Binary search does not check every item. It keeps a low and high position, checks the middle, then repeats with the half that could still contain the target. The while loop stops when low moves past high because there is no valid search range left.",
+    exampleTitle: "Worked example: keep the useful half",
+    exampleBody:
+      "values = [4, 9, 13, 18, 27, 31, 42]\n" +
+      "target = 31\n\n" +
+      "Start: low = 0, high = 6\n" +
+      "middle = (0 + 6) // 2 = 3\n" +
+      "values[3] is 18. Because 31 is greater than 18, set low = 4.\n\n" +
+      "The range 0 to 3 is discarded. The loop continues with positions 4 to 6.",
+    practicePrompt: "After checking 18 at position 3, which update keeps the possible location of 31?",
+    practiceOptions: ["Set high to 2", "Set low to 4", "Set low to 0", "Stop the search"],
+    correctIndex: 1,
+    feedback: "31 is greater than 18, so discard the lower half by moving low to middle + 1, which is 4.",
+    durationMinutes: 6,
+    sourceRefs: ["Lesson 08 · slide 6", "Upcoming lesson · objective 1"],
+  },
+  {
+    id: "step-trace",
+    conceptId: "trace-tables",
+    order: 2,
+    title: "Follow the changing boundaries",
+    objective: "Track low, high and middle so every binary-search decision is visible.",
+    explanation:
+      "A trace table records the important values after each comparison. One row represents one pass through the loop. This makes it easier to see which half was discarded and why the search eventually stops.",
+    exampleTitle: "Worked example: trace two passes",
+    exampleBody:
+      "Search for 31 in [4, 9, 13, 18, 27, 31, 42]\n\n" +
+      "Pass 1  | low 0 | high 6 | middle 3 | value 18 | move low to 4\n" +
+      "Pass 2  | low 4 | high 6 | middle 5 | value 31 | target found\n\n" +
+      "The changing low value shows that the first four positions no longer need checking.",
+    practicePrompt: "On the second pass, what should the trace table record for middle?",
+    practiceOptions: ["3", "4", "5", "6"],
+    correctIndex: 2,
+    feedback: "With low = 4 and high = 6, middle is (4 + 6) // 2, which is 5.",
+    durationMinutes: 7,
+    sourceRefs: ["Lesson 09 · worksheet 2", "Upcoming lesson · slide 3"],
+  },
+] as const;
+
 export const recentResources = [
   { name: "09 · Trace tables", type: "PDF", pages: 4, status: "Analysed" },
   { name: "08 · Iteration", type: "PPTX", pages: 18, status: "Analysed" },
   { name: "Binary search · upcoming", type: "PDF", pages: 12, status: "Current" },
 ];
-
