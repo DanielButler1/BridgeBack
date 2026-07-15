@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "For schools | BridgeBack",
-  description: "Evaluate the BridgeBack demo, operating model, technical architecture, model routing, pilot stages, and production-readiness gates.",
+  description: "See how a school could try BridgeBack, who needs to be involved, what the technology does, and what must happen before a real pilot.",
 };
 
 export default function ForSchoolsPage() {
@@ -15,13 +15,13 @@ export default function ForSchoolsPage() {
     <main className="landing-page min-h-[100dvh] bg-[var(--landing-bg)] text-[var(--landing-ink)]">
       <MarketingHeader active="/for-schools" />
       <MarketingPageIntro
-        title="A convincing demo. A responsible route to deployment."
-        description="Show the complete journey with synthetic data, then evaluate the controls required for use with a school’s own materials."
+        title="See it safely. Plan the next step."
+        description="Start with a complete demo using made-up data, then see what a school would need before trying BridgeBack for real."
         aside={
           <div>
-            <p className="text-sm font-semibold text-[var(--landing-accent)]">Current release boundary</p>
-            <p className="mt-5 text-3xl font-semibold tracking-[-0.035em]">Functional product architecture. Synthetic pupil data only.</p>
-            <p className="mt-4 max-w-md text-sm leading-6 text-[var(--landing-muted)]">A real-data pilot remains gated by safeguarding, privacy, security, and education approval.</p>
+            <p className="text-sm font-semibold text-[var(--landing-accent)]">What is ready today</p>
+            <p className="mt-5 text-3xl font-semibold tracking-[-0.035em]">The main product works with made-up pupil data.</p>
+            <p className="mt-4 max-w-md text-sm leading-6 text-[var(--landing-muted)]">Safeguarding, privacy, security, and education leads must approve the product before any real pupil data is used.</p>
           </div>
         }
       />
@@ -29,7 +29,7 @@ export default function ForSchoolsPage() {
       <section className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
         <div className="grid overflow-hidden rounded-[1rem] border border-[var(--landing-line)] bg-[var(--landing-surface)] lg:grid-cols-[0.85fr_1.15fr]">
           <SchoolRoute title="Guided demonstration" icon={Sparkles} description="A fictional class, pupil, lesson, and catch-up route that a school can explore without entering personal data." items={["One-click teacher and pupil entry", "Prepared state for presentation reliability", "Live model actions use the product workflow", "Safe reset of synthetic progress"]} href="/demo" action="Explore the demo" />
-          <SchoolRoute dark title="School workspace" icon={School} description="An authenticated organisation workspace for classes, lesson resources, teacher approvals, and auditable learning pathways." items={["Clerk identity and server-side Convex authorisation", "Private lesson storage and organisation membership", "Teacher review before pupil-facing generation", "Audit events for administrative actions"]} href="/app" action="Open school workspace" />
+          <SchoolRoute dark title="School workspace" icon={School} description="A secure place for classes, lesson resources, teacher checks, and pupil learning routes." items={["Clerk sign-in with access checked again in Convex", "Private lesson storage for each school", "Teacher review before pupils see AI-written content", "A record of important admin actions"]} href="/app" action="Open school workspace" />
         </div>
       </section>
 
@@ -43,8 +43,8 @@ export default function ForSchoolsPage() {
               <div className="mt-6 space-y-4 text-sm leading-6 text-[var(--landing-muted)]"><p>Upcoming lesson materials and learning objectives</p><p>Relevant scheme of work, slides, and worksheets</p><p>The class, pupil invitation, and teaching context</p><p>A teacher responsible for reviewing the route</p></div>
             </div>
             <div className="grid border-t border-[var(--landing-line)] sm:grid-cols-2">
-              <Responsibility title="BridgeBack prepares">A source-referenced dependency graph, closed diagnostic, deterministic concept pathway, and short learning modules.</Responsibility>
-              <Responsibility title="The teacher approves">The prerequisites, correct answers, pupil assignment, and how the pathway is used alongside classroom support.</Responsibility>
+              <Responsibility title="BridgeBack prepares">A concept map linked to the lesson sources, a short check-in, a catch-up route, and small learning activities.</Responsibility>
+              <Responsibility title="The teacher approves">The earlier concepts, correct answers, pupil assignment, and how the route is used alongside classroom support.</Responsibility>
             </div>
           </div>
         </div>
@@ -55,13 +55,13 @@ export default function ForSchoolsPage() {
           <div>
             <Users className="size-7 text-[var(--landing-accent)]" />
             <h2 className="mt-7 text-4xl font-semibold tracking-[-0.04em]">Who needs to be involved</h2>
-            <p className="mt-6 leading-7 text-[var(--landing-muted)]">A credible pilot is not only an IT installation. Curriculum, safeguarding, privacy, and pupil experience decisions need named owners.</p>
+            <p className="mt-6 leading-7 text-[var(--landing-muted)]">A good pilot needs more than an IT setup. Schools need people responsible for teaching quality, safeguarding, privacy, and the pupil experience.</p>
           </div>
           <div className="border-t border-[var(--landing-line)]">
-            <Stakeholder role="Curriculum or subject lead" decision="Confirm source quality, prerequisite accuracy, and how readiness is evaluated." />
+            <Stakeholder role="Curriculum or subject lead" decision="Check the lesson sources, make sure the concept map is accurate, and agree how readiness will be judged." />
             <Stakeholder role="Classroom teacher" decision="Review the graph, approve the route, and provide human support when the pupil needs it." />
-            <Stakeholder role="Safeguarding and DPO leads" decision="Approve the purpose, lawful basis, DPIA, data flows, retention, notices, and escalation routes." />
-            <Stakeholder role="IT and security owner" decision="Review identity, tenant isolation, provider configuration, file handling, logging, deletion, and incident response." />
+            <Stakeholder role="Safeguarding and data protection leads" decision="Check why data is needed, complete the DPIA, agree how long data is kept, and set clear routes for help or concerns." />
+            <Stakeholder role="IT and security owner" decision="Check sign-in, separation between schools, file handling, logs, deletion, service settings, and what happens if something goes wrong." />
             <Stakeholder role="Pupils and families" decision="Help test clarity, accessibility, agency, and whether the experience feels supportive rather than punitive." />
           </div>
         </div>
@@ -75,9 +75,9 @@ export default function ForSchoolsPage() {
               <StackItem name="Next.js" detail="Server-rendered product and marketing routes, API boundaries, and secure response headers." />
               <StackItem name="Clerk" detail="Identity and sessions for teachers, pupils, and organisation access." />
               <StackItem name="Convex" detail="Organisation-scoped records, private resources, realtime state, mutations, and audit events." />
-              <StackItem name="OpenAI Responses API" detail="Request-scoped lesson analysis and structured educational drafts with store set to false." />
+              <StackItem name="OpenAI Responses API" detail="Reads lesson material when an analysis is requested and returns the draft in a set format. Store is set to false." />
               <StackItem name="Zod Structured Outputs" detail="Allowed fields, references, questions, and learning-module shapes validated before storage." />
-              <StackItem name="React Flow" detail="An inspectable prerequisite map that a teacher can review and correct." />
+              <StackItem name="React Flow" detail="Shows the concept map in a form that teachers can review and correct." />
             </div>
           </div>
         </div>
@@ -85,11 +85,11 @@ export default function ForSchoolsPage() {
 
       <section className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
         <div className="grid gap-12 lg:grid-cols-[0.75fr_1.25fr] lg:gap-20">
-          <div><h2 className="text-4xl font-semibold tracking-[-0.04em]">Model routing follows the shape of the work.</h2><p className="mt-6 max-w-md leading-7 text-[var(--landing-muted)]">OpenAI positions Sol for flagship capability, Terra for a balance of capability and cost, and Luna for efficient high-volume work. BridgeBack maps those strengths to distinct stages.</p><a href="https://developers.openai.com/api/docs/guides/latest-model" target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-[var(--landing-accent)] underline decoration-[var(--landing-line)] underline-offset-4">Read the model guidance <ArrowRight className="size-4" /></a></div>
+          <div><h2 className="text-4xl font-semibold tracking-[-0.04em]">Each AI model has one clear job.</h2><p className="mt-6 max-w-md leading-7 text-[var(--landing-muted)]">Sol handles the hardest lesson analysis. Terra creates the check-in. Luna writes short pupil activities quickly and efficiently.</p><a href="https://developers.openai.com/api/docs/guides/latest-model" target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-[var(--landing-accent)] underline decoration-[var(--landing-line)] underline-offset-4">Read the model guidance <ArrowRight className="size-4" /></a></div>
           <div className="border-t border-[var(--landing-line)]">
-            <ModelJob model="Sol" stage="Dependency analysis" job="Interpret several lesson resources, identify the target, map prerequisite relationships, and preserve source references." boundary="Produces a draft. It cannot approve its own graph." />
-            <ModelJob model="Terra" stage="Diagnostic drafting" job="Create concise closed questions from the teacher-approved graph at a practical quality and cost balance." boundary="Does not grade answers or choose the pupil pathway." />
-            <ModelJob model="Luna" stage="Pupil support" job="Generate efficient, short explanations and checks for one to three concepts at higher potential volume." boundary="Receives minimal approved concept context, not the reason for absence." />
+            <ModelJob model="Sol" stage="Lesson mapping" job="Read several lesson resources, find the main lesson idea, map the earlier ideas, and link each one to its source." limit="approve its own concept map" />
+            <ModelJob model="Terra" stage="Check-in questions" job="Create short multiple-choice questions from the teacher-approved concept map." limit="mark answers or choose the pupil&apos;s route" />
+            <ModelJob model="Luna" stage="Pupil support" job="Write short explanations and checks for one to three concepts." limit="see the pupil&apos;s name or reason for absence" />
           </div>
         </div>
       </section>
@@ -97,12 +97,12 @@ export default function ForSchoolsPage() {
       <section className="border-y border-[var(--landing-line)] bg-[var(--landing-soft)]">
         <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
           <LockKeyhole className="size-7 text-[var(--landing-accent)]" />
-          <h2 className="mt-7 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">A staged path to a real-school pilot</h2>
+          <h2 className="mt-7 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">A clear path to a school pilot</h2>
           <div className="mt-12 grid gap-x-12 gap-y-9 md:grid-cols-2">
             <ReadinessStage number="01" title="Product demonstration" status="Available now" detail="Use the synthetic class, lesson, identities, responses, and resettable pathway." />
             <ReadinessStage number="02" title="School materials trial" status="Synthetic or de-identified only" detail="Test teacher workflow and curriculum quality without uploading identifiable pupil information." />
-            <ReadinessStage number="03" title="Controlled real-data pilot" status="Release gated" detail="Requires an approved DPIA, contracts, provider controls, deletion and export, security testing, and named safeguarding ownership." />
-            <ReadinessStage number="04" title="Wider deployment" status="Evidence gated" detail="Requires curriculum evaluations, accessibility and bias testing, operational monitoring, incident practice, and demonstrated pupil benefit." />
+            <ReadinessStage number="03" title="Small real-data pilot" status="Needs approval" detail="Requires an approved DPIA, contracts, deletion and export tools, security testing, suitable service settings, and a named safeguarding lead." />
+            <ReadinessStage number="04" title="Use across more classes" status="Needs evidence" detail="Requires teaching-quality checks, accessibility and fairness testing, monitoring, incident practice, and clear evidence that pupils benefit." />
           </div>
         </div>
       </section>
@@ -112,7 +112,7 @@ export default function ForSchoolsPage() {
           <div><h2 className="text-4xl font-semibold tracking-[-0.04em]">What a pilot should measure</h2><p className="mt-6 leading-7 text-[var(--landing-muted)]">The first evaluation should test whether the workflow is useful and safe before making claims about attendance or attainment.</p></div>
           <div className="grid gap-8 sm:grid-cols-2">
             <PilotMeasure title="Teacher effort">Time to upload, review, correct, and assign a route.</PilotMeasure>
-            <PilotMeasure title="Graph quality">Share of prerequisites accepted, edited, added, or removed by teachers.</PilotMeasure>
+            <PilotMeasure title="Concept-map quality">How often teachers accept, edit, add, or remove earlier concepts.</PilotMeasure>
             <PilotMeasure title="Pupil experience">Clarity, anxiety, agency, accessibility, stopping, and requests for teacher help.</PilotMeasure>
             <PilotMeasure title="Lesson re-entry">Whether teachers judge that the pupil can participate in the target lesson.</PilotMeasure>
           </div>
@@ -143,8 +143,8 @@ function StackItem({ name, detail }: { name: string; detail: string }) {
   return <article className="rounded-[1rem] border border-[color-mix(in_oklch,var(--landing-dark-muted)_25%,transparent)] p-6"><h3 className="text-xl font-semibold">{name}</h3><p className="mt-3 text-sm leading-6 text-[var(--landing-dark-muted)]">{detail}</p></article>;
 }
 
-function ModelJob({ model, stage, job, boundary }: { model: string; stage: string; job: string; boundary: string }) {
-  return <article className="grid gap-4 border-b border-[var(--landing-line)] py-7 sm:grid-cols-[7rem_1fr]"><div><strong className="text-2xl text-[var(--landing-accent)]">{model}</strong><p className="mt-1 text-xs text-[var(--landing-muted)]">{stage}</p></div><div><p className="leading-7 text-[var(--landing-muted)]">{job}</p><p className="mt-3 text-sm font-medium text-[var(--landing-ink)]">Boundary: {boundary}</p></div></article>;
+function ModelJob({ model, stage, job, limit }: { model: string; stage: string; job: string; limit: string }) {
+  return <article className="grid gap-4 border-b border-[var(--landing-line)] py-7 sm:grid-cols-[7rem_1fr]"><div><strong className="text-2xl text-[var(--landing-accent)]">{model}</strong><p className="mt-1 text-xs text-[var(--landing-muted)]">{stage}</p></div><div><p className="leading-7 text-[var(--landing-muted)]">{job}</p><p className="mt-3 text-sm font-medium text-[var(--landing-ink)]">It cannot {limit}.</p></div></article>;
 }
 
 function ReadinessStage({ number, title, status, detail }: { number: string; title: string; status: string; detail: string }) {

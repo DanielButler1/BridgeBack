@@ -7,16 +7,16 @@ import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "How it works | BridgeBack",
-  description: "The complete BridgeBack workflow, from lesson upload and teacher approval to deterministic diagnostics and pupil catch-up modules.",
+  description: "See how BridgeBack turns lesson materials into a teacher-approved check-in and a short catch-up route for a pupil.",
 };
 
 const workflow = [
   { number: "01", title: "Set the destination", detail: "The teacher selects the upcoming lesson and adds the slides, worksheets, and missed resources that provide curriculum context." },
-  { number: "02", title: "Draft the dependency graph", detail: "Sol extracts the target concept, prerequisite relationships, and exact source references into a structured draft." },
-  { number: "03", title: "Review before use", detail: "The teacher checks the graph, adds or removes prerequisites, and approves the educational route." },
-  { number: "04", title: "Create a closed diagnostic", detail: "Terra writes short multiple-choice questions against the approved prerequisites. The teacher-controlled answer key is stored with them." },
-  { number: "05", title: "Score in application code", detail: "TypeScript compares each selected option with the approved answer index. A model does not grade the pupil." },
-  { number: "06", title: "Select no more than three steps", detail: "Deterministic graph traversal prioritises unresolved concepts closest to the target lesson." },
+  { number: "02", title: "Build a draft concept map", detail: "Sol finds the main lesson idea, the earlier ideas pupils need, and where each one appears in the source material." },
+  { number: "03", title: "Let the teacher check it", detail: "The teacher reviews the map, adds or removes earlier concepts, and approves the route." },
+  { number: "04", title: "Create a short check-in", detail: "Terra writes a few multiple-choice questions from the approved map. The correct answers are saved with the questions." },
+  { number: "05", title: "Check answers using fixed rules", detail: "BridgeBack compares each answer with the saved correct answer. The AI does not grade the pupil." },
+  { number: "06", title: "Choose up to three next steps", detail: "BridgeBack follows the approved map and starts with the missing ideas closest to the upcoming lesson." },
   { number: "07", title: "Teach and check", detail: "Luna creates short source-grounded explanations, examples, and closed checks for the selected concepts." },
 ] as const;
 
@@ -38,8 +38,8 @@ export default function HowItWorksPage() {
       <section className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
         <div className="max-w-3xl">
           <ScanSearch className="size-7 text-[var(--landing-accent)]" />
-          <h2 className="mt-7 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">A seven-stage path with three clear decision owners.</h2>
-          <p className="mt-6 leading-7 text-[var(--landing-muted)]">AI transforms teaching material. Application code handles reproducible decisions. Teachers approve what becomes part of the pupil experience.</p>
+          <h2 className="mt-7 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Seven clear steps. Everyone knows their role.</h2>
+          <p className="mt-6 leading-7 text-[var(--landing-muted)]">AI drafts the learning materials. BridgeBack checks the answers and chooses the next steps. Teachers decide what pupils use.</p>
         </div>
         <div className="mt-14 grid gap-x-16 lg:grid-cols-2">
           {workflow.map((step) => <WorkflowStep key={step.number} {...step} />)}
@@ -64,7 +64,7 @@ export default function HowItWorksPage() {
           <div className="mt-12 grid border-t border-[color-mix(in_oklch,var(--landing-dark-muted)_26%,transparent)] pt-8 md:grid-cols-[1fr_auto_1fr_auto_1fr]">
             <MiniStep icon={FileStack} value="12" label="resources considered" />
             <FlowArrow />
-            <MiniStep icon={Network} value="2" label="unresolved prerequisites" />
+            <MiniStep icon={Network} value="2" label="ideas to revisit" />
             <FlowArrow />
             <MiniStep icon={BookOpenCheck} value="3" label="visible next steps" />
           </div>
@@ -75,12 +75,12 @@ export default function HowItWorksPage() {
         <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
           <div>
             <UserCheck className="size-7 text-[var(--landing-accent)]" />
-            <h2 className="mt-7 text-4xl font-semibold tracking-[-0.04em]">Responsibility stays visible.</h2>
-            <p className="mt-6 leading-7 text-[var(--landing-muted)]">Structured output controls the format of generated material. It does not establish educational correctness, so approval and deterministic checks remain separate.</p>
+            <h2 className="mt-7 text-4xl font-semibold tracking-[-0.04em]">It is always clear who does what.</h2>
+            <p className="mt-6 leading-7 text-[var(--landing-muted)]">The AI must return information in a set format, but that does not make every answer correct. Teachers still review the learning route.</p>
           </div>
           <div className="border-t border-[var(--landing-line)]">
-            <OwnerRow owner="AI models" responsibility="Draft dependency graphs, closed diagnostic questions, and short learning explanations from approved source material." />
-            <OwnerRow owner="Application code" responsibility="Validate schemas, reject cycles, grade closed responses, traverse the graph, enforce limits, and record progress." />
+            <OwnerRow owner="AI models" responsibility="Draft concept maps, short check-in questions, and learning explanations from approved lesson materials." />
+            <OwnerRow owner="BridgeBack code" responsibility="Check the format, reject broken concept maps, mark closed questions, choose up to three next steps, and save progress." />
             <OwnerRow owner="Teacher" responsibility="Choose the upcoming lesson, correct the graph, approve the diagnostic, and decide how BridgeBack fits classroom support." />
             <OwnerRow owner="Pupil" responsibility="Complete a calm check-in, stop when needed, work through the next step, and ask a teacher for help." />
           </div>
@@ -94,7 +94,7 @@ export default function HowItWorksPage() {
             <div className="mt-8 space-y-5">
               <CheckLine>Source references beside each concept</CheckLine>
               <CheckLine>Draft, approved, and generated workflow states</CheckLine>
-              <CheckLine>Editable prerequisites before assignment</CheckLine>
+              <CheckLine>Editable earlier concepts before assignment</CheckLine>
               <CheckLine>Concept-level progress without a pupil ranking</CheckLine>
             </div>
           </div>

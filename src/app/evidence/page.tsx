@@ -32,11 +32,11 @@ export default function EvidencePage() {
           <div>
             <CircleAlert className="size-7 text-[var(--landing-accent)]" />
             <h2 className="mt-7 text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Read the percentage carefully.</h2>
-            <p className="mt-6 max-w-xl leading-7 text-[var(--landing-muted)]">Persistent absence is a pupil-level threshold. A pupil enters the category after missing 10% or more of the sessions available to them.</p>
+            <p className="mt-6 max-w-xl leading-7 text-[var(--landing-muted)]">A pupil is classed as persistently absent after missing 10% or more of the school sessions available to them.</p>
           </div>
           <div className="grid border-t border-[var(--landing-line)] sm:grid-cols-2">
             <Definition title="A session is half a school day">Schools normally record morning and afternoon attendance. Missing 10% of sessions is broadly equivalent to missing one day in ten.</Definition>
-            <Definition title="The rate counts pupils">A 35.8% persistent-absence rate means 35.8% of pupils crossed the 10% threshold. It does not mean every pupil missed 35.8% of school.</Definition>
+            <Definition title="The rate counts pupils">A rate of 35.8% means that 35.8% of pupils missed at least 10% of school. It does not mean every pupil missed 35.8%.</Definition>
           </div>
         </div>
       </section>
@@ -44,8 +44,8 @@ export default function EvidencePage() {
       <section className="border-y border-[var(--landing-line)] bg-[var(--landing-surface)]">
         <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
           <div className="max-w-3xl">
-            <h2 className="text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">The national headline hides unequal exposure.</h2>
-            <p className="mt-6 leading-7 text-[var(--landing-muted)]">The full-year release reports lower rates than 2023/24, but persistent absence remained concentrated in secondary schools and among pupils facing disadvantage or additional needs.</p>
+            <h2 className="text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">The headline number is only part of the story.</h2>
+            <p className="mt-6 leading-7 text-[var(--landing-muted)]">Rates fell compared with 2023/24, but persistent absence was still higher in secondary schools and for pupils facing disadvantage or additional needs.</p>
           </div>
           <div className="mt-12 grid border-t border-[var(--landing-line)] sm:grid-cols-2 lg:grid-cols-4">
             <EvidenceStat label="All pupils" value="18.7%" detail="2.0 percentage points lower than 2023/24" />
@@ -80,7 +80,7 @@ export default function EvidencePage() {
               <ResearchFact value="22" label="school staff interviewed" />
               <ResearchFact value="606" label="Teacher Voice respondents" />
             </div>
-            <p className="mt-7 text-sm leading-6 text-[var(--landing-muted)]">This purposive qualitative sample explains experiences and practices. It should not be read as a nationally representative prevalence estimate.</p>
+            <p className="mt-7 text-sm leading-6 text-[var(--landing-muted)]">These schools were chosen because their attendance was good or improving. The study helps explain pupils&apos; experiences, but it does not represent every school in England.</p>
             <a href={nferSource} target="_blank" rel="noreferrer" className="mt-7 inline-flex items-center gap-2 text-sm font-semibold text-[var(--landing-accent)] underline decoration-[var(--landing-line)] underline-offset-4 hover:decoration-[var(--landing-accent)]">
               Read the NFER research <ArrowRight className="size-4" />
             </a>
@@ -93,7 +93,7 @@ export default function EvidencePage() {
           <BookOpenCheck className="size-7 text-[var(--landing-accent)]" />
           <h2 className="mt-7 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">The evidence shapes the product choices.</h2>
           <div className="mt-12 grid gap-x-12 gap-y-10 md:grid-cols-2">
-            <DesignResponse finding="Pupils worried about the volume of missed work." response="Start from the upcoming lesson and identify only the prerequisites needed to participate." />
+            <DesignResponse finding="Pupils worried about the volume of missed work." response="Start from the upcoming lesson and identify only the earlier ideas needed to take part." />
             <DesignResponse finding="Personalised catch-up and staff check-ins were valued." response="Keep the teacher in the loop and produce an individual route from a short diagnostic." />
             <DesignResponse finding="Punitive approaches could make returning harder." response="Use calm language, no grades, no deficit ranking, and no attendance consequences." />
             <DesignResponse finding="Relationships and belonging mattered." response="Support the teacher-pupil relationship rather than presenting AI as a replacement teacher." />
@@ -104,7 +104,7 @@ export default function EvidencePage() {
       <section className="mx-auto max-w-[1400px] px-4 py-16 sm:px-6 lg:px-10">
         <div className="grid gap-8 lg:grid-cols-[0.65fr_1.35fr]">
           <h2 className="text-2xl font-semibold tracking-[-0.03em]">What this evidence does not prove</h2>
-          <p className="max-w-3xl leading-7 text-[var(--landing-muted)]">It does not prove that BridgeBack improves attendance, attainment, or wellbeing. Those outcomes require a controlled school evaluation. The evidence establishes a credible problem and guides a testable intervention.</p>
+          <p className="max-w-3xl leading-7 text-[var(--landing-muted)]">It does not yet prove that BridgeBack improves attendance, learning, or wellbeing. That would need to be tested carefully with schools and pupils.</p>
         </div>
       </section>
       <MarketingFooter />
