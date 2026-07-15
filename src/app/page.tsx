@@ -12,7 +12,7 @@ import {
 import Image from "next/image";
 import Link from "next/link";
 
-import { BridgeBackMark } from "@/components/bridgeback-mark";
+import { MarketingFooter, MarketingHeader } from "@/components/marketing-chrome";
 import { Button } from "@/components/ui/button";
 
 const demoHref = "/demo";
@@ -26,33 +26,7 @@ const nferSource =
 export default function Home() {
   return (
     <main className="landing-page min-h-[100dvh] overflow-hidden bg-[var(--landing-bg)] text-[var(--landing-ink)]">
-      <header className="sticky top-0 z-40 border-b border-[var(--landing-line)] bg-[color-mix(in_oklch,var(--landing-bg)_92%,transparent)] backdrop-blur-xl">
-        <div className="mx-auto flex h-[4.5rem] max-w-[1400px] items-center gap-5 px-4 sm:px-6 lg:px-10">
-          <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="BridgeBack home">
-            <BridgeBackMark className="rounded-[0.875rem] shadow-none" />
-            <span className="text-base font-semibold tracking-[-0.02em]">BridgeBack</span>
-          </Link>
-          <nav className="ml-auto hidden items-center gap-7 text-sm text-[var(--landing-muted)] md:flex" aria-label="Landing page">
-            <a className="transition-colors hover:text-[var(--landing-ink)]" href="#evidence">Evidence</a>
-            <a className="transition-colors hover:text-[var(--landing-ink)]" href="#how-it-works">How it works</a>
-            <a className="transition-colors hover:text-[var(--landing-ink)]" href="#product">For schools</a>
-            <a className="transition-colors hover:text-[var(--landing-ink)]" href="#safeguards">Safeguards</a>
-          </nav>
-          <Link
-            href={productHref}
-            className="ml-auto hidden text-sm font-semibold text-[var(--landing-muted)] transition-colors hover:text-[var(--landing-ink)] lg:block"
-          >
-            School sign in
-          </Link>
-          <Button
-            nativeButton={false}
-            render={<Link href={demoHref} />}
-            className="ml-auto h-10 rounded-[0.875rem] bg-[var(--landing-accent)] px-4 text-[var(--landing-accent-ink)] shadow-none hover:bg-[var(--landing-accent-strong)] md:ml-3"
-          >
-            Explore the demo <ArrowRight />
-          </Button>
-        </div>
-      </header>
+      <MarketingHeader />
 
       <section className="mx-auto grid min-h-[calc(100dvh-4.5rem)] max-w-[1400px] items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[0.88fr_1.12fr] lg:px-10 lg:py-16">
         <div className="max-w-2xl">
@@ -299,11 +273,7 @@ export default function Home() {
         </div>
       </section>
 
-      <footer className="border-t border-[var(--landing-line)]">
-        <p className="mx-auto max-w-[1400px] px-4 py-5 text-center text-xs text-[var(--landing-muted)]">
-          Built with <span role="img" aria-label="love">❤️</span> for OpenAI Build Week
-        </p>
-      </footer>
+      <MarketingFooter />
     </main>
   );
 }
