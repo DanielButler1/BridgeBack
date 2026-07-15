@@ -61,7 +61,7 @@ function createNodes(
         label: (
           <div className="min-w-44 text-left">
             <div className="mb-2 flex items-center justify-between gap-3">
-              <span className="text-[11px] font-medium uppercase tracking-[0.12em] opacity-65">{status.label}</span>
+              <span className="text-[11px] font-medium opacity-65">{status.label}</span>
               <Icon className="size-3.5" />
             </div>
             <p className="font-heading text-sm font-semibold leading-tight">{concept.title}</p>

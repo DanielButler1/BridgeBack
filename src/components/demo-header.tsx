@@ -13,31 +13,33 @@ export function DemoHeader({ role }: { role?: "teacher" | "pupil" }) {
   const pupilHref = hasClerk ? "/api/demo/sign-in/pupil" : "/demo/pupil";
 
   return (
-    <header className="sticky top-0 z-40 border-b bg-background/90 backdrop-blur-xl">
-      <div className="mx-auto flex h-16 max-w-[1480px] items-center gap-4 px-4 sm:px-6 lg:px-8">
-        <Link href="/" className="flex items-center gap-3">
+    <header className="sticky top-0 z-40 border-b bg-background/92 backdrop-blur-xl">
+      <div className="mx-auto flex h-[4.5rem] max-w-[1480px] items-center gap-3 px-4 sm:px-6 lg:px-8">
+        <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="BridgeBack home">
           <BridgeBackMark />
-          <div>
-            <p className="font-heading text-[15px] font-semibold leading-none tracking-tight">BridgeBack</p>
-            <p className="mt-1 hidden text-[10px] uppercase tracking-[0.14em] text-muted-foreground sm:block">The shortest path back</p>
+          <div className="hidden sm:block">
+            <p className="font-heading text-[15px] font-semibold leading-none tracking-[-0.02em]">BridgeBack</p>
+            <p className="mt-1 text-[11px] text-muted-foreground">The shortest path back</p>
           </div>
         </Link>
-        <Button nativeButton={false} render={<Link href="/" />} variant="ghost" size="sm" className="hidden lg:inline-flex">
-          <ArrowLeft /> Back to site
-        </Button>
-        <nav className="mx-auto flex items-center rounded-lg bg-muted/65 p-1" aria-label="Demo views">
-          <Button nativeButton={false} render={<a href={teacherHref} />} variant={role === "teacher" ? "secondary" : "ghost"} size="sm">
-            <School /> <span className="hidden sm:inline">Teacher</span>
+
+        <nav className="mx-auto flex items-center rounded-xl border bg-muted/45 p-1" aria-label="Demo views">
+          <Button nativeButton={false} render={<a href={teacherHref} />} variant={role === "teacher" ? "secondary" : "ghost"} size="sm" className="rounded-lg px-3 sm:px-4">
+            <School /> <span className="hidden sm:inline">Teacher workspace</span><span className="sm:hidden">Teacher</span>
           </Button>
-          <Button nativeButton={false} render={<a href={pupilHref} />} variant={role === "pupil" ? "secondary" : "ghost"} size="sm">
-            <GraduationCap /> <span className="hidden sm:inline">Mia</span>
+          <Button nativeButton={false} render={<a href={pupilHref} />} variant={role === "pupil" ? "secondary" : "ghost"} size="sm" className="rounded-lg px-3 sm:px-4">
+            <GraduationCap /> <span className="hidden sm:inline">Mia&apos;s journey</span><span className="sm:hidden">Mia</span>
           </Button>
         </nav>
-        <div className="flex items-center gap-2">
+
+        <div className="flex shrink-0 items-center gap-2">
+          {hasClerk ? <UserButton /> : null}
+          <Button nativeButton={false} render={<Link href="/" />} variant="ghost" size="sm" className="hidden lg:inline-flex">
+            <ArrowLeft /> Back to site
+          </Button>
           <Button nativeButton={false} render={<Link href="/" />} variant="ghost" size="icon" className="lg:hidden" aria-label="Back to site">
             <ArrowLeft />
           </Button>
-          {hasClerk ? <UserButton /> : <span className="size-2 rounded-full bg-amber-500" title="Preview session" />}
         </div>
       </div>
     </header>

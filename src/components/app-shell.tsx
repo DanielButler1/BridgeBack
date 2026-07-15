@@ -21,7 +21,7 @@ export function AppShell() {
               <p className="font-heading text-[15px] font-semibold leading-none tracking-tight">
                 BridgeBack
               </p>
-              <p className="mt-1 hidden text-[10px] uppercase tracking-[0.14em] text-muted-foreground sm:block">
+              <p className="mt-1 hidden text-[11px] text-muted-foreground sm:block">
                 The shortest path back
               </p>
             </div>

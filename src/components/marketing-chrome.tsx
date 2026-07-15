@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const marketingLinks = [
-  { href: "/why", label: "Why" },
+  { href: "/why", label: "Why BridgeBack?" },
   { href: "/how-it-works", label: "How it works" },
   { href: "/for-schools", label: "For schools" },
   { href: "/safeguards", label: "Safeguards" },
@@ -23,7 +23,7 @@ export function MarketingHeader({ active }: { active?: MarketingSection }) {
           <span className="text-base font-semibold tracking-[-0.02em] max-[359px]:hidden">BridgeBack</span>
         </Link>
 
-        <nav className="ml-auto hidden items-center gap-7 text-sm md:flex" aria-label="Main navigation">
+        <nav className="ml-auto hidden items-center gap-6 text-sm lg:flex" aria-label="Main navigation">
           {marketingLinks.map((item) => (
             <Link
               key={item.href}
@@ -43,12 +43,12 @@ export function MarketingHeader({ active }: { active?: MarketingSection }) {
 
         <Link
           href="/app"
-          className="ml-auto hidden text-sm font-semibold text-[var(--landing-muted)] transition-colors hover:text-[var(--landing-ink)] lg:block"
+          className="ml-auto hidden text-sm font-semibold text-[var(--landing-muted)] transition-colors hover:text-[var(--landing-ink)] xl:block"
         >
           School sign in
         </Link>
 
-        <details className="group relative ml-auto md:hidden">
+        <details className="group relative ml-auto lg:hidden">
           <summary className="flex size-10 cursor-pointer list-none items-center justify-center rounded-[0.875rem] border border-[var(--landing-line)] text-[var(--landing-ink)] transition-colors hover:bg-[var(--landing-soft)] [&::-webkit-details-marker]:hidden">
             <Menu className="size-4" />
             <span className="sr-only">Open navigation</span>

@@ -28,7 +28,7 @@ export default function Home() {
     <main className="landing-page min-h-[100dvh] overflow-hidden bg-[var(--landing-bg)] text-[var(--landing-ink)]">
       <MarketingHeader />
 
-      <section className="mx-auto grid min-h-[calc(100dvh-4.5rem)] max-w-[1400px] items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[0.88fr_1.12fr] lg:px-10 lg:py-16">
+      <section className="mx-auto grid max-w-[1400px] items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[0.88fr_1.12fr] lg:px-10 lg:py-20">
         <div className="max-w-2xl">
           <h1 className="text-balance text-5xl font-semibold leading-[0.98] tracking-[-0.055em] sm:text-6xl lg:text-[3.75rem]">
             Catch up on what<br className="hidden sm:block" /> unlocks next.
@@ -75,7 +75,7 @@ export default function Home() {
 
       <section id="why" className="border-y border-[var(--landing-line)]">
         <div className="mx-auto grid max-w-[1400px] lg:grid-cols-[1.15fr_0.85fr]">
-          <div className="px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
+          <div className="px-4 py-16 sm:px-6 lg:px-10 lg:py-20">
             <p className="text-sm font-semibold text-[var(--landing-accent)]">The attendance gap</p>
             <p className="mt-5 max-w-3xl text-3xl font-semibold leading-tight tracking-[-0.035em] sm:text-5xl">
               Returning to school should not mean facing every missed lesson at once.
@@ -112,7 +112,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
+      <section className="mx-auto max-w-[1400px] px-4 py-16 sm:px-6 lg:px-10 lg:py-20">
         <div className="grid gap-10 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
           <blockquote className="rounded-[1rem] bg-[var(--landing-deep)] p-7 text-[var(--landing-dark-ink)] sm:p-10">
             <p className="text-2xl font-medium leading-snug tracking-[-0.025em] sm:text-3xl">“Catching up on missed work was one of the biggest concerns for pupils.”</p>
@@ -325,7 +325,6 @@ function ProductPreview() {
     src: "/product/teacher-workspace-desktop.png",
     width: 1440,
     height: 1000,
-    quality: 88,
   });
   const {
     props: { srcSet: mobile, ...rest },
@@ -334,7 +333,6 @@ function ProductPreview() {
     src: "/product/teacher-workspace-mobile.png",
     width: 390,
     height: 844,
-    quality: 86,
   });
 
   return (
