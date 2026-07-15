@@ -29,7 +29,7 @@ export default function HowItWorksPage() {
         description="BridgeBack works backwards from the upcoming lesson to find the smallest useful route back into classroom learning."
         aside={
           <div>
-            <p className="text-sm font-semibold text-[var(--landing-accent)]">Mia&apos;s synthetic example</p>
+            <p className="text-sm font-semibold text-[var(--landing-accent)]">Mia&apos;s return-to-learning journey</p>
             <p className="mt-5 text-3xl font-semibold tracking-[-0.035em]">Twelve resources become three manageable steps.</p>
           </div>
         }
@@ -112,7 +112,7 @@ export default function HowItWorksPage() {
 
       <section className="mx-auto max-w-[1400px] px-4 py-24 sm:px-6 lg:px-10 lg:py-28">
         <div className="rounded-[1rem] bg-[var(--landing-accent)] p-8 text-[var(--landing-accent-ink)] sm:p-12 lg:flex lg:items-end lg:justify-between lg:gap-12">
-          <div><h2 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em]">See every stage with Mia and Ms Morgan.</h2><p className="mt-5 max-w-2xl leading-7 text-[var(--landing-accent-muted)]">The demo is synthetic, resettable, and connected to the same workflow used by the product.</p></div>
+          <div><h2 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em]">See every stage with Mia and Ms Morgan.</h2><p className="mt-5 max-w-2xl leading-7 text-[var(--landing-accent-muted)]">Move between teacher and pupil views, reset the journey, and explore the complete product workflow.</p></div>
           <Button nativeButton={false} render={<Link href="/demo" />} className="mt-8 h-11 rounded-[0.875rem] bg-[var(--landing-cta)] px-5 text-[var(--landing-cta-ink)] hover:bg-[var(--landing-cta-hover)] lg:mt-0">Walk through the demo <ArrowRight /></Button>
         </div>
       </section>

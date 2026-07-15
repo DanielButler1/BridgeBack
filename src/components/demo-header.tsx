@@ -1,11 +1,10 @@
 "use client";
 
 import { UserButton } from "@clerk/nextjs";
-import { ArrowLeft, GraduationCap, School, Sparkles } from "lucide-react";
+import { ArrowLeft, GraduationCap, School } from "lucide-react";
 import Link from "next/link";
 
 import { BridgeBackMark } from "@/components/bridgeback-mark";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { hasClerk } from "@/lib/config";
 
@@ -38,10 +37,7 @@ export function DemoHeader({ role }: { role?: "teacher" | "pupil" }) {
           <Button nativeButton={false} render={<Link href="/" />} variant="ghost" size="icon" className="lg:hidden" aria-label="Back to site">
             <ArrowLeft />
           </Button>
-          <Badge variant="outline" className="hidden border-primary/20 bg-primary/[0.045] text-primary md:flex">
-            <Sparkles data-icon="inline-start" /> Synthetic demo
-          </Badge>
-          {hasClerk ? <UserButton /> : <span className="size-2 rounded-full bg-amber-500" title="Local demo mode" />}
+          {hasClerk ? <UserButton /> : <span className="size-2 rounded-full bg-amber-500" title="Preview session" />}
         </div>
       </div>
     </header>

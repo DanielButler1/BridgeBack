@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const marketingLinks = [
-  { href: "/evidence", label: "Evidence" },
+  { href: "/why", label: "Why" },
   { href: "/how-it-works", label: "How it works" },
   { href: "/for-schools", label: "For schools" },
   { href: "/safeguards", label: "Safeguards" },
@@ -17,10 +17,10 @@ export type MarketingSection = (typeof marketingLinks)[number]["href"];
 export function MarketingHeader({ active }: { active?: MarketingSection }) {
   return (
     <header className="sticky top-0 z-40 border-b border-[var(--landing-line)] bg-[color-mix(in_oklch,var(--landing-bg)_92%,transparent)] backdrop-blur-xl">
-      <div className="mx-auto flex h-[4.5rem] max-w-[1400px] items-center gap-5 px-4 sm:px-6 lg:px-10">
+      <div className="mx-auto flex h-[4.5rem] max-w-[1400px] items-center gap-2 px-4 sm:gap-5 sm:px-6 lg:px-10">
         <Link href="/" className="flex shrink-0 items-center gap-3" aria-label="BridgeBack home">
           <BridgeBackMark className="rounded-[0.875rem] shadow-none" />
-          <span className="text-base font-semibold tracking-[-0.02em]">BridgeBack</span>
+          <span className="text-base font-semibold tracking-[-0.02em] max-[359px]:hidden">BridgeBack</span>
         </Link>
 
         <nav className="ml-auto hidden items-center gap-7 text-sm md:flex" aria-label="Main navigation">
@@ -76,11 +76,11 @@ export function MarketingHeader({ active }: { active?: MarketingSection }) {
         <Button
           nativeButton={false}
           render={<Link href="/demo" />}
-          className="h-10 rounded-[0.875rem] bg-[var(--landing-accent)] px-4 text-[var(--landing-accent-ink)] shadow-none hover:bg-[var(--landing-accent-strong)]"
+          className="h-10 rounded-[0.875rem] bg-[var(--landing-accent)] px-3 text-[var(--landing-accent-ink)] shadow-none hover:bg-[var(--landing-accent-strong)] sm:px-4"
         >
           <span className="hidden sm:inline">Explore the demo</span>
           <span className="sm:hidden">Demo</span>
-          <ArrowRight />
+          <ArrowRight className="max-[359px]:hidden" />
         </Button>
       </div>
     </header>

@@ -7,7 +7,7 @@ import { Button } from "@/components/ui/button";
 
 export const metadata: Metadata = {
   title: "For schools | BridgeBack",
-  description: "See how a school could try BridgeBack, who needs to be involved, what the technology does, and what must happen before a real pilot.",
+  description: "See how BridgeBack fits a school, who stays involved, how the technology works, and how to plan a responsible rollout.",
 };
 
 export default function ForSchoolsPage() {
@@ -16,19 +16,19 @@ export default function ForSchoolsPage() {
       <MarketingHeader active="/for-schools" />
       <MarketingPageIntro
         title="See it safely. Plan the next step."
-        description="Start with a complete demo using made-up data, then see what a school would need before trying BridgeBack for real."
+        description="Explore the complete product journey, then see how BridgeBack fits lesson planning, teacher review, and pupil support in school."
         aside={
           <div>
-            <p className="text-sm font-semibold text-[var(--landing-accent)]">What is ready today</p>
-            <p className="mt-5 text-3xl font-semibold tracking-[-0.035em]">The main product works with made-up pupil data.</p>
-            <p className="mt-4 max-w-md text-sm leading-6 text-[var(--landing-muted)]">Safeguarding, privacy, security, and education leads must approve the product before any real pupil data is used.</p>
+            <p className="text-sm font-semibold text-[var(--landing-accent)]">Built for a school rollout</p>
+            <p className="mt-5 text-3xl font-semibold tracking-[-0.035em]">One workspace connects the next lesson to the support a pupil needs.</p>
+            <p className="mt-4 max-w-md text-sm leading-6 text-[var(--landing-muted)]">Teachers keep control of the route while school leaders set the privacy, safeguarding, and security requirements.</p>
           </div>
         }
       />
 
       <section className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
         <div className="grid overflow-hidden rounded-[1rem] border border-[var(--landing-line)] bg-[var(--landing-surface)] lg:grid-cols-[0.85fr_1.15fr]">
-          <SchoolRoute title="Guided demonstration" icon={Sparkles} description="A fictional class, pupil, lesson, and catch-up route that a school can explore without entering personal data." items={["One-click teacher and pupil entry", "Prepared state for presentation reliability", "Live model actions use the product workflow", "Safe reset of synthetic progress"]} href="/demo" action="Explore the demo" />
+          <SchoolRoute title="Guided demonstration" icon={Sparkles} description="A complete class, lesson, diagnostic, and catch-up route that a school can explore from both sides of the experience." items={["One-click teacher and pupil entry", "Prepared state for presentation reliability", "Live model actions use the product workflow", "Reset the journey and try it again"]} href="/demo" action="Explore the demo" />
           <SchoolRoute dark title="School workspace" icon={School} description="A secure place for classes, lesson resources, teacher checks, and pupil learning routes." items={["Clerk sign-in with access checked again in Convex", "Private lesson storage for each school", "Teacher review before pupils see AI-written content", "A record of important admin actions"]} href="/app" action="Open school workspace" />
         </div>
       </section>
@@ -97,12 +97,12 @@ export default function ForSchoolsPage() {
       <section className="border-y border-[var(--landing-line)] bg-[var(--landing-soft)]">
         <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
           <LockKeyhole className="size-7 text-[var(--landing-accent)]" />
-          <h2 className="mt-7 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">A clear path to a school pilot</h2>
+          <h2 className="mt-7 max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">A clear path into school</h2>
           <div className="mt-12 grid gap-x-12 gap-y-9 md:grid-cols-2">
-            <ReadinessStage number="01" title="Product demonstration" status="Available now" detail="Use the synthetic class, lesson, identities, responses, and resettable pathway." />
-            <ReadinessStage number="02" title="School materials trial" status="Synthetic or de-identified only" detail="Test teacher workflow and curriculum quality without uploading identifiable pupil information." />
-            <ReadinessStage number="03" title="Small real-data pilot" status="Needs approval" detail="Requires an approved DPIA, contracts, deletion and export tools, security testing, suitable service settings, and a named safeguarding lead." />
-            <ReadinessStage number="04" title="Use across more classes" status="Needs evidence" detail="Requires teaching-quality checks, accessibility and fairness testing, monitoring, incident practice, and clear evidence that pupils benefit." />
+            <ReadinessStage number="01" title="Guided product tour" status="Explore" detail="Review the complete teacher and pupil journey, including the concept map, diagnostic, pathway, and progress view." />
+            <ReadinessStage number="02" title="Curriculum setup" status="Prepare" detail="Add the school&apos;s scheme of work, lesson resources, classes, and the teachers responsible for checking each route." />
+            <ReadinessStage number="03" title="Governed rollout" status="Approve" detail="Complete the DPIA, contracts, access checks, retention settings, security review, and named safeguarding ownership." />
+            <ReadinessStage number="04" title="Ongoing evaluation" status="Improve" detail="Review teaching quality, accessibility, fairness, incidents, teacher effort, and whether pupils can rejoin the target lesson." />
           </div>
         </div>
       </section>
@@ -120,7 +120,7 @@ export default function ForSchoolsPage() {
       </section>
 
       <section className="mx-auto max-w-[1400px] px-4 pb-24 sm:px-6 lg:px-10 lg:pb-28">
-        <div className="rounded-[1rem] bg-[var(--landing-accent)] p-8 text-[var(--landing-accent-ink)] sm:p-12 lg:flex lg:items-end lg:justify-between lg:gap-12"><div><h2 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em]">Start with the synthetic walkthrough.</h2><p className="mt-5 max-w-2xl leading-7 text-[var(--landing-accent-muted)]">Evaluate the teacher and pupil journeys before discussing data integration or a pilot.</p></div><Button nativeButton={false} render={<Link href="/demo" />} className="mt-8 h-11 rounded-[0.875rem] bg-[var(--landing-cta)] px-5 text-[var(--landing-cta-ink)] hover:bg-[var(--landing-cta-hover)] lg:mt-0">Explore the demo <ArrowRight /></Button></div>
+        <div className="rounded-[1rem] bg-[var(--landing-accent)] p-8 text-[var(--landing-accent-ink)] sm:p-12 lg:flex lg:items-end lg:justify-between lg:gap-12"><div><h2 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em]">Start with the guided walkthrough.</h2><p className="mt-5 max-w-2xl leading-7 text-[var(--landing-accent-muted)]">See the teacher and pupil journeys together, then plan how BridgeBack could fit your school.</p></div><Button nativeButton={false} render={<Link href="/demo" />} className="mt-8 h-11 rounded-[0.875rem] bg-[var(--landing-cta)] px-5 text-[var(--landing-cta-ink)] hover:bg-[var(--landing-cta-hover)] lg:mt-0">Explore the demo <ArrowRight /></Button></div>
       </section>
       <MarketingFooter />
     </main>

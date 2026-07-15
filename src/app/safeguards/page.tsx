@@ -10,7 +10,7 @@ const openAiData = "https://developers.openai.com/api/docs/guides/your-data";
 
 export const metadata: Metadata = {
   title: "Safeguards | BridgeBack",
-  description: "See what pupil data BridgeBack uses, what it leaves out, how access is checked, and what must happen before a real school pilot.",
+  description: "See what pupil data BridgeBack uses, what it leaves out, how access is checked, and how schools prepare for responsible use.",
 };
 
 export default function SafeguardsPage() {
@@ -19,8 +19,8 @@ export default function SafeguardsPage() {
       <MarketingHeader active="/safeguards" />
       <MarketingPageIntro
         title="Support a pupil without building a profile of them."
-        description="BridgeBack minimises data, isolates its public demonstration, and keeps educational decisions with the teacher."
-        aside={<div><p className="text-sm font-semibold text-[var(--landing-accent)]">What is allowed today</p><p className="mt-5 text-3xl font-semibold tracking-[-0.035em]">The Build Week version uses made-up pupil data only.</p><p className="mt-4 text-sm leading-6 text-[var(--landing-muted)]">The technology is in place, but real pupil data cannot be used yet.</p></div>}
+        description="BridgeBack minimises data, separates responsibilities, and keeps educational decisions with the teacher."
+        aside={<div><p className="text-sm font-semibold text-[var(--landing-accent)]">The guiding principle</p><p className="mt-5 text-3xl font-semibold tracking-[-0.035em]">Use what the lesson needs. Leave everything else out.</p><p className="mt-4 text-sm leading-6 text-[var(--landing-muted)]">A learning route should not require a detailed account of a child&apos;s life or reason for absence.</p></div>}
       />
 
       <section className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
@@ -48,7 +48,7 @@ export default function SafeguardsPage() {
             <DataStage stage="Choosing the route" needed="Approved concept map plus the correct or incorrect results" excluded="An AI opinion about the pupil" output="Up to three concepts chosen by BridgeBack code" />
             <DataStage stage="Micro-lesson creation" needed="Approved concept path, source context, concept key, and correctness" excluded="Pupil name, selected option, reason for absence" output="Explanation, example, and closed check" />
           </div>
-          <p className="mt-6 text-sm leading-6 text-[var(--landing-muted)]">The prototype does not collect free-form pupil chat, precise location, contacts, biometrics, photographs, audio, health information, family information, safeguarding records, or absence reasons.</p>
+          <p className="mt-6 text-sm leading-6 text-[var(--landing-muted)]">BridgeBack does not collect free-form pupil chat, precise location, contacts, biometrics, photographs, audio, health information, family information, safeguarding records, or absence reasons.</p>
         </div>
       </section>
 
@@ -57,11 +57,11 @@ export default function SafeguardsPage() {
           <div><LockKeyhole className="size-7 text-[var(--landing-accent)]" /><h2 className="mt-7 text-4xl font-semibold tracking-[-0.04em]">How access is checked</h2><p className="mt-6 leading-7 text-[var(--landing-muted)]">Hiding a page is not enough. BridgeBack checks a person&apos;s identity and school access again whenever protected data is read or changed.</p></div>
           <div className="border-t border-[var(--landing-line)]">
             <Control title="Sign-in and school access">Clerk handles sign-in. Convex then checks that the person belongs to the right school before protected work can continue.</Control>
-            <Control title="Demo kept separate">Demo identities cannot open real school workspaces. Made-up demo data is clearly marked and can be reset safely.</Control>
+            <Control title="Separate school workspaces">Organisation-scoped access prevents a teacher or pupil from opening another school&apos;s classes, lessons, or pathways.</Control>
             <Control title="Secret keys stay private">Clerk, Convex, and OpenAI keys stay on the server or inside the service settings. They are never sent to the browser.</Control>
             <Control title="Private resources">Lesson files remain in managed private storage. Browser uploads are size and type checked and are never placed in the public directory.</Control>
             <Control title="Audit evidence">Administrative actions create append-only events without copying tokens, request bodies, or lesson content into the audit record.</Control>
-            <Control title="Sending and storing data">A school version must use HTTPS. Clerk, Convex, OpenAI, and the hosting platform provide managed encryption controls.</Control>
+            <Control title="Sending and storing data">Production deployments require HTTPS. Clerk, Convex, OpenAI, and the hosting platform provide managed encryption controls.</Control>
           </div>
         </div>
       </section>
@@ -84,7 +84,7 @@ export default function SafeguardsPage() {
 
       <section className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
         <div className="grid gap-12 lg:grid-cols-[0.7fr_1.3fr] lg:gap-20">
-          <div><h2 className="text-4xl font-semibold tracking-[-0.04em]">OpenAI request controls and their limits</h2><p className="mt-6 leading-7 text-[var(--landing-muted)]">The prototype reduces persistence, but it does not describe store false as Zero Data Retention.</p></div>
+          <div><h2 className="text-4xl font-semibold tracking-[-0.04em]">OpenAI request controls and their limits</h2><p className="mt-6 leading-7 text-[var(--landing-muted)]">BridgeBack reduces persistence, but it does not describe store false as Zero Data Retention.</p></div>
           <div className="grid gap-8 sm:grid-cols-2">
             <RequestControl title="Store false">OpenAI requests use store false, so the response is not kept as saved application history in the Responses API.</RequestControl>
             <RequestControl title="Request-scoped files">Lesson files are sent as request inputs rather than created as persistent OpenAI File objects.</RequestControl>
@@ -96,8 +96,8 @@ export default function SafeguardsPage() {
 
       <section className="border-y border-[var(--landing-line)] bg-[var(--landing-soft)]">
         <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
-          <h2 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">What must happen before real pupil data is used</h2>
-          <p className="mt-6 max-w-3xl leading-7 text-[var(--landing-muted)]">A real school pilot cannot start until the right people have completed, tested, and approved each item.</p>
+          <h2 className="max-w-3xl text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">What every school rollout must put in place</h2>
+          <p className="mt-6 max-w-3xl leading-7 text-[var(--landing-muted)]">Responsible use starts with named owners, tested controls, clear information, and approval from the right people.</p>
           <div className="mt-12 grid gap-x-12 gap-y-6 md:grid-cols-2">
             <ReleaseGate>Complete a child-specific DPIA and establish the lawful basis for every purpose.</ReleaseGate>
             <ReleaseGate>Write down who is responsible for each use of data across the school, BridgeBack, and its service providers.</ReleaseGate>
@@ -113,7 +113,7 @@ export default function SafeguardsPage() {
 
       <section className="mx-auto max-w-[1400px] px-4 py-16 sm:px-6 lg:px-10">
         <div className="grid gap-10 lg:grid-cols-[0.55fr_1.45fr]">
-          <div><h2 className="text-2xl font-semibold tracking-[-0.03em]">More information</h2><p className="mt-4 text-sm leading-6 text-[var(--landing-muted)]">This page explains our product choices. It is not legal advice, and a real pilot needs expert review.</p></div>
+          <div><h2 className="text-2xl font-semibold tracking-[-0.03em]">More information</h2><p className="mt-4 text-sm leading-6 text-[var(--landing-muted)]">This page explains our product choices. It is not legal advice, and a school rollout needs expert review.</p></div>
           <div className="grid gap-4 sm:grid-cols-2">
             <SourceLink href={icoCode}>ICO Children&apos;s code standards</SourceLink>
             <SourceLink href={icoDpia}>ICO child-specific DPIA guidance</SourceLink>

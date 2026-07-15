@@ -9,7 +9,7 @@ import {
   ShieldCheck,
   Sparkles,
 } from "lucide-react";
-import Image from "next/image";
+import Image, { getImageProps } from "next/image";
 import Link from "next/link";
 
 import { MarketingFooter, MarketingHeader } from "@/components/marketing-chrome";
@@ -34,7 +34,7 @@ export default function Home() {
             Catch up on what<br className="hidden sm:block" /> unlocks next.
           </h1>
           <p className="mt-7 max-w-lg text-lg leading-8 text-[var(--landing-muted)]">
-            Explore a synthetic walkthrough, or use BridgeBack with your school&apos;s lessons and secure workspace.
+            See BridgeBack in action, or open your school&apos;s secure workspace with your own lessons.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Button
@@ -73,7 +73,7 @@ export default function Home() {
         </figure>
       </section>
 
-      <section id="evidence" className="border-y border-[var(--landing-line)]">
+      <section id="why" className="border-y border-[var(--landing-line)]">
         <div className="mx-auto grid max-w-[1400px] lg:grid-cols-[1.15fr_0.85fr]">
           <div className="px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
             <p className="text-sm font-semibold text-[var(--landing-accent)]">The attendance gap</p>
@@ -147,7 +147,6 @@ export default function Home() {
             <JourneyArrow />
             <JourneyStep icon={BookOpenCheck} value="3" title="Steps to rejoin" detail="Never more than three at one time" />
           </div>
-          <p className="mt-4 text-xs text-[var(--landing-muted)]">Mia and all figures in this example are synthetic demo data.</p>
         </div>
       </section>
 
@@ -176,6 +175,19 @@ export default function Home() {
         </div>
       </section>
 
+      <section id="product-preview" className="border-y border-[var(--landing-line)] bg-[var(--landing-deep)] text-[var(--landing-dark-ink)]">
+        <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
+          <div className="max-w-3xl">
+            <h2 className="text-4xl font-semibold leading-tight tracking-[-0.04em] sm:text-5xl">See the workspace before you step inside.</h2>
+            <p className="mt-6 max-w-2xl leading-7 text-[var(--landing-dark-muted)]">The teacher view keeps the upcoming lesson, pupil readiness, concept map, and source materials together.</p>
+          </div>
+          <div className="mt-12 overflow-hidden rounded-[1rem] border border-[color-mix(in_oklch,var(--landing-dark-muted)_28%,transparent)] bg-[var(--landing-surface)] shadow-[0_30px_80px_-48px_var(--landing-shadow)]">
+            <ProductPreview />
+          </div>
+          <p className="mt-5 text-sm text-[var(--landing-dark-muted)]">Teacher workspace shown at the layout designed for your screen.</p>
+        </div>
+      </section>
+
       <section id="product" className="border-y border-[var(--landing-line)] bg-[var(--landing-surface)]">
         <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
           <div className="grid gap-8 lg:grid-cols-[0.72fr_1.28fr] lg:gap-16">
@@ -187,7 +199,7 @@ export default function Home() {
                 A prepared demo makes the full journey easy to show. The school workspace applies the same engine to a school&apos;s own teaching materials.
               </p>
               <p className="mt-8 border-l-2 border-[var(--landing-accent)] pl-5 text-sm leading-6 text-[var(--landing-muted)]">
-                The demo is dependable for a live presentation, but its AI actions are genuine. Synthetic data protects pupils without disguising how the product works.
+                The guided journey is dependable for a live presentation, while its teacher reviews and AI actions use the real product workflow.
               </p>
             </div>
 
@@ -198,10 +210,10 @@ export default function Home() {
                 </div>
                 <h3 className="mt-7 text-2xl font-semibold tracking-[-0.03em]">Guided demo</h3>
                 <p className="mt-4 text-sm leading-6 text-[var(--landing-muted)]">
-                  Meet fictional pupil Mia through a prepared binary search lesson, diagnostic, and catch-up route. Enter as teacher or pupil in one click.
+                  Follow Mia through a prepared binary search lesson, diagnostic, and catch-up route. Enter as teacher or pupil in one click.
                 </p>
                 <ul className="mt-7 space-y-3 text-sm">
-                  <CheckItem>Entirely synthetic school and pupil data</CheckItem>
+                  <CheckItem>Complete teacher and pupil views</CheckItem>
                   <CheckItem>Prepared state for a reliable walkthrough</CheckItem>
                   <CheckItem>Live AI actions use the product engine</CheckItem>
                 </ul>
@@ -248,7 +260,7 @@ export default function Home() {
             <h2 className="mt-4 max-w-xl text-4xl font-semibold leading-tight tracking-[-0.04em]">Useful AI needs firm boundaries.</h2>
           </div>
           <div className="grid bg-[var(--landing-surface)] sm:grid-cols-2">
-            <Safeguard title="Synthetic by default">The public demo contains no real child identities, attendance records, lessons, or responses.</Safeguard>
+            <Safeguard title="Privacy by design">The learning route is designed around lesson needs, not a detailed profile of the pupil.</Safeguard>
             <Safeguard title="Minimal data">Only the information needed to plan and complete the learning route is stored.</Safeguard>
             <Safeguard title="Teacher controlled">AI proposes prerequisite maps and learning content. A teacher reviews the route.</Safeguard>
             <Safeguard title="No hidden ranking">The diagnostic identifies concept support needs. It does not label or rank the pupil.</Safeguard>
@@ -298,6 +310,39 @@ function JourneyStep({
         <p className="mt-2 max-w-52 text-sm leading-6 text-[var(--landing-muted)]">{detail}</p>
       </div>
     </div>
+  );
+}
+
+function ProductPreview() {
+  const common = {
+    alt: "BridgeBack teacher workspace showing lesson readiness, prerequisite concepts, and a teacher-reviewed pathway",
+    sizes: "(max-width: 767px) 100vw, 1400px",
+  };
+  const {
+    props: { srcSet: desktop },
+  } = getImageProps({
+    ...common,
+    src: "/product/teacher-workspace-desktop.png",
+    width: 1440,
+    height: 1000,
+    quality: 88,
+  });
+  const {
+    props: { srcSet: mobile, ...rest },
+  } = getImageProps({
+    ...common,
+    src: "/product/teacher-workspace-mobile.png",
+    width: 390,
+    height: 844,
+    quality: 86,
+  });
+
+  return (
+    <picture>
+      <source media="(min-width: 768px)" srcSet={desktop} />
+      <source media="(max-width: 767px)" srcSet={mobile} />
+      <img {...rest} className="h-auto w-full" />
+    </picture>
   );
 }
 

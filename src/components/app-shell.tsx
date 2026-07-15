@@ -42,7 +42,7 @@ export function AppShell() {
 
           <div className="flex items-center gap-2">
             <Badge variant="outline" className="hidden border-primary/20 bg-primary/[0.045] text-primary md:flex">
-              <Sparkles data-icon="inline-start" /> Seeded demo
+              <Sparkles data-icon="inline-start" /> Guided tour
             </Badge>
             <Button variant="ghost" size="icon" aria-label="Notifications">
               <Bell />
@@ -65,4 +65,3 @@ export function AppShell() {
     </Tabs>
   );
 }
-
