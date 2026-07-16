@@ -10,6 +10,10 @@ test("pupil demo retains its active learning material after refresh", async ({ p
   await page.goto("/demo/pupil");
   await page.getByRole("button", { name: "Begin step one" }).click();
   await expect(page.getByText("Step 1 of 2")).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Talk it through" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "Start a 5-minute conversation" })).toBeVisible();
+  await expect(page.getByText("Do not share personal or private information.", { exact: false })).toBeVisible();
+  await expect(page.getByText("BridgeBack does not save the audio or transcript.")).toBeHidden();
   await page.getByRole("button", { name: "Create a visual" }).click();
   await expect(page.getByRole("img", { name: "A sorted row of seven numbers with the middle value highlighted, showing one half discarded and the search continuing in the other half." })).toBeVisible();
   await page.reload();

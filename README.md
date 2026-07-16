@@ -26,6 +26,7 @@ The guided demo follows Mia, a fictional Year 10 pupil returning after four week
 - Safety identifiers, `store: false`, prompt-injection boundaries and AI run telemetry
 - Unit tests, desktop and iPhone browser journeys, automated WCAG checks and GitHub Actions CI
 - A reproducible two-minute Remotion submission film with an OpenAI `gpt-4o-mini-tts` narration generator
+- A five-minute, lesson-grounded “Talk it through” voice mode using `gpt-realtime-2.1` over WebRTC
 
 ## Run locally
 

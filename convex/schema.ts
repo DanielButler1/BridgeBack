@@ -243,4 +243,15 @@ export default defineSchema({
     errorCode: v.optional(v.string()),
     createdAt: v.number(),
   }).index("by_lesson", ["lessonId"]),
+
+  voiceSessions: defineTable({
+    userId: v.id("users"),
+    topicTitle: v.string(),
+    model: v.string(),
+    durationLimitSeconds: v.number(),
+    status: v.union(v.literal("reserved"), v.literal("started"), v.literal("failed")),
+    startedAt: v.number(),
+  })
+    .index("by_user", ["userId"])
+    .index("by_user_and_started_at", ["userId", "startedAt"]),
 });
