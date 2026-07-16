@@ -3,7 +3,7 @@
 import { UserButton, useUser } from "@clerk/nextjs";
 import { Authenticated, AuthLoading, Unauthenticated, useMutation, useQuery } from "convex/react";
 import { makeFunctionReference } from "convex/server";
-import { ArrowLeft, BookOpenCheck, Building2, LockKeyhole, Plus, School, ShieldCheck, Users } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpenCheck, Building2, LockKeyhole, Plus, School, ShieldCheck, Users } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -134,12 +134,12 @@ function Workspace() {
                 {data.classes.length ? (
                   <div className="grid gap-3 sm:grid-cols-2">
                     {data.classes.map((item: { _id: string; name: string; subject: string; yearGroup: string }) => (
-                      <article key={item._id} className="rounded-xl border bg-muted/20 p-5 transition-colors hover:border-primary/35 hover:bg-primary/[0.035]">
+                      <Link key={item._id} href={`/app/classes/${item._id}`} className="group rounded-xl border bg-muted/20 p-5 transition-colors hover:border-primary/35 hover:bg-primary/[0.035] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
                         <div className="flex size-9 items-center justify-center rounded-lg bg-background text-primary ring-1 ring-border"><BookOpenCheck className="size-4" /></div>
                         <p className="mt-5 font-heading text-lg font-semibold">{item.name}</p>
                         <p className="mt-1 text-sm text-muted-foreground">{item.subject}</p>
-                        <p className="mt-3 text-xs text-muted-foreground">{item.yearGroup}</p>
-                      </article>
+                        <div className="mt-4 flex items-center justify-between gap-3 text-xs text-muted-foreground"><span>{item.yearGroup}</span><span className="flex items-center gap-1 font-semibold text-primary">Open class <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" /></span></div>
+                      </Link>
                     ))}
                   </div>
                 ) : (

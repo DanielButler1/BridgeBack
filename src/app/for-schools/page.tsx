@@ -35,7 +35,7 @@ export default function ForSchoolsPage() {
 
       <section className="border-y border-[var(--landing-line)] bg-[var(--landing-surface)]">
         <div className="mx-auto max-w-[1400px] px-4 py-20 sm:px-6 lg:px-10 lg:py-28">
-          <div className="max-w-3xl"><h2 className="text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Designed to reduce teacher preparation, not remove teacher judgment.</h2><p className="mt-6 leading-7 text-[var(--landing-muted)]">The school provides curriculum intent and oversight. BridgeBack performs the repetitive transformation work and keeps each proposal inspectable.</p></div>
+          <div className="max-w-3xl"><h2 className="text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Designed to reduce repetitive preparation, not remove teacher judgment.</h2><p className="mt-6 leading-7 text-[var(--landing-muted)]">The school provides curriculum intent and oversight. BridgeBack performs the repetitive transformation work and keeps each proposal inspectable. Whether this saves teacher time is a pilot question, not a claim we make today.</p></div>
           <div className="mt-12 grid gap-10 lg:grid-cols-[0.75fr_1.25fr]">
             <div className="border-t border-[var(--landing-line)] pt-7">
               <FileCheck2 className="size-6 text-[var(--landing-accent)]" />
@@ -90,6 +90,7 @@ export default function ForSchoolsPage() {
             <ModelJob model="Sol" stage="Lesson mapping" job="Read several lesson resources, find the main lesson idea, map the earlier ideas, and link each one to its source." limit="approve its own concept map" />
             <ModelJob model="Terra" stage="Check-in questions" job="Create short multiple-choice questions from the teacher-approved concept map." limit="mark answers or choose the pupil&apos;s route" />
             <ModelJob model="Luna" stage="Pupil support" job="Write short explanations and checks for one to three concepts." limit="see the pupil&apos;s name or reason for absence" />
+            <ModelJob model="GPT Image Mini" stage="Optional visual" job="Create a simple illustration for up to two pupil activities when a picture would help." limit="receive pupil identity, attendance context, marks, or grades" />
           </div>
         </div>
       </section>

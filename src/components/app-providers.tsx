@@ -5,7 +5,7 @@ import { ConvexProviderWithAuth, ConvexReactClient } from "convex/react";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { publicConfig } from "@/lib/config";
+import { hasClerk, hasConvex, publicConfig } from "@/lib/config";
 
 function useConvexAuth() {
   const [authState, setAuthState] = useState<"loading" | "authenticated" | "anonymous">("loading");
@@ -37,10 +37,10 @@ function useConvexAuth() {
 
 export function AppProviders({ children }: { children: React.ReactNode }) {
   const [convexClient] = useState(() =>
-    publicConfig.convexUrl ? new ConvexReactClient(publicConfig.convexUrl) : null,
+    hasConvex ? new ConvexReactClient(publicConfig.convexUrl) : null,
   );
 
-  if (publicConfig.clerkPublishableKey && convexClient) {
+  if (hasClerk && convexClient) {
     return (
       <ClerkProvider publishableKey={publicConfig.clerkPublishableKey}>
         <ConvexProviderWithAuth client={convexClient} useAuth={useConvexAuth}>
@@ -50,7 +50,7 @@ export function AppProviders({ children }: { children: React.ReactNode }) {
     );
   }
 
-  if (publicConfig.clerkPublishableKey) {
+  if (hasClerk) {
     return (
       <ClerkProvider publishableKey={publicConfig.clerkPublishableKey}>
         <TooltipProvider>{children}</TooltipProvider>

@@ -4,7 +4,7 @@
 
 BridgeBack is an OpenAI Build Week Education-track project for pupils returning to school after absence. Instead of assigning every missed resource, it identifies the minimum prerequisite concepts a pupil needs to participate in the upcoming lesson.
 
-The current proof of concept follows Mia, a fictional Year 10 pupil returning after four weeks away, as her class begins GCSE Computer Science binary search.
+The guided demo follows Mia, a fictional Year 10 pupil returning after four weeks away, as her class begins GCSE Computer Science binary search. The protected school workspace supports creating a real class and upcoming lesson separately from that judge journey.
 
 ## What works today
 
@@ -19,7 +19,11 @@ The current proof of concept follows Mia, a fictional Year 10 pupil returning af
 - GPT-5.6 Luna micro-lessons with explanations, worked examples, closed checks and exact source references
 - Credential-free local demo mode using the same product screens
 - GPT-5.6 Sol file-aware lesson analysis with Zod Structured Outputs, editable draft persistence and teacher approval
+- GPT Image 1 Mini concept illustrations for the first two unlocked learning activities
+- A responsive concept map that becomes an ordered prerequisite list on small screens
+- A protected school workspace for class creation, lesson setup, resource upload, analysis and teacher approval
 - Safety identifiers, `store: false`, prompt-injection boundaries and AI run telemetry
+- Unit tests, desktop and iPhone browser journeys, automated WCAG checks and GitHub Actions CI
 
 ## Run locally
 
@@ -62,6 +66,7 @@ npx convex env set OPENAI_API_KEY
 - Zod for educational domain schemas
 - Clerk for authentication and Convex for database, storage and server actions
 - OpenAI JavaScript SDK and the Responses API
+- Playwright and axe-core for browser and accessibility checks
 
 ## GPT-5.6 routing
 
@@ -70,8 +75,19 @@ npx convex env set OPENAI_API_KEY
 | Lesson dependency graph | `gpt-5.6-sol` | Implemented with Structured Outputs |
 | Approved diagnostic | `gpt-5.6-terra` | Balanced structured educational generation |
 | Pupil micro-lessons | `gpt-5.6-luna` | Efficient, responsive instructional generation |
+| Optional concept illustration | `gpt-image-1-mini` | Low-cost visual support, limited to two unlocked activities |
 
 Teacher review remains mandatory before any generated dependency map is assigned to pupils.
+
+## Verify locally
+
+```bash
+npm run verify
+npx playwright install chromium
+npm run test:e2e
+```
+
+Browser tests cover the public pages, both demo roles, refresh persistence, desktop Chromium, iPhone-sized Chromium, and serious/critical WCAG violations.
 
 ## Product principles
 
@@ -86,6 +102,16 @@ Teacher review remains mandatory before any generated dependency map is assigned
 ## Safety and privacy decisions
 
 The rationale for BridgeBack's synthetic-data boundary, child-protection principles, data flow, OpenAI retention choices, teacher oversight, prohibited uses, and real-school release blockers is documented in [Safety, privacy, and product decisions](docs/SAFETY-PRIVACY-DECISIONS.md).
+
+## Public release
+
+- [Vercel deployment runbook](docs/DEPLOYMENT.md)
+- [School integration pilot](docs/SCHOOL-INTEGRATION-PILOT.md)
+- [Impact measurement plan](docs/IMPACT-MEASUREMENT.md)
+- [AI evaluation plan](docs/AI-EVALUATION.md)
+- [Security architecture](docs/SECURITY-ARCHITECTURE.md)
+
+Licensed under the [Apache License 2.0](LICENSE).
 
 ## Codex collaboration
 

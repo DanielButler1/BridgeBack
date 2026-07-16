@@ -27,14 +27,13 @@ function validateGraph(nodes: GraphNode[], edges: GraphEdge[], targetConceptKey?
 }
 
 export const overview = queryGeneric({
-  args: {},
-  handler: async (ctx) => {
+  args: { classId: v.optional(v.id("classes")) },
+  handler: async (ctx, args) => {
     const teacher = await requireRole(ctx, "teacher");
-    const classRecord = await ctx.db
-      .query("classes")
-      .withIndex("by_teacher", (q) => q.eq("teacherId", teacher._id))
-      .first();
-    if (!classRecord) return null;
+    const classRecord = args.classId
+      ? await ctx.db.get(args.classId)
+      : await ctx.db.query("classes").withIndex("by_teacher", (q) => q.eq("teacherId", teacher._id)).first();
+    if (!classRecord || classRecord.teacherId !== teacher._id) return null;
 
     const lesson = await ctx.db
       .query("lessons")
@@ -68,6 +67,9 @@ export const overview = queryGeneric({
     const modules = assignment
       ? await ctx.db.query("learningModules").withIndex("by_assignment", (q) => q.eq("assignmentId", assignment._id)).collect()
       : [];
+    const supportRequests = assignment
+      ? await ctx.db.query("supportRequests").withIndex("by_assignment", (q) => q.eq("assignmentId", assignment._id)).collect()
+      : [];
     return {
       teacher,
       classRecord,
@@ -81,6 +83,7 @@ export const overview = queryGeneric({
       responses,
       path,
       modules: modules.sort((a, b) => a.order - b.order),
+      supportRequests,
       latestRun: runs.sort((a, b) => b.createdAt - a.createdAt)[0] ?? null,
     };
   },

@@ -62,3 +62,52 @@ export const createClass = mutation({
     return classId;
   },
 });
+
+export const classWorkspace = query({
+  args: { classId: v.id("classes") },
+  handler: async (ctx, args) => {
+    const viewer = await requireProductionViewer(ctx);
+    const classRecord = await ctx.db.get(args.classId);
+    if (!classRecord || classRecord.synthetic || classRecord.teacherId !== viewer._id || !classRecord.organisationId) throw new Error("Class not found");
+    const membership = await ctx.db.query("memberships").withIndex("by_organisation_and_user", (q) => q.eq("organisationId", classRecord.organisationId!).eq("userId", viewer._id)).unique();
+    if (!membership || membership.status !== "active") throw new Error("Forbidden");
+    const lessons = await ctx.db.query("lessons").withIndex("by_class", (q) => q.eq("classId", classRecord._id)).collect();
+    const upcomingLesson = lessons.filter((lesson) => lesson.isUpcoming).sort((a, b) => a.startsAt - b.startsAt)[0] ?? null;
+    return { classRecord, upcomingLesson, lessonCount: lessons.length };
+  },
+});
+
+export const createLesson = mutation({
+  args: {
+    classId: v.id("classes"),
+    title: v.string(),
+    objectives: v.array(v.string()),
+    startsAt: v.number(),
+  },
+  handler: async (ctx, args) => {
+    const viewer = await requireProductionViewer(ctx);
+    const classRecord = await ctx.db.get(args.classId);
+    if (!classRecord || classRecord.synthetic || classRecord.teacherId !== viewer._id || !classRecord.organisationId) throw new Error("Class not found");
+    const membership = await ctx.db.query("memberships").withIndex("by_organisation_and_user", (q) => q.eq("organisationId", classRecord.organisationId!).eq("userId", viewer._id)).unique();
+    if (!membership || membership.status !== "active" || !["owner", "admin", "teacher"].includes(membership.role)) throw new Error("Forbidden");
+    const title = clean(args.title, "Lesson title", 120);
+    const objectives = args.objectives.map((objective) => clean(objective, "Objective", 180)).slice(0, 6);
+    if (!objectives.length) throw new Error("Add at least one lesson objective");
+    if (!Number.isFinite(args.startsAt) || args.startsAt < Date.now() - 24 * 60 * 60 * 1000) throw new Error("Choose an upcoming lesson time");
+    const existing = await ctx.db.query("lessons").withIndex("by_class", (q) => q.eq("classId", classRecord._id)).collect();
+    for (const lesson of existing) {
+      if (lesson.isUpcoming) await ctx.db.patch(lesson._id, { isUpcoming: false });
+    }
+    const lessonId = await ctx.db.insert("lessons", {
+      classId: classRecord._id,
+      title,
+      startsAt: args.startsAt,
+      isUpcoming: true,
+      objectives,
+      analysisStatus: "not_started",
+      synthetic: false,
+    });
+    await ctx.db.insert("auditEvents", { organisationId: classRecord.organisationId, actorId: viewer._id, action: "lesson.created", targetType: "lesson", targetId: String(lessonId), occurredAt: Date.now() });
+    return lessonId;
+  },
+});

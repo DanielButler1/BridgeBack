@@ -1,6 +1,5 @@
 import {
   ArrowRight,
-  BookOpenCheck,
   Check,
   FileStack,
   GraduationCap,
@@ -8,6 +7,7 @@ import {
   School,
   ShieldCheck,
   Sparkles,
+  Target,
 } from "lucide-react";
 import Image, { getImageProps } from "next/image";
 import Link from "next/link";
@@ -34,7 +34,7 @@ export default function Home() {
             Catch up on what<br className="hidden sm:block" /> unlocks next.
           </h1>
           <p className="mt-7 max-w-lg text-lg leading-8 text-[var(--landing-muted)]">
-            See BridgeBack in action, or open your school&apos;s secure workspace with your own lessons.
+            BridgeBack works backwards from the next lesson, checks the few prerequisite ideas that unlock it, and gives the pupil a short, teacher-approved route back in.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
             <Button
@@ -140,13 +140,18 @@ export default function Home() {
           <h2 className="max-w-4xl text-4xl font-semibold leading-tight tracking-[-0.04em] sm:text-5xl">Mia missed four weeks. She does not need twelve catch-up lessons.</h2>
           <p className="mt-6 max-w-2xl text-base leading-7 text-[var(--landing-muted)]">She needs the shortest route into tomorrow&apos;s binary search lesson.</p>
 
-          <div className="mt-14 grid overflow-hidden rounded-[1rem] border border-[var(--landing-line)] bg-[var(--landing-surface)] md:grid-cols-[1fr_auto_1fr_auto_1fr]">
+          <div className="mt-14 grid overflow-hidden rounded-[1rem] border border-[var(--landing-line)] bg-[var(--landing-surface)] lg:grid-cols-[1fr_auto_1fr_auto_1fr_auto_1fr_auto_1fr]">
+            <JourneyStep icon={GraduationCap} value="20" title="Days away" detail="The context, never a label or reason for absence" />
+            <JourneyArrow />
             <JourneyStep icon={FileStack} value="12" title="Resources analysed" detail="Slides, worksheets and the upcoming lesson" />
+            <JourneyArrow />
+            <JourneyStep icon={Network} value="7" title="Possible prerequisites" detail="Every idea linked back to a lesson source" />
             <JourneyArrow />
             <JourneyStep icon={Network} value="2" title="Concept gaps found" detail="From a short prerequisite diagnostic" />
             <JourneyArrow />
-            <JourneyStep icon={BookOpenCheck} value="3" title="Steps to rejoin" detail="Never more than three at one time" />
+            <JourneyStep icon={Target} value="3" title="Focused activities" detail="The minimum preparation selected for tomorrow" />
           </div>
+          <div className="mt-5 flex items-start gap-3 rounded-[0.875rem] bg-[var(--landing-deep)] p-5 text-sm leading-6 text-[var(--landing-dark-muted)]"><Check className="mt-0.5 size-4 shrink-0 text-[var(--landing-accent-light)]" /><p><strong className="text-[var(--landing-dark-ink)]">Nine missed resources stay out of Mia&apos;s route.</strong> They are available to the teacher, but they are not needed to participate in tomorrow&apos;s binary-search lesson.</p></div>
         </div>
       </section>
 
@@ -339,15 +344,15 @@ function ProductPreview() {
     <picture>
       <source media="(min-width: 768px)" srcSet={desktop} />
       <source media="(max-width: 767px)" srcSet={mobile} />
-      <img {...rest} className="h-auto w-full" />
+      <img {...rest} alt={common.alt} className="h-auto w-full" />
     </picture>
   );
 }
 
 function JourneyArrow() {
   return (
-    <div className="flex items-center justify-center border-y border-[var(--landing-line)] px-5 py-4 text-[var(--landing-accent)] md:border-x md:border-y-0">
-      <ArrowRight className="size-5 rotate-90 md:rotate-0" />
+    <div className="flex items-center justify-center border-y border-[var(--landing-line)] px-5 py-4 text-[var(--landing-accent)] lg:border-x lg:border-y-0">
+      <ArrowRight className="size-5 rotate-90 lg:rotate-0" />
     </div>
   );
 }

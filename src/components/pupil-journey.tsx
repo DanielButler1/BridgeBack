@@ -1,5 +1,7 @@
 "use client";
 
+/* eslint-disable @next/next/no-img-element -- Generated data URLs are transient and cannot use the image optimiser. */
+
 import { useEffect, useState, useSyncExternalStore } from "react";
 import { Authenticated, AuthLoading, Unauthenticated, useAction, useMutation, useQuery } from "convex/react";
 import { makeFunctionReference } from "convex/server";
@@ -11,6 +13,7 @@ import {
   CheckCircle2,
   Clock3,
   HeartHandshake,
+  ImageIcon,
   Lightbulb,
   LoaderCircle,
   Play,
@@ -63,12 +66,15 @@ type PupilAssignment = {
   graph: { targetConceptKey?: string; nodes: Array<{ key: string; title: string; description: string }> } | null;
   path: { conceptKeys: string[]; totalMinutes?: number; status: "ready" | "in_progress" | "complete" } | null;
   modules: LearningModule[];
+  helpRequests: Array<{ moduleId?: string; status: "open" | "acknowledged" }>;
 } | null;
 
 const currentAssignmentRef = makeFunctionReference<"query", Record<string, never>, PupilAssignment>("pupil:currentAssignment");
 const submitAnswerRef = makeFunctionReference<"mutation", { assignmentId: string; questionKey: string; selectedIndex: number }, { isCorrect: boolean; complete: boolean }>("pupil:submitAnswer");
 const generateModulesRef = makeFunctionReference<"action", { assignmentId: string }, { count: number }>("generateLearning:modules");
 const completeModuleRef = makeFunctionReference<"mutation", { moduleId: string; selectedIndex: number }, { isCorrect: boolean; complete: boolean }>("pupil:completeModule");
+const generateIllustrationRef = makeFunctionReference<"action", { moduleId: string }, { dataUrl: string; alt: string }>("generateLearning:illustration");
+const requestHelpRef = makeFunctionReference<"mutation", { moduleId: string }, string>("pupil:requestTeacherHelp");
 
 export function PupilJourney() {
   if (hasClerk && hasConvex) {
@@ -92,9 +98,11 @@ function ConnectedPupilJourney() {
   const submitAnswer = useMutation(submitAnswerRef);
   const generateModules = useAction(generateModulesRef);
   const completeModule = useMutation(completeModuleRef);
+  const generateIllustration = useAction(generateIllustrationRef);
+  const requestHelp = useMutation(requestHelpRef);
   if (data === undefined) return <StatusCard>Loading Mia&apos;s saved pathway…</StatusCard>;
   if (!data) return <StatusCard title="No pathway assigned yet">Ms Morgan can analyse the lesson and assign a diagnostic from the teacher view.</StatusCard>;
-  return <JourneyExperience data={data} onAnswer={(questionKey, selectedIndex) => submitAnswer({ assignmentId: data.assignment._id, questionKey, selectedIndex })} onGenerate={() => generateModules({ assignmentId: data.assignment._id })} onCompleteModule={(moduleId, selectedIndex) => completeModule({ moduleId, selectedIndex })} />;
+  return <JourneyExperience data={data} onAnswer={(questionKey, selectedIndex) => submitAnswer({ assignmentId: data.assignment._id, questionKey, selectedIndex })} onGenerate={() => generateModules({ assignmentId: data.assignment._id })} onCompleteModule={(moduleId, selectedIndex) => completeModule({ moduleId, selectedIndex })} onIllustrate={(moduleId) => generateIllustration({ moduleId })} onRequestHelp={(moduleId) => requestHelp({ moduleId })} />;
 }
 
 type JourneyState = "welcome" | "diagnostic" | "generating" | "results" | "lesson" | "complete";
@@ -123,6 +131,8 @@ type JourneyExperienceProps = {
   onAnswer?: (questionKey: string, selectedIndex: number) => Promise<{ isCorrect: boolean; complete: boolean }>;
   onGenerate?: () => Promise<unknown>;
   onCompleteModule?: (moduleId: string, selectedIndex: number) => Promise<{ isCorrect: boolean; complete: boolean }>;
+  onIllustrate?: (moduleId: string) => Promise<{ dataUrl: string; alt: string }>;
+  onRequestHelp?: (moduleId: string) => Promise<unknown>;
 };
 
 const subscribeToHydration = () => () => undefined;
@@ -154,7 +164,7 @@ function readSavedJourneyView(storageKey: string, data: NonNullable<PupilAssignm
   }
 }
 
-function HydratedJourneyExperience({ data, onAnswer, onGenerate, onCompleteModule }: JourneyExperienceProps) {
+function HydratedJourneyExperience({ data, onAnswer, onGenerate, onCompleteModule, onIllustrate, onRequestHelp }: JourneyExperienceProps) {
   const initialState = defaultJourneyState(data);
   const storageKey = `bridgeback:pupil-view:${data.assignment._id}`;
   const [savedView] = useState(() => readSavedJourneyView(storageKey, data));
@@ -223,7 +233,7 @@ function HydratedJourneyExperience({ data, onAnswer, onGenerate, onCompleteModul
   if (renderedState === "diagnostic") return <DiagnosticView question={questions[questionIndex]} questionIndex={questionIndex} questionCount={questions.length} selectedIndex={selectedIndex} busy={busy} error={error} onSelect={setSelectedIndex} onSubmit={() => void submitDiagnosticAnswer()} onBack={() => questionIndex === 0 ? setState("welcome") : setQuestionIndex((current) => current - 1)} />;
   if (renderedState === "generating") return <GeneratingView error={error} busy={busy} onRetry={() => void retryGeneration()} />;
   if (renderedState === "results") return <ResultsView modules={data.modules} totalMinutes={totalMinutes} onContinue={() => setState("lesson")} />;
-  if (renderedState === "lesson" && activeModule) return <LessonView key={activeModule._id} module={activeModule} moduleCount={data.modules.length} onComplete={async (selected) => {
+  if (renderedState === "lesson" && activeModule) return <LessonView key={activeModule._id} module={activeModule} moduleCount={data.modules.length} helpRequested={data.helpRequests.some((request) => request.moduleId === activeModule._id && request.status === "open")} onRequestHelp={onRequestHelp ? () => onRequestHelp(activeModule._id) : undefined} onIllustrate={onIllustrate ? () => onIllustrate(activeModule._id) : undefined} onComplete={async (selected) => {
     setBusy(true); setError(null);
     try {
       const fallbackCorrectIndex = demoLearningModules.find((module) => module.id === activeModule._id)?.correctIndex;
@@ -259,10 +269,15 @@ function ResultsView({ modules, totalMinutes, onContinue }: { modules: LearningM
   return <div className="mx-auto max-w-5xl pb-10"><section className="mb-6 grid gap-4 lg:grid-cols-[0.78fr_1.22fr]"><Card className="border-0 bg-primary text-primary-foreground ring-0"><CardHeader className="p-7 sm:p-9"><div className="mb-8 flex size-12 items-center justify-center rounded-2xl bg-primary-foreground/12"><Sparkles className="size-5" /></div><p className="text-sm font-semibold opacity-70">Check-in complete</p><CardTitle className="mt-2 font-heading text-4xl leading-tight">Your next steps are ready.</CardTitle><CardDescription className="mt-3 text-primary-foreground/65">BridgeBack prepared {modules.length === 1 ? "one focused activity" : `${modules.length} focused activities`} from your check-in and the upcoming lesson. Nothing else has been added.</CardDescription></CardHeader></Card><Card><CardHeader className="p-7 sm:p-9"><Badge variant="secondary" className="mb-5">Your shortest path</Badge><CardTitle className="font-heading text-3xl">{modules.length} manageable {modules.length === 1 ? "step" : "steps"}</CardTitle><CardDescription className="mt-2 max-w-xl">Each step includes an explanation, a worked example and one quick check drawn from your teacher&apos;s lesson sources.</CardDescription></CardHeader><CardContent className="px-7 sm:px-9"><div className="relative space-y-1 before:absolute before:bottom-6 before:left-[17px] before:top-6 before:w-px before:bg-border">{modules.map((module, index) => <div key={module._id} className="relative flex gap-4 py-3"><div className={cn("z-10 flex size-9 shrink-0 items-center justify-center rounded-full border bg-background font-mono text-xs", index === 0 && "border-primary bg-primary text-primary-foreground")}>{module.order}</div><div className="flex-1 pt-0.5"><p className="font-medium">{module.title}</p><p className="mt-1 text-sm leading-6 text-muted-foreground">{module.objective}</p></div><span className="pt-1 font-mono text-xs text-muted-foreground">{module.durationMinutes} min</span></div>)}</div></CardContent><CardFooter className="justify-between px-7 py-4 sm:px-9"><span className="text-xs text-muted-foreground">{totalMinutes} minutes total</span><Button onClick={onContinue}>{modules.every((module) => module.status === "complete") ? "Review step one" : "Begin step one"} <Play /></Button></CardFooter></Card></section></div>;
 }
 
-function LessonView({ module, moduleCount, onComplete, busy, externalError }: { module: LearningModule; moduleCount: number; onComplete: (selected: number) => Promise<{ isCorrect: boolean }>; busy: boolean; externalError: string | null }) {
+function LessonView({ module, moduleCount, onComplete, onIllustrate, onRequestHelp, helpRequested = false, busy, externalError }: { module: LearningModule; moduleCount: number; onComplete: (selected: number) => Promise<{ isCorrect: boolean }>; onIllustrate?: () => Promise<{ dataUrl: string; alt: string }>; onRequestHelp?: () => Promise<unknown>; helpRequested?: boolean; busy: boolean; externalError: string | null }) {
   const [selected, setSelected] = useState<number | null>(null);
   const [feedback, setFeedback] = useState<string | null>(null);
-  return <div className="mx-auto max-w-5xl pb-10"><div className="mb-6 flex items-center justify-between"><div><p className="text-sm font-semibold text-primary">Step {module.order} of {moduleCount}</p><p className="mt-1 font-heading text-2xl font-semibold">{module.title}</p></div><Badge variant="outline"><Clock3 /> {module.durationMinutes} min</Badge></div><div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]"><Card><CardHeader className="p-7 sm:p-9"><CardTitle className="font-heading text-3xl">{module.objective}</CardTitle><CardDescription className="mt-2 text-base leading-7">{module.explanation}</CardDescription></CardHeader><CardContent className="space-y-6 px-7 sm:px-9"><div className="rounded-2xl border bg-muted/25 p-5"><p className="font-medium">{module.exampleTitle}</p><p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-muted-foreground">{module.exampleBody}</p></div><div><p className="font-heading text-xl font-semibold">Try a quick check</p><p className="mt-2 text-sm leading-6 text-muted-foreground">{module.practicePrompt}</p><div className="mt-4 space-y-2">{module.practiceOptions.map((option, index) => <button type="button" key={option} onClick={() => { setSelected(index); setFeedback(null); }} className={cn("flex w-full items-center gap-3 rounded-xl border p-3 text-left text-sm", selected === index ? "border-primary bg-primary/[0.06]" : "bg-background hover:bg-muted/30")}><span className="flex size-7 items-center justify-center rounded-full border font-mono text-xs">{String.fromCharCode(65 + index)}</span>{option}</button>)}</div>{feedback ? <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">{feedback}</div> : null}{externalError ? <p role="alert" className="mt-4 text-sm text-destructive">{externalError}</p> : null}</div></CardContent><CardFooter className="justify-end px-7 py-4 sm:px-9"><Button disabled={selected === null || busy} onClick={async () => { if (selected === null) return; const result = await onComplete(selected); if (!result.isCorrect) setFeedback(module.feedback); }}>{busy ? <LoaderCircle className="animate-spin" /> : null}Check and continue <ArrowRight /></Button></CardFooter></Card><div className="space-y-4"><Card className="bg-amber-50 text-amber-950 ring-amber-200"><CardHeader><div className="mb-3 flex size-9 items-center justify-center rounded-xl bg-amber-100"><Lightbulb className="size-4" /></div><CardTitle>Why this matters</CardTitle><CardDescription className="text-amber-900/65">This is one of the minimum ideas needed to participate in the next lesson, not extra catch-up work.</CardDescription></CardHeader></Card><Card><CardHeader><CardTitle>Teacher-approved sources</CardTitle><CardDescription>Where this explanation came from.</CardDescription></CardHeader><CardContent className="space-y-2">{module.sourceRefs.map((source) => <div key={source} className="flex items-start gap-2 rounded-lg border p-3 text-sm"><BookOpen className="mt-0.5 size-4 shrink-0 text-primary" />{source}</div>)}</CardContent></Card></div></div></div>;
+  const [illustration, setIllustration] = useState<{ dataUrl: string; alt: string } | null>(null);
+  const [illustrating, setIllustrating] = useState(false);
+  const [illustrationError, setIllustrationError] = useState<string | null>(null);
+  const [helpSent, setHelpSent] = useState(helpRequested);
+  const [sendingHelp, setSendingHelp] = useState(false);
+  return <div className="mx-auto max-w-5xl pb-10"><div className="mb-6 flex items-center justify-between"><div><p className="text-sm font-semibold text-primary">Step {module.order} of {moduleCount}</p><p className="mt-1 font-heading text-2xl font-semibold">{module.title}</p></div><Badge variant="outline"><Clock3 /> {module.durationMinutes} min</Badge></div><div className="grid gap-4 lg:grid-cols-[1.2fr_0.8fr]"><Card><CardHeader className="p-7 sm:p-9"><CardTitle className="font-heading text-3xl">{module.objective}</CardTitle><CardDescription className="mt-2 text-base leading-7">{module.explanation}</CardDescription></CardHeader><CardContent className="space-y-6 px-7 sm:px-9">{illustration ? <figure className="overflow-hidden rounded-2xl border bg-muted/25"><img src={illustration.dataUrl} alt={illustration.alt} className="aspect-square h-auto w-full object-cover sm:aspect-[16/10]" /><figcaption className="border-t px-4 py-3 text-xs leading-5 text-muted-foreground">AI-generated visual explanation. Use the written example and ask your teacher if anything is unclear.</figcaption></figure> : onIllustrate && module.order <= 2 ? <div className="flex flex-col items-start justify-between gap-4 rounded-2xl border border-dashed bg-primary/[0.035] p-5 sm:flex-row sm:items-center"><div><p className="flex items-center gap-2 font-medium"><ImageIcon className="size-4 text-primary" /> Would a picture help?</p><p className="mt-1 text-sm leading-6 text-muted-foreground">Create one simple visual for this activity. It may take up to a minute.</p>{illustrationError ? <p role="alert" className="mt-2 text-sm text-destructive">{illustrationError}</p> : null}</div><Button variant="outline" disabled={illustrating} onClick={async () => { setIllustrating(true); setIllustrationError(null); try { setIllustration(await onIllustrate()); } catch { setIllustrationError("The visual could not be created. You can continue with the written example."); } finally { setIllustrating(false); } }}>{illustrating ? <LoaderCircle className="animate-spin" /> : <Sparkles />} Create a visual</Button></div> : null}<div className="rounded-2xl border bg-muted/25 p-5"><p className="font-medium">{module.exampleTitle}</p><p className="mt-3 whitespace-pre-wrap text-sm leading-7 text-muted-foreground">{module.exampleBody}</p></div><div><p className="font-heading text-xl font-semibold">Try a quick check</p><p className="mt-2 text-sm leading-6 text-muted-foreground">{module.practicePrompt}</p><div className="mt-4 space-y-2">{module.practiceOptions.map((option, index) => <button type="button" key={option} onClick={() => { setSelected(index); setFeedback(null); }} className={cn("flex min-h-11 w-full items-center gap-3 rounded-xl border p-3 text-left text-sm focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50", selected === index ? "border-primary bg-primary/[0.06]" : "bg-background hover:bg-muted/30")}><span className="flex size-7 items-center justify-center rounded-full border font-mono text-xs">{String.fromCharCode(65 + index)}</span>{option}</button>)}</div>{feedback ? <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-4 text-sm leading-6 text-amber-950">{feedback}</div> : null}{externalError ? <p role="alert" className="mt-4 text-sm text-destructive">{externalError}</p> : null}</div></CardContent><CardFooter className="justify-end px-7 py-4 sm:px-9"><Button disabled={selected === null || busy} onClick={async () => { if (selected === null) return; const result = await onComplete(selected); if (!result.isCorrect) setFeedback(module.feedback); }}>{busy ? <LoaderCircle className="animate-spin" /> : null}Check and continue <ArrowRight /></Button></CardFooter></Card><div className="space-y-4"><Card className="bg-amber-50 text-amber-950 ring-amber-200"><CardHeader><div className="mb-3 flex size-9 items-center justify-center rounded-xl bg-amber-100"><Lightbulb className="size-4" /></div><CardTitle>Why this matters</CardTitle><CardDescription className="text-amber-900/65">This is one of the minimum ideas needed to participate in the next lesson, not extra catch-up work.</CardDescription></CardHeader></Card><Card><CardHeader><CardTitle>Teacher-approved sources</CardTitle><CardDescription>Where this explanation came from.</CardDescription></CardHeader><CardContent className="space-y-2">{module.sourceRefs.map((source) => <div key={source} className="flex items-start gap-2 rounded-lg border p-3 text-sm"><BookOpen className="mt-0.5 size-4 shrink-0 text-primary" />{source}</div>)}</CardContent></Card><Card><CardHeader><CardTitle>Need a person?</CardTitle><CardDescription>This preparation never replaces your teacher. Stop here and ask for help whenever you need it.</CardDescription></CardHeader><CardContent><Button variant="outline" className="w-full" disabled={!onRequestHelp || helpSent || sendingHelp} onClick={async () => { if (!onRequestHelp) return; setSendingHelp(true); try { await onRequestHelp(); setHelpSent(true); } finally { setSendingHelp(false); } }}>{sendingHelp ? <LoaderCircle className="animate-spin" /> : helpSent ? <Check /> : <HeartHandshake />}{helpSent ? "Help request sent" : "Ask my teacher for help"}</Button></CardContent></Card></div></div></div>;
 }
 
 function CompleteView({ modules, onReview, onReplay }: { modules: LearningModule[]; onReview: () => void; onReplay: () => void }) {
@@ -277,4 +292,5 @@ const fallbackAssignment: NonNullable<PupilAssignment> = {
   graph: { targetConceptKey: "binary-search", nodes: [{ key: "binary-search", title: "Binary search", description: "Learn how computers find an item quickly by repeatedly cutting a sorted list in half." }] },
   path: { conceptKeys: demoLearningModules.map((module) => module.conceptId), totalMinutes: demoLearningModules.reduce((total, module) => total + module.durationMinutes, 0), status: "ready" },
   modules: demoLearningModules.map((module) => ({ _id: module.id, conceptKey: module.conceptId, order: module.order, title: module.title, objective: module.objective, explanation: module.explanation, exampleTitle: module.exampleTitle, exampleBody: module.exampleBody, practicePrompt: module.practicePrompt, practiceOptions: [...module.practiceOptions], feedback: module.feedback, durationMinutes: module.durationMinutes, sourceRefs: [...module.sourceRefs], status: module.order === 1 ? "ready" : "locked" })),
+  helpRequests: [],
 };

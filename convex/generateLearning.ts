@@ -8,6 +8,8 @@ import { z } from "zod";
 
 const model = "gpt-5.6-luna";
 const promptVersion = "micro-lessons-v1";
+const illustrationModel = "gpt-image-1-mini";
+const illustrationPromptVersion = "learning-illustration-v1";
 
 const modulesSchema = z.object({
   modules: z.array(z.object({
@@ -111,6 +113,49 @@ export const modules = actionGeneric({
         outputTokens: response.usage?.output_tokens,
       });
       return { count: generatedModules.length };
+    } catch (error) {
+      const errorCode = error instanceof Error ? error.message.slice(0, 80) : "unknown_error";
+      await ctx.runMutation(anyApi.aiRuns.fail, { runId, latencyMs: Date.now() - startedAt, errorCode });
+      throw error;
+    }
+  },
+});
+
+export const illustration = actionGeneric({
+  args: { moduleId: v.id("learningModules") },
+  handler: async (ctx, args) => {
+    const identity = await ctx.auth.getUserIdentity();
+    if (!identity) throw new Error("Unauthenticated");
+    if (!process.env.OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured");
+    const context = await ctx.runQuery(anyApi.pupil.illustrationContext, args) as {
+      lesson: { _id: string; title: string };
+      learningModule: { assignmentId: string; title: string; objective: string; explanation: string; exampleTitle: string; exampleBody: string };
+    };
+    const startedAt = Date.now();
+    const runId = await ctx.runMutation(anyApi.aiRuns.start, {
+      lessonId: context.lesson._id,
+      assignmentId: context.learningModule.assignmentId,
+      job: "illustration",
+      model: illustrationModel,
+      promptVersion: illustrationPromptVersion,
+    });
+    try {
+      const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+      const result = await client.images.generate({
+        model: illustrationModel,
+        prompt: `Create one calm, age-appropriate educational illustration for a UK Year 10 pupil. It should explain the computer-science idea visually without adding decorative clutter. Do not include a person, pupil name, school logo, marks, grades, medical context, attendance context, or readable text. Use clear shapes, a restrained green and cream palette, strong contrast, and a simple left-to-right visual sequence.\n\nUpcoming lesson: ${context.lesson.title}\nActivity: ${context.learningModule.title}\nObjective: ${context.learningModule.objective}\nExplanation: ${context.learningModule.explanation}\nWorked example: ${context.learningModule.exampleTitle}: ${context.learningModule.exampleBody}`,
+        size: "1024x1024",
+        quality: "low",
+        output_format: "webp",
+        moderation: "auto",
+      });
+      const imageBase64 = result.data?.[0]?.b64_json;
+      if (!imageBase64) throw new Error("image_generation_empty");
+      await ctx.runMutation(anyApi.aiRuns.succeed, { runId, latencyMs: Date.now() - startedAt });
+      return {
+        dataUrl: `data:image/webp;base64,${imageBase64}`,
+        alt: `Visual explanation of ${context.learningModule.title}: ${context.learningModule.objective}`,
+      };
     } catch (error) {
       const errorCode = error instanceof Error ? error.message.slice(0, 80) : "unknown_error";
       await ctx.runMutation(anyApi.aiRuns.fail, { runId, latencyMs: Date.now() - startedAt, errorCode });

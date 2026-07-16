@@ -7,7 +7,7 @@ export const start = mutationGeneric({
   args: {
     lessonId: v.id("lessons"),
     assignmentId: v.optional(v.id("assignments")),
-    job: v.union(v.literal("concept_graph"), v.literal("diagnostic"), v.literal("micro_lesson")),
+    job: v.union(v.literal("concept_graph"), v.literal("diagnostic"), v.literal("micro_lesson"), v.literal("illustration")),
     model: v.string(),
     promptVersion: v.string(),
   },
@@ -15,7 +15,7 @@ export const start = mutationGeneric({
     const viewer = await requireViewer(ctx);
     const lesson = await ctx.db.get(args.lessonId);
     if (!lesson) throw new Error("Lesson not found");
-    if (args.job === "micro_lesson") {
+    if (args.job === "micro_lesson" || args.job === "illustration") {
       if (viewer.role !== "pupil" || !args.assignmentId) throw new Error("Forbidden");
       const assignment = await ctx.db.get(args.assignmentId);
       if (!assignment || assignment.pupilId !== viewer._id) throw new Error("Forbidden");

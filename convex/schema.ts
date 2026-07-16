@@ -206,6 +206,17 @@ export default defineSchema({
     .index("by_assignment", ["assignmentId"])
     .index("by_assignment_and_order", ["assignmentId", "order"]),
 
+  supportRequests: defineTable({
+    assignmentId: v.id("assignments"),
+    pupilId: v.id("users"),
+    moduleId: v.optional(v.id("learningModules")),
+    status: v.union(v.literal("open"), v.literal("acknowledged")),
+    createdAt: v.number(),
+    acknowledgedAt: v.optional(v.number()),
+  })
+    .index("by_assignment", ["assignmentId"])
+    .index("by_pupil", ["pupilId"]),
+
   aiRuns: defineTable({
     requestedBy: v.id("users"),
     lessonId: v.id("lessons"),
@@ -214,6 +225,7 @@ export default defineSchema({
       v.literal("concept_graph"),
       v.literal("diagnostic"),
       v.literal("micro_lesson"),
+      v.literal("illustration"),
     ),
     model: v.string(),
     promptVersion: v.string(),

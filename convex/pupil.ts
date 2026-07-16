@@ -45,6 +45,7 @@ export const currentAssignment = queryGeneric({
       .query("learningModules")
       .withIndex("by_assignment", (q) => q.eq("assignmentId", assignment._id))
       .collect();
+    const helpRequests = await ctx.db.query("supportRequests").withIndex("by_assignment", (q) => q.eq("assignmentId", assignment._id)).collect();
     return {
       pupil,
       assignment,
@@ -63,7 +64,20 @@ export const currentAssignment = queryGeneric({
       graph,
       path: paths[0] ?? null,
       modules: modules.sort((a, b) => a.order - b.order),
+      helpRequests,
     };
+  },
+});
+
+export const requestTeacherHelp = mutationGeneric({
+  args: { moduleId: v.id("learningModules") },
+  handler: async (ctx, args) => {
+    const pupil = await requireRole(ctx, "pupil");
+    const learningModule = await ctx.db.get(args.moduleId);
+    if (!learningModule || learningModule.pupilId !== pupil._id) throw new Error("Learning activity unavailable");
+    const existing = (await ctx.db.query("supportRequests").withIndex("by_assignment", (q) => q.eq("assignmentId", learningModule.assignmentId)).collect()).find((request) => request.moduleId === learningModule._id && request.status === "open");
+    if (existing) return existing._id;
+    return await ctx.db.insert("supportRequests", { assignmentId: learningModule.assignmentId, pupilId: pupil._id, moduleId: learningModule._id, status: "open", createdAt: Date.now() });
   },
 });
 
@@ -81,6 +95,19 @@ export const learningContext = queryGeneric({
     if (!graph || !lesson || !path) throw new Error("Learning path is not ready");
     const responses = await ctx.db.query("responses").withIndex("by_assignment", (q) => q.eq("assignmentId", assignment._id)).collect();
     return { pupil, assignment, diagnostic, graph, lesson, path, responses };
+  },
+});
+
+export const illustrationContext = queryGeneric({
+  args: { moduleId: v.id("learningModules") },
+  handler: async (ctx, args) => {
+    const pupil = await requireRole(ctx, "pupil");
+    const learningModule = await ctx.db.get(args.moduleId);
+    if (!learningModule || learningModule.pupilId !== pupil._id || learningModule.status === "locked") throw new Error("Learning activity unavailable");
+    if (learningModule.order > 2) throw new Error("Visual explanations are limited to two activities per pathway");
+    const lesson = await ctx.db.get(learningModule.lessonId);
+    if (!lesson) throw new Error("Lesson not found");
+    return { pupil, lesson, learningModule };
   },
 });
 
