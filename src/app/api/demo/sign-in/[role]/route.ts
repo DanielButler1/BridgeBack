@@ -3,7 +3,7 @@ import "server-only";
 import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse, type NextRequest } from "next/server";
 
-import { demoSessionCookie, encodeDemoSession } from "@/lib/auth/demo-session";
+import { demoSessionCookie, encodeDemoSession, getDemoSession } from "@/lib/auth/demo-session";
 
 const allowedRoles = new Set(["teacher", "pupil"]);
 
@@ -22,8 +22,20 @@ export async function GET(
     return NextResponse.json({ error: "Demo identity is not configured" }, { status: 503 });
   }
   const client = await clerkClient();
+  const requestedNext = request.nextUrl.searchParams.get("next");
+  const defaultNext = `/demo/${role}`;
+  const next = requestedNext && ["/demo/teacher", "/demo/pupil", "/demo/maths"].includes(requestedNext)
+    ? requestedNext
+    : defaultNext;
+  const currentSession = await getDemoSession();
+  if (currentSession?.userId === userId) {
+    const response = NextResponse.redirect(new URL(next, request.nextUrl.origin));
+    response.headers.set("Cache-Control", "no-store");
+    return response;
+  }
+  if (currentSession) await client.sessions.revokeSession(currentSession.sessionId).catch(() => null);
   const session = await client.sessions.createSession({ userId });
-  const response = NextResponse.redirect(new URL(`/demo/${role}`, request.nextUrl.origin));
+  const response = NextResponse.redirect(new URL(next, request.nextUrl.origin));
   response.cookies.set(demoSessionCookie, encodeDemoSession(session.id), {
     httpOnly: true,
     sameSite: "lax",

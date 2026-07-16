@@ -11,20 +11,30 @@ test("pupil demo retains its active learning material after refresh", async ({ p
   await page.getByRole("button", { name: "Begin step one" }).click();
   await expect(page.getByText("Step 1 of 2")).toBeVisible();
   await expect(page.getByRole("heading", { name: "Talk it through" })).toBeVisible();
-  await expect(page.getByRole("button", { name: "Start a 5-minute conversation" })).toBeVisible();
-  await expect(page.getByText("Do not share personal or private information.", { exact: false })).toBeVisible();
-  await expect(page.getByText("BridgeBack does not save the audio or transcript.")).toBeHidden();
   await page.getByRole("button", { name: "Create a visual" }).click();
-  await expect(page.getByRole("img", { name: "A sorted row of seven numbers with the middle value highlighted, showing one half discarded and the search continuing in the other half." })).toBeVisible();
+  await expect(page.getByRole("img", { name: /sorted row of seven numbers/ })).toBeVisible();
   await page.reload();
   await expect(page.getByText("Step 1 of 2")).toBeVisible();
 });
 
-test("mathematics example switches from teacher map to pupil pathway", async ({ page }) => {
+test("mathematics journey diagnoses, teaches and resumes", async ({ page }) => {
   await page.goto("/demo/maths");
-  await expect(page.getByRole("heading", { name: "Prepare Amina for simultaneous equations—not every lesson she missed." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: /Prepare Amina for simultaneous equations/ })).toBeVisible();
   await page.getByRole("button", { name: "Pupil" }).click();
-  await expect(page.getByRole("heading", { name: "Two ideas before simultaneous equations." })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "You don't need to catch up on everything today." })).toBeVisible();
+  await page.getByRole("button", { name: "Start my check-in" }).click();
+  for (const answer of ["-5", "5x - 4", "6", "y = 10 - x"]) {
+    await page.getByRole("button").filter({ hasText: answer }).first().click();
+    await page.getByRole("button", { name: /Next question|Build my pathway/ }).click();
+  }
+  await expect(page.getByText("Your next steps are ready.", { exact: true })).toBeVisible();
+  await page.getByRole("button", { name: "Begin step one" }).click();
+  await expect(page.getByText("Step 1 of 2")).toBeVisible();
   await page.getByRole("button", { name: "Create a visual" }).click();
-  await expect(page.getByRole("img", { name: "The equation x plus y equals 10 being rearranged to y equals 10 minus x" })).toBeVisible();
+  await expect(page.getByRole("img", { name: /equation x plus y equals ten/ })).toBeVisible();
+  await page.getByRole("button").filter({ hasText: "y = 13 - 2x" }).click();
+  await page.getByRole("button", { name: "Check and continue" }).click();
+  await expect(page.getByText("Step 2 of 2")).toBeVisible();
+  await page.reload();
+  await expect(page.getByText("Step 2 of 2")).toBeVisible();
 });

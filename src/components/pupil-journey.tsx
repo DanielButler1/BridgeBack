@@ -40,6 +40,7 @@ type PublicQuestion = {
   prompt: string;
   code?: string;
   options: string[];
+  correctIndex?: number;
 };
 
 type LearningModule = {
@@ -57,9 +58,10 @@ type LearningModule = {
   durationMinutes: number;
   sourceRefs: string[];
   status: "locked" | "ready" | "complete";
+  correctIndex?: number;
 };
 
-type PupilAssignment = {
+export type PupilAssignment = {
   pupil: { displayName: string; initials: string };
   assignment: { _id: string; status: "assigned" | "in_progress" | "path_ready" | "complete"; currentQuestion: number };
   diagnostic: { questions: PublicQuestion[] };
@@ -142,12 +144,26 @@ function canRestoreJourneyState(state: JourneyState, data: NonNullable<PupilAssi
 
 type JourneyExperienceProps = {
   data: NonNullable<PupilAssignment>;
+  fallbackAnswerKey?: Record<string, number>;
+  moduleAnswerKey?: Record<string, number>;
+  startAtWelcome?: boolean;
   onAnswer?: (questionKey: string, selectedIndex: number) => Promise<{ isCorrect: boolean; complete: boolean }>;
   onGenerate?: () => Promise<unknown>;
   onCompleteModule?: (moduleId: string, selectedIndex: number) => Promise<{ isCorrect: boolean; complete: boolean }>;
   onIllustrate?: (moduleId: string) => Promise<{ dataUrl: string; alt: string }>;
   onRequestHelp?: (moduleId: string) => Promise<unknown>;
 };
+
+export function StandalonePupilJourney({ data, fallbackAnswerKey, moduleAnswerKey, onIllustrate }: {
+  data: NonNullable<PupilAssignment>;
+  teacherName: string;
+  teacherHref: string;
+  fallbackAnswerKey?: Record<string, number>;
+  moduleAnswerKey?: Record<string, number>;
+  onIllustrate?: (moduleId: string) => Promise<{ dataUrl: string; alt: string }>;
+}) {
+  return <JourneyExperience data={data} fallbackAnswerKey={fallbackAnswerKey} moduleAnswerKey={moduleAnswerKey} startAtWelcome onIllustrate={onIllustrate} />;
+}
 
 const subscribeToHydration = () => () => undefined;
 
@@ -178,8 +194,8 @@ function readSavedJourneyView(storageKey: string, data: NonNullable<PupilAssignm
   }
 }
 
-function HydratedJourneyExperience({ data, onAnswer, onGenerate, onCompleteModule, onIllustrate, onRequestHelp }: JourneyExperienceProps) {
-  const initialState = defaultJourneyState(data);
+function HydratedJourneyExperience({ data, fallbackAnswerKey, moduleAnswerKey, startAtWelcome = false, onAnswer, onGenerate, onCompleteModule, onIllustrate, onRequestHelp }: JourneyExperienceProps) {
+  const initialState = startAtWelcome ? "welcome" : defaultJourneyState(data);
   const storageKey = `bridgeback:pupil-view:${data.assignment._id}`;
   const [savedView] = useState(() => readSavedJourneyView(storageKey, data));
   const [state, setState] = useState<JourneyState>(savedView?.state ?? initialState);
@@ -209,7 +225,7 @@ function HydratedJourneyExperience({ data, onAnswer, onGenerate, onCompleteModul
     try {
       const result = onAnswer
         ? await onAnswer(question.key, selectedIndex)
-        : { isCorrect: diagnosticQuestions.find((item) => item.id === question.key)?.correctIndex === selectedIndex, complete: questionIndex === questions.length - 1 };
+        : { isCorrect: (question.correctIndex ?? fallbackAnswerKey?.[question.key] ?? diagnosticQuestions.find((item) => item.id === question.key)?.correctIndex) === selectedIndex, complete: questionIndex === questions.length - 1 };
       setSelectedIndex(null);
       if (result.complete) {
         setState("generating");
@@ -250,7 +266,7 @@ function HydratedJourneyExperience({ data, onAnswer, onGenerate, onCompleteModul
   if (renderedState === "lesson" && activeModule) return <LessonView key={activeModule._id} module={activeModule} moduleCount={data.modules.length} helpRequested={data.helpRequests.some((request) => request.moduleId === activeModule._id && request.status === "open")} onRequestHelp={onRequestHelp ? () => onRequestHelp(activeModule._id) : undefined} onIllustrate={onIllustrate ? () => onIllustrate(activeModule._id) : undefined} onComplete={async (selected) => {
     setBusy(true); setError(null);
     try {
-      const fallbackCorrectIndex = demoLearningModules.find((module) => module.id === activeModule._id)?.correctIndex;
+      const fallbackCorrectIndex = activeModule.correctIndex ?? moduleAnswerKey?.[activeModule._id] ?? demoLearningModules.find((module) => module.id === activeModule._id)?.correctIndex;
       const result = onCompleteModule
         ? await onCompleteModule(activeModule._id, selected)
         : { isCorrect: selected === fallbackCorrectIndex, complete: activeOrder >= data.modules.length };

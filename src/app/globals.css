@@ -48,6 +48,11 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
+/* Small text on the brand green must retain WCAG AA contrast. */
+.bg-primary .text-primary-foreground\/70 {
+  color: var(--primary-foreground);
+}
+
 :root {
   --background: oklch(1 0 0);
   --foreground: oklch(0.141 0.005 285.823);

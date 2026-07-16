@@ -40,3 +40,21 @@ Before a school pilot, run the same five synthetic lesson packs through two docu
 2. Upload the pack to BridgeBack, review every source and concept, correct the draft and approve the route.
 
 Record active time, corrections and errors. This is a product benchmark, not teacher validation. Report the raw timings and method rather than claiming general workload savings.
+
+## AI-simulated teacher walkthrough
+
+During Build Week, a separate model agent may inspect the synthetic teacher and pupil journeys using the role and constraints of a UK secondary teacher. Record this only as an **AI-simulated, role-based heuristic evaluation**. It can identify unclear controls, likely workflow friction, educational inconsistencies and safeguarding questions; it is not teacher validation, user research, expert endorsement or evidence of workload reduction.
+
+The first walkthrough identified two material Mathematics issues that were corrected: the demo described a check-in without offering one, and the dependency map omitted solving linear equations while treating checking a solution as a prerequisite. These findings are useful design evidence, not claims about real educators.
+
+## Minimum real educator check
+
+Before claiming educator validation, ask at least three practising teachers, tutors, PGCE trainees or former teachers to complete the same 15–20 minute synthetic task. Record their role accurately and measure:
+
+- time from opening the lesson to approving or rejecting the map;
+- concepts and dependency edges they add, remove or change;
+- source references they cannot verify;
+- confidence that the route is small enough and sufficient for participation;
+- the answer to: “What would stop you using this on Monday?”
+
+Report the participant count, recruitment method and raw results. Do not generalise beyond that sample.
