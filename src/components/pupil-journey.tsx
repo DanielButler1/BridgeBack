@@ -76,6 +76,19 @@ const completeModuleRef = makeFunctionReference<"mutation", { moduleId: string; 
 const generateIllustrationRef = makeFunctionReference<"action", { moduleId: string }, { dataUrl: string; alt: string }>("generateLearning:illustration");
 const requestHelpRef = makeFunctionReference<"mutation", { moduleId: string }, string>("pupil:requestTeacherHelp");
 
+function createDemoVisual(moduleId: string) {
+  const isTraceTable = moduleId.includes("trace");
+  const title = isTraceTable ? "Follow the changing boundaries" : "Narrow the search range";
+  const caption = isTraceTable
+    ? "Low, middle and high move after each comparison"
+    : "Each comparison removes the half that cannot contain the target";
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="640" viewBox="0 0 1024 640" role="img"><rect width="1024" height="640" fill="#eef8f2"/><text x="72" y="92" fill="#12372a" font-family="Arial,sans-serif" font-size="42" font-weight="700">${title}</text><text x="72" y="136" fill="#49665b" font-family="Arial,sans-serif" font-size="22">${caption}</text><g transform="translate(72 230)">${[3,8,12,17,23,31,42].map((value, index) => `<rect x="${index * 122}" width="98" height="98" rx="18" fill="${index === 3 ? "#12372a" : index < 3 ? "#d7e7dd" : "#9ad0b2"}"/><text x="${index * 122 + 49}" y="61" text-anchor="middle" fill="${index === 3 ? "#fff" : "#12372a"}" font-family="Arial,sans-serif" font-size="28" font-weight="700">${value}</text>`).join("")}<path d="M415 -42 L415 -10" stroke="#12372a" stroke-width="5"/><path d="M403 -14 L415 0 L427 -14" fill="none" stroke="#12372a" stroke-width="5"/><text x="415" y="-58" text-anchor="middle" fill="#12372a" font-family="Arial,sans-serif" font-size="22" font-weight="700">middle</text><path d="M0 155 H342" stroke="#5c8d73" stroke-width="8" stroke-linecap="round"/><text x="171" y="198" text-anchor="middle" fill="#49665b" font-family="Arial,sans-serif" font-size="21">discard this half</text><path d="M488 155 H830" stroke="#12372a" stroke-width="8" stroke-linecap="round"/><text x="659" y="198" text-anchor="middle" fill="#12372a" font-family="Arial,sans-serif" font-size="21" font-weight="700">search continues here</text></g></svg>`;
+  return Promise.resolve({
+    dataUrl: `data:image/svg+xml;charset=utf-8,${encodeURIComponent(svg)}`,
+    alt: "A sorted row of seven numbers with the middle value highlighted, showing one half discarded and the search continuing in the other half.",
+  });
+}
+
 export function PupilJourney() {
   if (hasClerk && hasConvex) {
     return (
@@ -86,7 +99,7 @@ export function PupilJourney() {
       </>
     );
   }
-  return <JourneyExperience data={fallbackAssignment} />;
+  return <JourneyExperience data={fallbackAssignment} onIllustrate={() => createDemoVisual("iteration")} />;
 }
 
 function StatusCard({ children, title }: { children: React.ReactNode; title?: string }) {

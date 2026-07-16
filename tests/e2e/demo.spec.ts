@@ -10,6 +10,8 @@ test("pupil demo retains its active learning material after refresh", async ({ p
   await page.goto("/demo/pupil");
   await page.getByRole("button", { name: "Begin step one" }).click();
   await expect(page.getByText("Step 1 of 2")).toBeVisible();
+  await page.getByRole("button", { name: "Create a visual" }).click();
+  await expect(page.getByRole("img", { name: "A sorted row of seven numbers with the middle value highlighted, showing one half discarded and the search continuing in the other half." })).toBeVisible();
   await page.reload();
   await expect(page.getByText("Step 1 of 2")).toBeVisible();
 });

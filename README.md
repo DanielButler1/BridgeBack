@@ -19,7 +19,7 @@ The guided demo follows Mia, a fictional Year 10 pupil returning after four week
 - GPT-5.6 Luna micro-lessons with explanations, worked examples, closed checks and exact source references
 - Credential-free local demo mode using the same product screens
 - GPT-5.6 Sol file-aware lesson analysis with Zod Structured Outputs, editable draft persistence and teacher approval
-- GPT Image 1 Mini concept illustrations for the first two unlocked learning activities
+- Optional, pupil-triggered GPT Image 1 Mini concept illustrations for the first two unlocked learning activities; the demo returns a representative sample visual
 - A responsive concept map that becomes an ordered prerequisite list on small screens
 - A protected school workspace for class creation, lesson setup, resource upload, analysis and teacher approval
 - Safety identifiers, `store: false`, prompt-injection boundaries and AI run telemetry
