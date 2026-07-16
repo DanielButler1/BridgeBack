@@ -1,4 +1,4 @@
-import { ArrowLeft, ArrowRight, BookOpenCheck, GraduationCap, School, ShieldCheck } from "lucide-react";
+import { ArrowLeft, ArrowRight, BookOpenCheck, Calculator, GraduationCap, School, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 
 import { BridgeBackMark } from "@/components/bridgeback-mark";
@@ -36,6 +36,11 @@ export default function DemoPage() {
             <ShieldCheck className="mt-0.5 size-4 shrink-0 text-primary" />
             Switch roles at any point and reset the journey whenever you want to show it again.
           </p>
+          <div className="mt-8 rounded-2xl border bg-card p-5">
+            <p className="flex items-center gap-2 font-heading font-semibold"><Calculator className="size-4 text-primary" /> Also explore mathematics</p>
+            <p className="mt-2 text-sm leading-6 text-muted-foreground">See the same next-lesson method applied to simultaneous equations, with a different concept map and pupil pathway.</p>
+            <Button nativeButton={false} render={<Link href="/demo/maths" />} variant="outline" size="sm" className="mt-4">Open the maths example <ArrowRight /></Button>
+          </div>
         </div>
 
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-1">

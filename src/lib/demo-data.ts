@@ -9,7 +9,7 @@ export const demoPupil = {
   name: "Mia",
   initials: "MI",
   year: "Year 10",
-  subject: "GCSE Computer Science",
+  subject: "GCSE Computer Science · Algorithms and data",
   daysMissed: 20,
   resourcesMissed: 12,
   nextLesson: "Binary search",

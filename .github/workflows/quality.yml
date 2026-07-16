@@ -23,6 +23,10 @@ jobs:
       - run: npm run lint
       - run: npm test
       - run: npm run build
+      - run: npm ci
+        working-directory: video
+      - run: npm run lint
+        working-directory: video
 
   accessibility:
     runs-on: ubuntu-latest

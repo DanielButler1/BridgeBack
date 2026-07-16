@@ -22,8 +22,10 @@ The guided demo follows Mia, a fictional Year 10 pupil returning after four week
 - Optional, pupil-triggered GPT Image 1 Mini concept illustrations for the first two unlocked learning activities; the demo returns a representative sample visual
 - A responsive concept map that becomes an ordered prerequisite list on small screens
 - A protected school workspace for class creation, lesson setup, resource upload, analysis and teacher approval
+- A second interactive GCSE Mathematics example showing simultaneous-equation prerequisites and a two-activity route
 - Safety identifiers, `store: false`, prompt-injection boundaries and AI run telemetry
 - Unit tests, desktop and iPhone browser journeys, automated WCAG checks and GitHub Actions CI
+- A reproducible two-minute Remotion submission film with an OpenAI `gpt-4o-mini-tts` narration generator
 
 ## Run locally
 
@@ -110,6 +112,7 @@ The rationale for BridgeBack's synthetic-data boundary, child-protection princip
 - [Impact measurement plan](docs/IMPACT-MEASUREMENT.md)
 - [AI evaluation plan](docs/AI-EVALUATION.md)
 - [Security architecture](docs/SECURITY-ARCHITECTURE.md)
+- [Submission film project](video/README.md)
 
 Licensed under the [Apache License 2.0](LICENSE).
 
