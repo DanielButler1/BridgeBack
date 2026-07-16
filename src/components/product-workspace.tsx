@@ -12,6 +12,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { curriculumPacks, findCurriculumPack } from "@/lib/curriculum-catalog";
 
 const provisionRef = makeFunctionReference<"mutation">("product:provisionTeacher");
 const workspaceRef = makeFunctionReference<"query">("product:workspace");
@@ -38,6 +39,7 @@ function Workspace() {
   const [className, setClassName] = useState("");
   const [subject, setSubject] = useState("");
   const [yearGroup, setYearGroup] = useState("");
+  const [curriculumKey, setCurriculumKey] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -133,11 +135,12 @@ function Workspace() {
               <CardContent className="px-6 pb-6 sm:px-8 sm:pb-8">
                 {data.classes.length ? (
                   <div className="grid gap-3 sm:grid-cols-2">
-                    {data.classes.map((item: { _id: string; name: string; subject: string; yearGroup: string }) => (
+                    {data.classes.map((item: { _id: string; name: string; subject: string; yearGroup: string; curriculumKey?: string }) => (
                       <Link key={item._id} href={`/app/classes/${item._id}`} className="group rounded-xl border bg-muted/20 p-5 transition-colors hover:border-primary/35 hover:bg-primary/[0.035] focus-visible:outline-none focus-visible:ring-3 focus-visible:ring-ring/50">
                         <div className="flex size-9 items-center justify-center rounded-lg bg-background text-primary ring-1 ring-border"><BookOpenCheck className="size-4" /></div>
                         <p className="mt-5 font-heading text-lg font-semibold">{item.name}</p>
                         <p className="mt-1 text-sm text-muted-foreground">{item.subject}</p>
+                        {findCurriculumPack(item.curriculumKey) ? <p className="mt-2 text-xs font-medium text-primary">OCR {findCurriculumPack(item.curriculumKey)?.specificationCode} · v{findCurriculumPack(item.curriculumKey)?.version}</p> : null}
                         <div className="mt-4 flex items-center justify-between gap-3 text-xs text-muted-foreground"><span>{item.yearGroup}</span><span className="flex items-center gap-1 font-semibold text-primary">Open class <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" /></span></div>
                       </Link>
                     ))}
@@ -159,11 +162,18 @@ function Workspace() {
               </CardHeader>
               <CardContent className="space-y-5 px-6 pb-6 sm:px-8 sm:pb-8">
                 <Field label="Class name" htmlFor="class-name"><Input id="class-name" className="h-11" value={className} onChange={(event) => setClassName(event.target.value)} placeholder="10C Computer Science" maxLength={80} /></Field>
+                <Field label="Curriculum" htmlFor="class-curriculum">
+                  <select id="class-curriculum" className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" value={curriculumKey} onChange={(event) => { const nextKey = event.target.value; setCurriculumKey(nextKey); const pack = findCurriculumPack(nextKey); if (pack) setSubject(pack.subject); }}>
+                    <option value="">Custom curriculum</option>
+                    {curriculumPacks.map((pack) => <option key={pack.key} value={pack.key}>OCR {pack.specificationCode} · {pack.qualification}</option>)}
+                  </select>
+                </Field>
                 <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-1 xl:grid-cols-2">
                   <Field label="Subject" htmlFor="class-subject"><Input id="class-subject" className="h-11" value={subject} onChange={(event) => setSubject(event.target.value)} placeholder="Computer Science" maxLength={80} /></Field>
                   <Field label="Year group" htmlFor="class-year"><Input id="class-year" className="h-11" value={yearGroup} onChange={(event) => setYearGroup(event.target.value)} placeholder="Year 10" maxLength={40} /></Field>
                 </div>
-                <Button className="h-11 w-full" disabled={busy || !className.trim() || !subject.trim() || !yearGroup.trim()} onClick={() => void run(async () => { await createClass({ organisationId: organisation._id, name: className.trim(), subject: subject.trim(), yearGroup: yearGroup.trim() }); setClassName(""); setSubject(""); setYearGroup(""); })}>
+                {curriculumKey ? <p className="rounded-lg bg-primary/5 px-3 py-2 text-xs leading-5 text-muted-foreground">BridgeBack uses the specification as a navigation layer. Your lesson files remain the teaching source.</p> : null}
+                <Button className="h-11 w-full" disabled={busy || !className.trim() || !subject.trim() || !yearGroup.trim()} onClick={() => void run(async () => { await createClass({ organisationId: organisation._id, name: className.trim(), subject: subject.trim(), yearGroup: yearGroup.trim(), curriculumKey: curriculumKey || undefined }); setClassName(""); setSubject(""); setYearGroup(""); setCurriculumKey(""); })}>
                   <Plus /> Add class
                 </Button>
               </CardContent>

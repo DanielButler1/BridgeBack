@@ -38,6 +38,7 @@ export default defineSchema({
     name: v.string(),
     subject: v.string(),
     yearGroup: v.string(),
+    curriculumKey: v.optional(v.string()),
     synthetic: v.boolean(),
   }).index("by_teacher", ["teacherId"]),
 
@@ -66,6 +67,7 @@ export default defineSchema({
     startsAt: v.number(),
     isUpcoming: v.boolean(),
     objectives: v.array(v.string()),
+    curriculumTopicCode: v.optional(v.string()),
     analysisStatus: v.union(
       v.literal("not_started"),
       v.literal("processing"),

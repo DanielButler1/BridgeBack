@@ -103,6 +103,8 @@ Browser tests cover the public pages, both demo roles, refresh persistence, desk
 
 ## Safety and privacy decisions
 
+Curriculum mappings are versioned and source-linked. See [Curriculum packs and versioning](docs/CURRICULUM-PACKS.md) for coverage, review rules and the copyright boundary.
+
 The rationale for BridgeBack's synthetic-data boundary, child-protection principles, data flow, OpenAI retention choices, teacher oversight, prohibited uses, and real-school release blockers is documented in [Safety, privacy, and product decisions](docs/SAFETY-PRIVACY-DECISIONS.md).
 
 ## Public release

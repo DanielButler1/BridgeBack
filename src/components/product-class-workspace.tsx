@@ -2,7 +2,7 @@
 
 import { Authenticated, AuthLoading, Unauthenticated, useMutation, useQuery } from "convex/react";
 import { makeFunctionReference } from "convex/server";
-import { ArrowLeft, BookOpenCheck, CalendarDays, LoaderCircle, LockKeyhole, Plus, ShieldCheck } from "lucide-react";
+import { ArrowLeft, BookOpenCheck, CalendarDays, ExternalLink, LoaderCircle, LockKeyhole, Plus, ShieldCheck } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
 
@@ -14,15 +14,17 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { hasClerk, hasConvex } from "@/lib/config";
+import type { CurriculumPack } from "@/lib/curriculum-catalog";
 
 type ClassWorkspace = {
-  classRecord: { _id: string; name: string; subject: string; yearGroup: string };
-  upcomingLesson: { _id: string; title: string; startsAt: number; objectives: string[] } | null;
+  classRecord: { _id: string; name: string; subject: string; yearGroup: string; curriculumKey?: string };
+  upcomingLesson: { _id: string; title: string; startsAt: number; objectives: string[]; curriculumTopicCode?: string } | null;
   lessonCount: number;
+  curriculum: CurriculumPack | null;
 } | null;
 
 const workspaceRef = makeFunctionReference<"query", { classId: string }, ClassWorkspace>("product:classWorkspace");
-const createLessonRef = makeFunctionReference<"mutation", { classId: string; title: string; objectives: string[]; startsAt: number }, string>("product:createLesson");
+const createLessonRef = makeFunctionReference<"mutation", { classId: string; title: string; objectives: string[]; startsAt: number; curriculumTopicCode?: string }, string>("product:createLesson");
 
 export function ProductClassWorkspace({ classId }: { classId: string }) {
   if (!hasClerk || !hasConvex) return <WorkspaceNotice title="Connect the school workspace">Add Clerk and Convex credentials to create and analyse a school lesson. The guided demo remains available without credentials.</WorkspaceNotice>;
@@ -35,6 +37,7 @@ function ConnectedClassWorkspace({ classId }: { classId: string }) {
   const [title, setTitle] = useState("");
   const [objectives, setObjectives] = useState("");
   const [startsAt, setStartsAt] = useState("");
+  const [topicCode, setTopicCode] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -50,13 +53,47 @@ function ConnectedClassWorkspace({ classId }: { classId: string }) {
     if (!Number.isFinite(parsedDate)) { setError("Choose when the lesson begins."); return; }
     setBusy(true); setError(null);
     try {
-      await createLesson({ classId, title, objectives: objectives.split("\n").map((item) => item.trim()).filter(Boolean), startsAt: parsedDate });
+      await createLesson({ classId, title, objectives: objectives.split("\n").map((item) => item.trim()).filter(Boolean), startsAt: parsedDate, curriculumTopicCode: topicCode || undefined });
     } catch (cause) {
       setError(cause instanceof Error ? cause.message : "The lesson could not be created.");
     } finally { setBusy(false); }
   }
 
-  return <WorkspaceFrame className={data.classRecord.name}><main className="mx-auto grid min-h-[calc(100dvh-4.5rem)] w-full max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[0.82fr_1.18fr] lg:px-8"><div><p className="flex items-center gap-2 text-sm font-semibold text-primary"><ShieldCheck className="size-4" /> {data.classRecord.yearGroup} · {data.classRecord.subject}</p><h1 className="mt-5 max-w-xl font-heading text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Start with the lesson pupils need to join.</h1><p className="mt-5 max-w-lg leading-7 text-muted-foreground">BridgeBack works backwards from this destination. Add the objective now, then upload the source materials you already teach from.</p><div className="mt-8 rounded-xl border bg-card p-4 text-sm leading-6 text-muted-foreground"><BookOpenCheck className="mb-3 size-5 text-primary" />Previous missed work is not added as a backlog. Only source-supported prerequisites for this lesson can enter the draft map.</div></div><Card className="rounded-2xl"><CardHeader className="p-6 sm:p-8"><CardTitle className="text-2xl">Create the upcoming lesson</CardTitle><CardDescription className="mt-2">Objectives are sent with lesson sources when you ask BridgeBack to build a draft prerequisite map.</CardDescription></CardHeader><CardContent className="space-y-5 px-6 pb-6 sm:px-8 sm:pb-8">{error ? <p role="alert" className="rounded-lg border border-destructive/25 bg-destructive/5 p-3 text-sm text-destructive">{error}</p> : null}<Field label="Lesson title" htmlFor="lesson-title"><Input id="lesson-title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Binary search" maxLength={120} /></Field><Field label="Learning objectives, one per line" htmlFor="lesson-objectives"><Textarea id="lesson-objectives" value={objectives} onChange={(event) => setObjectives(event.target.value)} placeholder={"Explain why binary search needs sorted data\nTrace low, high and middle"} rows={5} maxLength={1100} /></Field><Field label="Lesson date and time" htmlFor="lesson-start"><div className="relative"><CalendarDays className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input id="lesson-start" type="datetime-local" className="pl-9" value={startsAt} onChange={(event) => setStartsAt(event.target.value)} /></div></Field><Button className="h-11 w-full" disabled={busy || !title.trim() || !objectives.trim() || !startsAt} onClick={() => void submitLesson()}>{busy ? <LoaderCircle className="animate-spin" /> : <Plus />} Create lesson and add sources</Button></CardContent></Card></main></WorkspaceFrame>;
+  const selectableTopics = data.curriculum?.topics.filter((item) => item.kind === "topic") ?? [];
+  const selectedTopic = selectableTopics.find((item) => item.code === topicCode);
+
+  return (
+    <WorkspaceFrame className={data.classRecord.name}>
+      <main className="mx-auto w-full max-w-6xl px-4 py-10 sm:px-6 lg:px-8 lg:py-14">
+        <div className="grid gap-10 lg:grid-cols-[0.82fr_1.18fr] lg:items-start">
+          <div className="lg:sticky lg:top-28">
+            <p className="flex items-center gap-2 text-sm font-semibold text-primary"><ShieldCheck className="size-4" /> {data.classRecord.yearGroup} · {data.classRecord.subject}</p>
+            <h1 className="mt-5 max-w-xl font-heading text-4xl font-semibold tracking-[-0.04em] sm:text-5xl">Start with the lesson pupils need to join.</h1>
+            <p className="mt-5 max-w-lg leading-7 text-muted-foreground">BridgeBack works backwards from this destination. Add the objective now, then upload the source materials you already teach from.</p>
+            {data.curriculum ? <CurriculumSummary curriculum={data.curriculum} /> : <div className="mt-8 rounded-xl border bg-card p-4 text-sm leading-6 text-muted-foreground"><BookOpenCheck className="mb-3 size-5 text-primary" />This class uses a custom curriculum. Your objectives and source files will ground the prerequisite map.</div>}
+          </div>
+          <Card className="rounded-2xl">
+            <CardHeader className="p-6 sm:p-8"><CardTitle className="text-2xl">Create the upcoming lesson</CardTitle><CardDescription className="mt-2">Choose the curriculum destination, then adjust the objective to match the lesson pupils will join.</CardDescription></CardHeader>
+            <CardContent className="space-y-5 px-6 pb-6 sm:px-8 sm:pb-8">
+              {error ? <p role="alert" className="rounded-lg border border-destructive/25 bg-destructive/5 p-3 text-sm text-destructive">{error}</p> : null}
+              {data.curriculum ? <Field label="Specification topic" htmlFor="lesson-topic"><select id="lesson-topic" className="h-11 w-full rounded-lg border border-input bg-background px-3 text-sm outline-none focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50" value={topicCode} onChange={(event) => { const code = event.target.value; setTopicCode(code); const next = selectableTopics.find((item) => item.code === code); if (next) { setTitle(next.title); setObjectives(next.summary); } }}><option value="">Choose a topic</option>{data.curriculum.topics.filter((item) => item.kind === "strand").map((group) => <optgroup key={group.code} label={`${group.code} ${group.title}`}>{selectableTopics.filter((item) => item.parentCode === group.code).map((item) => <option key={item.code} value={item.code}>{item.code} · {item.title}</option>)}</optgroup>)}</select></Field> : null}
+              {selectedTopic ? <div className="rounded-xl border border-primary/15 bg-primary/[0.035] p-4"><p className="text-xs font-semibold text-primary">{selectedTopic.component} · {selectedTopic.code}</p><p className="mt-2 text-sm leading-6 text-muted-foreground">{selectedTopic.summary}</p>{selectedTopic.prerequisiteCodes.length ? <p className="mt-3 text-xs text-muted-foreground"><span className="font-semibold text-foreground">Likely earlier knowledge:</span> {selectedTopic.prerequisiteCodes.join(", ")}</p> : null}</div> : null}
+              <Field label="Lesson title" htmlFor="lesson-title"><Input id="lesson-title" value={title} onChange={(event) => setTitle(event.target.value)} placeholder="Binary search" maxLength={120} /></Field>
+              <Field label="Learning objectives, one per line" htmlFor="lesson-objectives"><Textarea id="lesson-objectives" value={objectives} onChange={(event) => setObjectives(event.target.value)} placeholder={"Explain why binary search needs sorted data\nTrace low, high and middle"} rows={5} maxLength={1100} /></Field>
+              <Field label="Lesson date and time" htmlFor="lesson-start"><div className="relative"><CalendarDays className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-muted-foreground" /><Input id="lesson-start" type="datetime-local" className="pl-9" value={startsAt} onChange={(event) => setStartsAt(event.target.value)} /></div></Field>
+              <Button className="h-11 w-full" disabled={busy || !title.trim() || !objectives.trim() || !startsAt} onClick={() => void submitLesson()}>{busy ? <LoaderCircle className="animate-spin" /> : <Plus />} Create lesson and add sources</Button>
+            </CardContent>
+          </Card>
+        </div>
+      </main>
+    </WorkspaceFrame>
+  );
+}
+
+function CurriculumSummary({ curriculum }: { curriculum: CurriculumPack }) {
+  const lessonTopics = curriculum.topics.filter((item) => item.kind === "topic");
+  const strands = curriculum.topics.filter((item) => item.kind === "strand");
+  return <div className="mt-8 overflow-hidden rounded-xl border bg-card"><div className="p-5"><p className="text-xs font-semibold text-primary">OCR {curriculum.specificationCode} · Version {curriculum.version}</p><h2 className="mt-2 font-heading text-lg font-semibold">Curriculum connected</h2><p className="mt-2 text-sm leading-6 text-muted-foreground">{strands.length} areas and {lessonTopics.length} lesson-level topics are available for planning.</p><a href={curriculum.sourceUrl} target="_blank" rel="noreferrer" className="mt-4 inline-flex items-center gap-1.5 text-sm font-semibold text-primary underline-offset-4 hover:underline">View the OCR specification <ExternalLink className="size-3.5" /></a></div><div className="grid grid-cols-2 border-t bg-muted/25"><div className="p-4"><p className="font-heading text-2xl font-semibold">{strands.length}</p><p className="mt-1 text-xs text-muted-foreground">curriculum areas</p></div><div className="border-l p-4"><p className="font-heading text-2xl font-semibold">{lessonTopics.length}</p><p className="mt-1 text-xs text-muted-foreground">selectable topics</p></div></div></div>;
 }
 
 function WorkspaceFrame({ children, className }: { children: React.ReactNode; className?: string }) {

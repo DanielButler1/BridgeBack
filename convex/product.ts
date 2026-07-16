@@ -2,6 +2,7 @@ import { v } from "convex/values";
 
 import { mutation, query } from "./_generated/server";
 import { requireViewer } from "./lib/auth";
+import { findCurriculumPack, findCurriculumTopic } from "../src/lib/curriculum-catalog";
 
 function clean(value: string, label: string, max = 80) {
   const result = value.trim().replace(/\s+/g, " ");
@@ -52,12 +53,13 @@ export const createOrganisation = mutation({
 });
 
 export const createClass = mutation({
-  args: { organisationId: v.id("organisations"), name: v.string(), subject: v.string(), yearGroup: v.string() },
+  args: { organisationId: v.id("organisations"), name: v.string(), subject: v.string(), yearGroup: v.string(), curriculumKey: v.optional(v.string()) },
   handler: async (ctx, args) => {
     const viewer = await requireProductionViewer(ctx);
     const membership = await ctx.db.query("memberships").withIndex("by_organisation_and_user", (q) => q.eq("organisationId", args.organisationId).eq("userId", viewer._id)).unique();
     if (!membership || membership.status !== "active" || !["owner", "admin", "teacher"].includes(membership.role)) throw new Error("Forbidden");
-    const classId = await ctx.db.insert("classes", { organisationId: args.organisationId, teacherId: viewer._id, name: clean(args.name, "Class name"), subject: clean(args.subject, "Subject"), yearGroup: clean(args.yearGroup, "Year group", 40), synthetic: false });
+    if (args.curriculumKey && !findCurriculumPack(args.curriculumKey)) throw new Error("Choose a supported curriculum");
+    const classId = await ctx.db.insert("classes", { organisationId: args.organisationId, teacherId: viewer._id, name: clean(args.name, "Class name"), subject: clean(args.subject, "Subject"), yearGroup: clean(args.yearGroup, "Year group", 40), curriculumKey: args.curriculumKey, synthetic: false });
     await ctx.db.insert("auditEvents", { organisationId: args.organisationId, actorId: viewer._id, action: "class.created", targetType: "class", targetId: String(classId), occurredAt: Date.now() });
     return classId;
   },
@@ -73,7 +75,8 @@ export const classWorkspace = query({
     if (!membership || membership.status !== "active") throw new Error("Forbidden");
     const lessons = await ctx.db.query("lessons").withIndex("by_class", (q) => q.eq("classId", classRecord._id)).collect();
     const upcomingLesson = lessons.filter((lesson) => lesson.isUpcoming).sort((a, b) => a.startsAt - b.startsAt)[0] ?? null;
-    return { classRecord, upcomingLesson, lessonCount: lessons.length };
+    const curriculum = findCurriculumPack(classRecord.curriculumKey);
+    return { classRecord, upcomingLesson, lessonCount: lessons.length, curriculum: curriculum ?? null };
   },
 });
 
@@ -83,6 +86,7 @@ export const createLesson = mutation({
     title: v.string(),
     objectives: v.array(v.string()),
     startsAt: v.number(),
+    curriculumTopicCode: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
     const viewer = await requireProductionViewer(ctx);
@@ -91,6 +95,7 @@ export const createLesson = mutation({
     const membership = await ctx.db.query("memberships").withIndex("by_organisation_and_user", (q) => q.eq("organisationId", classRecord.organisationId!).eq("userId", viewer._id)).unique();
     if (!membership || membership.status !== "active" || !["owner", "admin", "teacher"].includes(membership.role)) throw new Error("Forbidden");
     const title = clean(args.title, "Lesson title", 120);
+    if (args.curriculumTopicCode && !findCurriculumTopic(classRecord.curriculumKey, args.curriculumTopicCode)) throw new Error("Choose a topic from this class curriculum");
     const objectives = args.objectives.map((objective) => clean(objective, "Objective", 180)).slice(0, 6);
     if (!objectives.length) throw new Error("Add at least one lesson objective");
     if (!Number.isFinite(args.startsAt) || args.startsAt < Date.now() - 24 * 60 * 60 * 1000) throw new Error("Choose an upcoming lesson time");
@@ -104,6 +109,7 @@ export const createLesson = mutation({
       startsAt: args.startsAt,
       isUpcoming: true,
       objectives,
+      curriculumTopicCode: args.curriculumTopicCode,
       analysisStatus: "not_started",
       synthetic: false,
     });
