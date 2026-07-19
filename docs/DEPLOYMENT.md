@@ -1,10 +1,10 @@
 # Deployment runbook
 
-BridgeBack is prepared for a Vercel deployment, but creating or promoting the final public deployment is a deliberate release step.
+BridgeBack is deployed to Vercel at [bridge-back-iota.vercel.app](https://bridge-back-iota.vercel.app). The GitHub repository remains private until the planned public release; production deployments are currently made from the authenticated Vercel CLI rather than Vercel's Git integration.
 
 ## Required services
 
-- Vercel project connected to the repository
+- Vercel project linked locally through `.vercel/project.json` (gitignored)
 - Clerk production instance with a Convex JWT template
 - Convex production deployment
 - OpenAI project API key stored separately in Convex and Vercel, never committed to the repository
@@ -43,7 +43,7 @@ The Clerk issuer domain is configured through `convex/auth.config.ts` and must m
 3. Create the Convex production deployment and apply the schema.
 4. Configure Clerk and both fixed synthetic demo accounts. Confirm that the session token accepted by Convex has the configured issuer and an `aud` claim of `convex`; a separate template is unnecessary when the Clerk–Convex integration already supplies this token.
 5. Seed the synthetic judge data using the command in the README.
-6. Import the repository into Vercel and add the variables above.
+6. Link the local checkout to the Vercel project and add the variables above. Connect Git integration only after granting the Vercel GitHub app access to the private repository.
 7. Create a Preview deployment.
 8. Test teacher sign-in, pupil sign-in, reset, file analysis, diagnostic completion, refresh persistence and image generation.
 9. Promote the tested Preview deployment to Production.
