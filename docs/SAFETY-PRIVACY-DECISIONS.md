@@ -86,7 +86,7 @@ The lesson-analysis model is not given the pupil's name, reason for absence, att
 | Optional voice conversation | Pupil audio plus the current activity's title, objective, explanation and example | Let a pupil talk through one approved activity | Yes, only after the pupil starts “Talk it through” | Audio is streamed to OpenAI over WebRTC; BridgeBack does not store audio or transcripts; session metadata only is stored in Convex |
 | AI telemetry | Model, job, latency, token counts, error code | Reliability, cost, and auditability | Created from API metadata | Convex |
 
-The prototype does not collect precise location, contacts, photographs, health information, family information, safeguarding records, or reasons for absence. The optional Realtime feature necessarily processes live microphone audio when an authenticated tester deliberately starts it. Public prototype testing must use adult testers and synthetic learning records; it is not approval to process a real child's voice.
+The prototype does not collect precise location, contacts, photographs, health information, family information, safeguarding records, or reasons for absence. The optional Realtime feature necessarily processes live microphone audio when an authenticated tester deliberately starts it. The production `Permissions-Policy` allows microphone access only from BridgeBack's own origin while camera and geolocation remain disabled. Public prototype testing must use adult testers and synthetic learning records; it is not approval to process a real child's voice.
 
 ## Decisions and rationale
 

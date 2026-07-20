@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 const productionBaseUrl = process.env.PLAYWRIGHT_BASE_URL;
+const fakeRealtimeAudio = process.env.PLAYWRIGHT_REALTIME_FAKE_AUDIO === "true";
 
 export default defineConfig({
   testDir: "./tests/e2e",
@@ -13,7 +14,19 @@ export default defineConfig({
     trace: "retain-on-failure",
   },
   projects: [
-    { name: "chromium", use: { ...devices["Desktop Chrome"] } },
+    {
+      name: "chromium",
+      use: {
+        ...devices["Desktop Chrome"],
+        launchOptions: fakeRealtimeAudio ? {
+          args: [
+            "--autoplay-policy=no-user-gesture-required",
+            "--use-fake-device-for-media-stream",
+            "--use-fake-ui-for-media-stream",
+          ],
+        } : undefined,
+      },
+    },
     { name: "mobile", use: { ...devices["iPhone 13"], browserName: "chromium" } },
   ],
   webServer: productionBaseUrl ? undefined : {
