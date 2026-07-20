@@ -302,7 +302,7 @@ function TeacherExperience({
       <Card id="concept-map">
         <CardHeader className="border-b">
           <div><div className="mb-2 flex items-center gap-2"><Badge variant="secondary">Teacher review</Badge><span className="text-xs text-muted-foreground">{overview.graph ? `GPT‑5.6 ${overview.graph.status}` : "Not generated"}</span></div><CardTitle className="font-heading text-xl">Concept dependency map</CardTitle><CardDescription className="mt-1 max-w-2xl">Every prerequisite is source-labelled. Review and edit the draft before {schoolMode ? "it can shape a pupil check-in" : "assigning anything to Mia"}.</CardDescription></div>
-          <CardAction className="flex flex-wrap gap-2">
+          <CardAction className="flex flex-wrap gap-2 self-center max-sm:col-span-2 max-sm:col-start-1 max-sm:row-start-2 max-sm:mt-3 max-sm:justify-self-start">
             {canEdit ? <Button variant="outline" onClick={addConcept}><Plus /> Add concept</Button> : null}
             {canEdit ? <Button variant="outline" onClick={() => void onSave?.()} disabled={!dirty || busy !== null}>{busy === "save" ? <LoaderCircle className="animate-spin" /> : <Save />} Save draft</Button> : null}
             <Button onClick={() => void onApproveAndAssign?.()} disabled={!overview.graph || (schoolMode ? overview.graph.status === "approved" : assigned) || busy !== null || !onApproveAndAssign}>{busy === "assign" ? <LoaderCircle className="animate-spin" /> : <Check />}{schoolMode ? overview.graph?.status === "approved" ? "Map approved" : "Approve map" : assigned ? "Assigned to Mia" : "Approve & assign"}</Button>
