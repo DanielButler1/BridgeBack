@@ -59,7 +59,7 @@ function createNodes(
       position: { x: concept.x, y: concept.y },
       data: {
         label: (
-          <div className="min-w-44 text-left">
+          <div className="w-full min-w-0 text-left">
             <div className="mb-2 flex items-center justify-between gap-3">
               <span className="text-[11px] font-medium opacity-65">{status.label}</span>
               <Icon className="size-3.5" />
