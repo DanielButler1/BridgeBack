@@ -291,14 +291,24 @@ export const resetSyntheticAssignment = mutationGeneric({
     const graph = diagnostic ? await ctx.db.get(diagnostic.conceptGraphId) : null;
     const classRecord = graph ? await ctx.db.get(graph.classId) : null;
     if (!pupil?.synthetic || !classRecord?.synthetic) throw new Error("Only synthetic demo progress can be reset");
-    const [responses, paths, modules] = await Promise.all([
+    const [responses, paths, modules, supportRequests] = await Promise.all([
       ctx.db.query("responses").withIndex("by_assignment", (q) => q.eq("assignmentId", assignment._id)).collect(),
       ctx.db.query("learningPaths").withIndex("by_assignment", (q) => q.eq("assignmentId", assignment._id)).collect(),
       ctx.db.query("learningModules").withIndex("by_assignment", (q) => q.eq("assignmentId", assignment._id)).collect(),
+      ctx.db.query("supportRequests").withIndex("by_assignment", (q) => q.eq("assignmentId", assignment._id)).collect(),
     ]);
     for (const response of responses) await ctx.db.delete(response._id);
     for (const path of paths) await ctx.db.delete(path._id);
     for (const learningModule of modules) await ctx.db.delete(learningModule._id);
+    for (const supportRequest of supportRequests) await ctx.db.delete(supportRequest._id);
+    if (graph) {
+      const lessonGraphs = await ctx.db.query("conceptGraphs").withIndex("by_lesson", (q) => q.eq("lessonId", graph.lessonId)).collect();
+      for (const lessonGraph of lessonGraphs) {
+        await ctx.db.patch(lessonGraph._id, {
+          nodes: lessonGraph.nodes.map((node: { key: string; title: string }) => node.key === "indexed-arrays" ? { ...node, title: "Indexed arrays" } : node),
+        });
+      }
+    }
     await ctx.db.patch(assignment._id, { status: "assigned", currentQuestion: 0, completedAt: undefined });
   },
 });
