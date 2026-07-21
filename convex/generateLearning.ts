@@ -9,7 +9,7 @@ import { z } from "zod";
 const model = "gpt-5.6-luna";
 const promptVersion = "micro-lessons-v1";
 const illustrationModel = "gpt-image-1-mini";
-const illustrationPromptVersion = "learning-illustration-v1";
+const illustrationPromptVersion = "learning-illustration-v2";
 
 const modulesSchema = z.object({
   modules: z.array(z.object({
@@ -143,10 +143,33 @@ export const illustration = actionGeneric({
       const client = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
       const result = await client.images.generate({
         model: illustrationModel,
-        prompt: `Create one calm, age-appropriate educational illustration for a UK Year 10 pupil. It should explain the computer-science idea visually without adding decorative clutter. Do not include a person, pupil name, school logo, marks, grades, medical context, attendance context, or readable text. Use clear shapes, a restrained green and cream palette, strong contrast, and a simple left-to-right visual sequence.\n\nUpcoming lesson: ${context.lesson.title}\nActivity: ${context.learningModule.title}\nObjective: ${context.learningModule.objective}\nExplanation: ${context.learningModule.explanation}\nWorked example: ${context.learningModule.exampleTitle}: ${context.learningModule.exampleBody}`,
-        size: "1024x1024",
-        quality: "low",
+        prompt: `Create one precise landscape educational diagram for a UK Year 10 pupil. Treat this as an instructional artifact, not a decorative illustration.
+
+Canvas and layout:
+- Landscape 3:2 composition with generous safe margins on every edge.
+- One clear left-to-right or top-to-bottom visual sequence.
+- Large, simple shapes with a restrained green and cream palette and strong contrast.
+- Keep every meaningful element fully inside the canvas. Nothing may be cropped.
+
+Accuracy requirements:
+- Visualise only the idea and worked example supplied below.
+- Do not invent values, steps, headings, labels or conclusions.
+- If a short label or number is essential, copy it exactly from the supplied material and check every character. Otherwise use shapes, arrows and highlighting instead of text.
+- Do not create a decorative table merely to fill space.
+- The written activity remains the source of truth, so prioritise conceptual clarity over adding lots of notation.
+
+Safety and privacy:
+- Do not include a person, pupil name, school logo, marks, grades, medical context or attendance context.
+
+Upcoming lesson: ${context.lesson.title}
+Activity: ${context.learningModule.title}
+Objective: ${context.learningModule.objective}
+Explanation: ${context.learningModule.explanation}
+Worked example: ${context.learningModule.exampleTitle}: ${context.learningModule.exampleBody}`,
+        size: "1536x1024",
+        quality: "high",
         output_format: "webp",
+        output_compression: 55,
         moderation: "auto",
       });
       const imageBase64 = result.data?.[0]?.b64_json;
