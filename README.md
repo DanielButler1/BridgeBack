@@ -6,6 +6,8 @@ BridgeBack is an OpenAI Build Week Education-track project for pupils returning 
 
 **Live Build Week deployment:** [bridgeback.phaseo.app](https://bridgeback.phaseo.app)
 
+**Public demo video:** [BridgeBack: Building a Better Way Back After Absence](https://youtu.be/3roIWobSEm4) (2:56)
+
 > [!IMPORTANT]
 > BridgeBack is a functional, production-deployed Build Week product demonstrated with synthetic data. Its end-to-end teacher and pupil workflows are live, but it is not yet approved for identifiable pupil or school data. See [Production readiness](docs/PRODUCTION-READINESS.md) for the implemented foundations and the release gates for a supervised real-school pilot.
 
@@ -129,6 +131,36 @@ The rationale for BridgeBack's synthetic-data boundary, child-protection princip
 
 Licensed under the [Apache License 2.0](LICENSE).
 
-## Codex collaboration
+## How Codex accelerated the build
 
-The repository was created during OpenAI Build Week with Codex. Codex helped translate the research-backed product hypothesis into a deliberately scoped vertical slice, applied the supplied shadcn preset, created the domain schemas, implemented the two-sided experience, and established build-safe model boundaries. Product decisions, including the next-lesson framing, teacher approval step, three-item limit, synthetic pupil scenario and job-specific model routing, were made explicitly during the Codex task.
+BridgeBack was created during OpenAI Build Week through an extended collaboration with Codex. The commit history and primary Codex session document work completed during the submission period.
+
+### Where Codex accelerated the workflow
+
+- Turned the research-backed problem statement into a working vertical slice across the teacher and pupil journeys.
+- Scaffolded the Next.js interface with the supplied shadcn preset and iterated on responsive, accessible layouts through browser review.
+- Designed and implemented the Convex schema, Clerk-backed authentication, synthetic judge sessions, role checks, uploads and persisted pupil progress.
+- Integrated the OpenAI Responses, Images and Realtime APIs with structured output validation, source boundaries and job-specific model routing.
+- Built the Computer Science and Mathematics journeys, React Flow prerequisite map, diagnostics, micro-lessons, visual explanations and five-minute voice mode.
+- Added Vitest, Playwright, axe-core and production smoke coverage, then used failures to correct real entry-flow and image-latency assumptions.
+- Helped prepare the public deployment, safety documentation, submission draft, recording runbook and repository release materials.
+
+### Decisions made by the entrant
+
+Codex accelerated implementation and review, while the entrant retained the product and engineering decisions. The most important choices were to:
+
+- work backwards from the upcoming lesson rather than recreate every missed lesson;
+- cap the immediate route at three concepts so returning pupils are not shown an overwhelming backlog;
+- require teacher review before an AI-generated prerequisite map can reach a pupil;
+- keep grading and pathway selection deterministic rather than delegate them to a model;
+- use fictional pupil data and exclude absence reasons, medical context and safeguarding records;
+- offer text, optional visual and optional spoken support without making any modality the source of truth; and
+- present BridgeBack as a functional production deployment with explicit gates before identifiable pupil data can be accepted.
+
+### How GPT-5.6 contributes
+
+GPT-5.6 is part of the core product loop, not a decorative chat layer. Sol turns teacher-supplied lesson files into a source-labelled prerequisite graph. After teacher approval, Terra produces the closed diagnostic. Luna creates focused, source-grounded learning activities for the deterministic pathway. Application code validates model output with Zod, preserves source references, records AI-run telemetry and keeps authorization, approval, scoring and pathway traversal outside the model.
+
+### How the collaboration was verified
+
+Codex repeatedly exercised the live product through the browser, including the teacher workspace, pupil diagnostic, refresh persistence, Mathematics journey, GPT Image 2 generation and responsive layouts. The final production pass also ran TypeScript, ESLint, 21 unit tests, desktop and iPhone-sized Playwright journeys, and automated serious and critical WCAG checks.

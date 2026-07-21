@@ -14,6 +14,8 @@ This is working copy for the Devpost draft. It is not a submitted entry. Replace
 
 **Repository:** https://github.com/DanielButler1/BridgeBack (public, Apache-2.0)
 
+**Public demo video:** https://youtu.be/3roIWobSEm4 (2:56)
+
 ## Inspiration
 
 Returning to school after an absence can turn learning into a wall of missed work. In England's state-funded schools, 18.7% of pupils were persistently absent in 2024/25; persistent absence means missing at least 10% of possible sessions. The rate was 24.3% in secondary schools and 35.8% in special schools. NFER's qualitative study with 85 pupils across nine secondary schools found that catching up was one of pupils' biggest concerns and that pupils valued teachers explaining what they had missed.
@@ -68,7 +70,7 @@ Codex was used throughout Build Week to turn the research-backed hypothesis into
 
 ## Before submission
 
-- **TODO:** Add the public YouTube URL for a narrated video under three minutes.
+- **DONE:** Public narrated YouTube demonstration is available at https://youtu.be/3roIWobSEm4 and runs for 2:56.
 - **TODO:** Add the `/feedback` Codex Session ID.
 - **DONE:** The repository is public with an Apache-2.0 licence and judge-ready setup documentation.
 - **TODO:** Rotate the OpenAI and Clerk server keys used during deployment setup, then update Convex and Vercel.
