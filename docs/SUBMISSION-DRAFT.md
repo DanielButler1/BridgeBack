@@ -33,7 +33,7 @@ The guided journey follows Mia, a fictional Year 10 pupil returning before a bin
 - Convex for the production database, storage, role checks and persisted progress
 - GPT-5.6 Sol for lesson dependency analysis, Terra for diagnostics, and Luna for pupil-sized learning support
 - Structured Outputs with Zod, source references, prompt-injection boundaries, `store: false`, and teacher approval gates
-- GPT Image 1 Mini for optional concept illustrations
+- GPT Image 2 for optional concept illustrations
 - `gpt-realtime-2.1` over WebRTC for lesson-grounded “Talk it through” sessions
 - Playwright, Vitest and axe-core for unit, end-to-end, mobile and accessibility checks
 

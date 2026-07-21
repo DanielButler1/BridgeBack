@@ -8,8 +8,8 @@ import { z } from "zod";
 
 const model = "gpt-5.6-luna";
 const promptVersion = "micro-lessons-v1";
-const illustrationModel = "gpt-image-1-mini";
-const illustrationPromptVersion = "learning-illustration-v2";
+const illustrationModel = "gpt-image-2";
+const illustrationPromptVersion = "learning-illustration-v3";
 
 const modulesSchema = z.object({
   modules: z.array(z.object({

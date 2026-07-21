@@ -273,7 +273,7 @@ The ICO recommends beginning the DPIA early enough to influence the design. Its 
 | 14 July 2026 | Use a signed, HTTP-only, Clerk-backed demo session for the two fixed synthetic judge roles | Adopted for prototype only |
 | 14 July 2026 | Use Sol for draft graphs, Terra for diagnostics and Luna for micro-lessons while keeping grading and path selection deterministic | Adopted |
 | 14 July 2026 | Send Convex files as request-scoped Responses API inputs without creating persistent OpenAI file objects | Adopted for synthetic prototype |
-| 16 July 2026 | Limit GPT Image 1 Mini illustrations to the first two unlocked activities and exclude pupil identity, attendance and diagnostic data from image prompts | Adopted for prototype |
+| 16 July 2026 | Limit GPT Image illustrations to the first two unlocked activities and exclude pupil identity, attendance and diagnostic data from image prompts | Adopted for prototype; upgraded from GPT Image 1 Mini to GPT Image 2 on 21 July 2026 |
 | 16 July 2026 | Add optional five-minute, activity-grounded Realtime voice sessions without BridgeBack audio or transcript storage | Adult testing with synthetic educational data only |
 
 Update this log whenever a change affects data collection, model inputs, storage, retention, authorization, pupil-facing generation, teacher oversight, or the intended educational use.

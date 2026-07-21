@@ -90,7 +90,7 @@ export default function ForSchoolsPage() {
             <ModelJob model="Sol" stage="Lesson mapping" job="Read several lesson resources, find the main lesson idea, map the earlier ideas, and link each one to its source." limit="approve its own concept map" />
             <ModelJob model="Terra" stage="Check-in questions" job="Create short multiple-choice questions from the teacher-approved concept map." limit="mark answers or choose the pupil&apos;s route" />
             <ModelJob model="Luna" stage="Pupil support" job="Write short explanations and checks for one to three concepts." limit="see the pupil&apos;s name or reason for absence" />
-            <ModelJob model="GPT Image Mini" stage="Optional visual" job="Create a simple illustration for up to two pupil activities when a picture would help." limit="receive pupil identity, attendance context, marks, or grades" />
+            <ModelJob model="GPT Image 2" stage="Optional visual" job="Create a clear educational illustration for up to two pupil activities when a picture would help." limit="receive pupil identity, attendance context, marks, or grades" />
           </div>
         </div>
       </section>

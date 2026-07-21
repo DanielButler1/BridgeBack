@@ -23,7 +23,7 @@ The guided demo follows Mia, a fictional Year 10 pupil returning after four week
 - GPT-5.6 Luna micro-lessons with explanations, worked examples, closed checks and exact source references
 - Credential-free local demo mode using the same product screens
 - GPT-5.6 Sol file-aware lesson analysis with Zod Structured Outputs, editable draft persistence and teacher approval
-- Optional, pupil-triggered GPT Image 1 Mini concept illustrations for the first two unlocked learning activities; the demo returns a representative sample visual
+- Optional, pupil-triggered GPT Image 2 concept illustrations for the first two unlocked learning activities; the demo returns a representative sample visual
 - A responsive concept map that becomes an ordered prerequisite list on small screens
 - A protected school workspace for class creation, lesson setup, resource upload, analysis and teacher approval
 - A second interactive GCSE Mathematics example showing simultaneous-equation prerequisites and a two-activity route
@@ -82,7 +82,7 @@ npx convex env set OPENAI_API_KEY
 | Lesson dependency graph | `gpt-5.6-sol` | Implemented with Structured Outputs |
 | Approved diagnostic | `gpt-5.6-terra` | Balanced structured educational generation |
 | Pupil micro-lessons | `gpt-5.6-luna` | Efficient, responsive instructional generation |
-| Optional concept illustration | `gpt-image-1-mini` | Low-cost visual support, limited to two unlocked activities |
+| Optional concept illustration | `gpt-image-2` | High-quality visual support, limited to two unlocked activities |
 
 Teacher review remains mandatory before any generated dependency map is assigned to pupils.
 
