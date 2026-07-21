@@ -39,7 +39,7 @@ The guided journey follows Mia, a fictional Year 10 pupil returning before a bin
 
 ## What makes it different
 
-Most catch-up workflows begin with the backlog. BridgeBack begins with the destination—the lesson happening next—and works backwards. Its main product decision is deliberate subtraction: missed resources that are not prerequisites stay out of the pupil's immediate route.
+Most catch-up workflows begin with the backlog. BridgeBack begins with the destination, the lesson happening next, and works backwards. Its main product decision is deliberate subtraction: missed resources that are not prerequisites stay out of the pupil's immediate route.
 
 ## Responsible design
 

@@ -19,7 +19,7 @@ Record at 1920×1080 in OBS. Capture the browser window only, hide bookmarks and
 
 ## Script and cues
 
-### 0:00–0:20 — The problem and the idea
+### 0:00-0:20: The problem and the idea
 
 **Tab 1: landing page, hero visible**
 
@@ -29,15 +29,15 @@ Record at 1920×1080 in OBS. Capture the browser window only, hide bookmarks and
 
 > “Persistent absence affected 18.7 percent of pupils in England’s state-funded schools in 2024–25, rising to 24.3 percent in secondary schools.”
 
-### 0:20–0:35 — The product promise
+### 0:20-0:35: The product promise
 
 **[Scroll to “How BridgeBack works”]**
 
-> “BridgeBack works backwards from the upcoming lesson. It identifies the prerequisite concepts, checks only what the pupil needs, and creates a short route back—while keeping the teacher in control.”
+> “BridgeBack works backwards from the upcoming lesson. It identifies the prerequisite concepts, checks only what the pupil needs, and creates a short route back while keeping the teacher in control.”
 
 **[Next Tab]**
 
-### 0:35–1:15 — Teacher journey
+### 0:35-1:15: Teacher journey
 
 **Tab 2: guided demo chooser**
 
@@ -55,9 +55,9 @@ Record at 1920×1080 in OBS. Capture the browser window only, hide bookmarks and
 
 **[Click “Open Mia’s view”]**
 
-### 1:15–1:58 — Pupil journey
+### 1:15-1:58: Pupil journey
 
-> “Mia sees a calm explanation. Her check-in covers only the prerequisites—not why she was absent, and not her rank in class.”
+> “Mia sees a calm explanation. Her check-in covers only the prerequisites, not why she was absent or her rank in class.”
 
 **[Show one diagnostic question or the completed diagnostic summary]**
 
@@ -67,7 +67,7 @@ Record at 1920×1080 in OBS. Capture the browser window only, hide bookmarks and
 
 > “Each activity has a concise explanation, worked example, quick check and teacher-approved source. It does not replace the teacher; it makes the next conversation possible.”
 
-### 1:58–2:18 — Visual and spoken support
+### 1:58-2:18: Visual and spoken support
 
 **[Show the existing generated visual, or click “Visualise this” if no visual is present]**
 
@@ -79,9 +79,9 @@ Record at 1920×1080 in OBS. Capture the browser window only, hide bookmarks and
 
 **[Ask: “Why do low, high and middle change during binary search?” Allow one short response, then click End]**
 
-> “The voice session receives the learning activity—not Mia’s absence history or personal record.”
+> “The voice session receives the learning activity, not Mia’s absence history or personal record.”
 
-### 2:18–2:38 — Engineering and Codex
+### 2:18-2:38: Engineering and Codex
 
 **[Next Tab]**
 
@@ -91,7 +91,7 @@ Record at 1920×1080 in OBS. Capture the browser window only, hide bookmarks and
 
 **[Next Tab]**
 
-### 2:38–2:50 — Close
+### 2:38-2:50: Close
 
 **Tab 1: return to the landing-page hero or final call to action**
 

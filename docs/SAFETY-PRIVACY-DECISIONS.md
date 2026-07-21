@@ -142,7 +142,7 @@ The prototype does not collect precise location, contacts, photographs, health i
 
 **Decision:** Application code traverses the approved dependency graph, prioritises unresolved concepts closest to the upcoming lesson, and returns at most three steps including the target concept.
 
-**Why:** The key product promise—"the shortest path back"—should be testable and explainable. A teacher can inspect the graph and understand why a concept appears.
+**Why:** The key product promise, "the shortest path back", should be testable and explainable. A teacher can inspect the graph and understand why a concept appears.
 
 ### AI-004: Constrain model inputs and outputs
 

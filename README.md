@@ -6,7 +6,7 @@ BridgeBack is an OpenAI Build Week Education-track project for pupils returning 
 
 **Live Build Week deployment:** [bridgeback.phaseo.app](https://bridgeback.phaseo.app)
 
-BridgeBack is best understood as a **curriculum re-entry engine**. Most catch-up tools begin with the backlog. BridgeBack begins with the destination—the lesson happening next—then works backwards through a source-grounded, teacher-reviewed dependency graph. The innovation is deliberate subtraction: irrelevant missed work stays out, while the teacher controls what is allowed into the pupil's route.
+BridgeBack is best understood as a **curriculum re-entry engine**. Most catch-up tools begin with the backlog. BridgeBack begins with the destination, the lesson happening next, then works backwards through a source-grounded, teacher-reviewed dependency graph. The innovation is deliberate subtraction: irrelevant missed work stays out, while the teacher controls what is allowed into the pupil's route.
 
 The guided demo follows Mia, a fictional Year 10 pupil returning after four weeks away, as her class begins GCSE Computer Science binary search. The protected school workspace supports creating a real class and upcoming lesson separately from that judge journey.
 
@@ -127,4 +127,4 @@ Licensed under the [Apache License 2.0](LICENSE).
 
 ## Codex collaboration
 
-The repository was created during OpenAI Build Week with Codex. Codex helped translate the research-backed product hypothesis into a deliberately scoped vertical slice, applied the supplied shadcn preset, created the domain schemas, implemented the two-sided experience, and established build-safe model boundaries. Product decisions—including the next-lesson framing, teacher approval step, three-item limit, synthetic pupil scenario and job-specific model routing—were made explicitly during the Codex task.
+The repository was created during OpenAI Build Week with Codex. Codex helped translate the research-backed product hypothesis into a deliberately scoped vertical slice, applied the supplied shadcn preset, created the domain schemas, implemented the two-sided experience, and established build-safe model boundaries. Product decisions, including the next-lesson framing, teacher approval step, three-item limit, synthetic pupil scenario and job-specific model routing, were made explicitly during the Codex task.
