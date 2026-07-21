@@ -6,6 +6,9 @@ BridgeBack is an OpenAI Build Week Education-track project for pupils returning 
 
 **Live Build Week deployment:** [bridgeback.phaseo.app](https://bridgeback.phaseo.app)
 
+> [!IMPORTANT]
+> BridgeBack is a functional, production-deployed Build Week product demonstrated with synthetic data. Its end-to-end teacher and pupil workflows are live, but it is not yet approved for identifiable pupil or school data. See [Production readiness](docs/PRODUCTION-READINESS.md) for the implemented foundations and the release gates for a supervised real-school pilot.
+
 BridgeBack is best understood as a **curriculum re-entry engine**. Most catch-up tools begin with the backlog. BridgeBack begins with the destination, the lesson happening next, then works backwards through a source-grounded, teacher-reviewed dependency graph. The innovation is deliberate subtraction: irrelevant missed work stays out, while the teacher controls what is allowed into the pupil's route.
 
 The guided demo follows Mia, a fictional Year 10 pupil returning after four weeks away, as her class begins GCSE Computer Science binary search. The protected school workspace supports creating a real class and upcoming lesson separately from that judge journey.
@@ -114,6 +117,7 @@ The rationale for BridgeBack's synthetic-data boundary, child-protection princip
 
 ## Public release
 
+- [Production readiness](docs/PRODUCTION-READINESS.md)
 - [Build Week submission draft](docs/SUBMISSION-DRAFT.md)
 - [Vercel deployment runbook](docs/DEPLOYMENT.md)
 - [School integration pilot](docs/SCHOOL-INTEGRATION-PILOT.md)
