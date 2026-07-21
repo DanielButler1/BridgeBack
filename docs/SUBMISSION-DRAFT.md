@@ -10,7 +10,7 @@ This is working copy for the Devpost draft. It is not a submitted entry. Replace
 
 **Track:** Education
 
-**Live demo:** https://bridge-back-iota.vercel.app
+**Live demo:** https://bridgeback.phaseo.app
 
 **Repository:** https://github.com/DanielButler1/BridgeBack (private until the planned public release)
 

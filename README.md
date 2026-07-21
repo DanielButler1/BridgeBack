@@ -4,7 +4,7 @@
 
 BridgeBack is an OpenAI Build Week Education-track project for pupils returning to school after absence. Instead of assigning every missed resource, it identifies the minimum prerequisite concepts a pupil needs to participate in the upcoming lesson.
 
-**Live Build Week deployment:** [bridge-back-iota.vercel.app](https://bridge-back-iota.vercel.app)
+**Live Build Week deployment:** [bridgeback.phaseo.app](https://bridgeback.phaseo.app)
 
 BridgeBack is best understood as a **curriculum re-entry engine**. Most catch-up tools begin with the backlog. BridgeBack begins with the destination—the lesson happening next—then works backwards through a source-grounded, teacher-reviewed dependency graph. The innovation is deliberate subtraction: irrelevant missed work stays out, while the teacher controls what is allowed into the pupil's route.
 
