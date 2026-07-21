@@ -1,6 +1,6 @@
 # Deployment runbook
 
-BridgeBack is deployed to Vercel at [bridgeback.phaseo.app](https://bridgeback.phaseo.app), with `bridge-back-iota.vercel.app` retained as the provider fallback. DNS is managed in Cloudflare using a DNS-only CNAME to Vercel. The GitHub repository remains private until the planned public release; production deployments are currently made from the authenticated Vercel CLI rather than Vercel's Git integration.
+BridgeBack is deployed to Vercel at [bridgeback.phaseo.app](https://bridgeback.phaseo.app), with `bridge-back-iota.vercel.app` retained as the provider fallback. DNS is managed in Cloudflare using a DNS-only CNAME to Vercel. The [GitHub repository](https://github.com/DanielButler1/BridgeBack) is public under Apache-2.0; production deployments are currently made from the authenticated Vercel CLI rather than Vercel's Git integration.
 
 ## Required services
 

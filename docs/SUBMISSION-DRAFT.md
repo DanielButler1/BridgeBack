@@ -12,7 +12,7 @@ This is working copy for the Devpost draft. It is not a submitted entry. Replace
 
 **Live demo:** https://bridgeback.phaseo.app
 
-**Repository:** https://github.com/DanielButler1/BridgeBack (private until the planned public release)
+**Repository:** https://github.com/DanielButler1/BridgeBack (public, Apache-2.0)
 
 ## Inspiration
 
@@ -70,7 +70,7 @@ Codex was used throughout Build Week to turn the research-backed hypothesis into
 
 - **TODO:** Add the public YouTube URL for a narrated video under three minutes.
 - **TODO:** Add the `/feedback` Codex Session ID.
-- **TODO:** Make the repository public with Apache-2.0 on the planned release date, or keep it private and grant `testing@devpost.com` and `build-week-event@openai.com` access.
+- **DONE:** The repository is public with an Apache-2.0 licence and judge-ready setup documentation.
 - **TODO:** Rotate the OpenAI and Clerk server keys used during deployment setup, then update Convex and Vercel.
 - **TODO:** Re-run production smoke tests after rotation and after the final commit.
 - **TODO:** Confirm every Devpost field and preview; do not press Submit until the owner performs the final review.
