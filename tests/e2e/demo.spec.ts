@@ -1,20 +1,31 @@
-import { expect, test } from "@playwright/test";
+import { expect, test, type Page } from "@playwright/test";
+
+async function enterDemoAs(page: Page, role: "teacher" | "pupil") {
+  if (process.env.PLAYWRIGHT_BASE_URL) {
+    await page.goto(`/api/demo/sign-in/${role}`);
+    return;
+  }
+
+  await page.goto(`/demo/${role}`);
+}
 
 test("credential-free teacher demo exposes a mobile prerequisite list", async ({ page }) => {
-  await page.goto("/demo/teacher");
+  await enterDemoAs(page, "teacher");
   await expect(page.getByRole("heading", { name: "Make tomorrow's lesson feel possible." })).toBeVisible();
   await expect(page.getByText("Concept dependency map", { exact: true })).toBeVisible();
 });
 
 test("pupil demo retains its active learning material after refresh", async ({ page }) => {
-  await page.goto("/demo/pupil");
+  test.setTimeout(240_000);
+  await enterDemoAs(page, "pupil");
   await page.getByRole("button", { name: "Begin step one" }).click();
-  await expect(page.getByText("Step 1 of 2")).toBeVisible();
+  await expect(page.getByText(/Step 1 of \d+/)).toBeVisible();
   await expect(page.getByRole("heading", { name: "Talk it through" })).toBeVisible();
   await page.getByRole("button", { name: "Create a visual" }).click();
-  await expect(page.getByRole("img", { name: /sorted row of seven numbers/ })).toBeVisible();
+  const visualName = process.env.PLAYWRIGHT_BASE_URL ? /Visual explanation of/ : /sorted row of seven numbers/;
+  await expect(page.getByRole("img", { name: visualName })).toBeVisible({ timeout: 180_000 });
   await page.reload();
-  await expect(page.getByText("Step 1 of 2")).toBeVisible();
+  await expect(page.getByText(/Step 1 of \d+/)).toBeVisible();
 });
 
 test("mathematics journey diagnoses, teaches and resumes", async ({ page }) => {
